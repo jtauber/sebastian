@@ -56,7 +56,7 @@
 \relative c'' { r4. g'4. }
 
 %20
-\relative c' { e16 fis16 e16 fis16 g,8. e'16 f16 e16 f16 e16 }
+\relative c' { e16 fis16 e16 fis16 g,8. e'16 fis16 e16 fis16 e16 }
 
 %21
 \relative c' { fis2.}
@@ -65,7 +65,7 @@
 \relative c' { e4. e4. e4. e4. e4. fis4. g4. a4. b8 }
 
 %23
-\relative c' { e8 fis4. fis4. fis4. fis4. fis4. g4. a4. b4. }
+\relative c' { e8 fis4. fis4. fis4. fis4. fis4. g4. a4. b4 }
 
 %24
 \relative c' { e8 fis8 g4. g4. g4. g4. g4. a4. b8 }
