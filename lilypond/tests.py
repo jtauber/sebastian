@@ -1,12 +1,18 @@
 
 ## graded tests derived from lilypond documentation that are likely to be relevant to In C implementation
 
+# test (not written yet) takes two arguments. The first is a lilypond fragment. The second is the intended
+# interpretation, a sequence of (offset, pitch, duration) tuples where offset and duration are in multiples of a 
+# 64th note and pitch is MIDI note number.
 
 # absolute octave entry
 
 test(
     "c d e f g a b c d e f g",
-    ...
+    [
+        (0, 48, 16), (16, 50, 16), (32, 52, 16), (48, 53, 16), (64, 55, 16), (80, 57, 16), (96, 59, 16),
+        (112, 48, 16), (128, 50, 16), (144, 52, 16), (160, 53, 16), (176, 55, 16)
+    ]
 )
 
 test(
