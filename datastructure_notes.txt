@@ -1,0 +1,68 @@
+The primary datastructure I've been thinking about for Sebastian is a sequence of feature structures (or a set of
+feature structures with time offsets)
+
+Features structures in linguistics aren't really much more than Python dictionaries (there's a little bit more but
+not much)
+
+Now of course in Python, we can have objects that are "dictionary-like" so even if I talk like we'll actually use
+dictionaries, they may be instances of some class we write.
+
+Underspecification will play a big role. In other words, these dictionaries won't always have every value
+specified. For example, we might have a sequence of just pitches. Or pitches+rhythm without instrumentation and
+velocity. Or it might have detailed velocity and fingering information.
+
+Most of the time we'll be dealing with sequences of these feature structures / dictionaries, although I have
+reasons for thinking a set of objects with offsets might work better than a sequence as the *internal*
+representation.
+
+Because the dictionaries can be underspecified, I'm not sure it makes sense to have different types. I think, for
+example, a rhythm is just a sequence of dictionaries that are specified for duration but not pitch.
+
+So a rhythm might be: [ { duration: 4 }, { duration: 8 } , { duration: 8 }, { duration: 2 } ]
+A sequence of pitches might be [ { pitch: c }, { pitch: d }, { pitch: e }, { pitch: g } ]
+the two can be merged (what in feature structure terminology is called unification) to:
+
+[ { pitch: c, duration: 4 }, { pitch: d, duration: 8 } , { pitch: e, duration: 8 }, { pitch: g, duration: 2 } ]
+
+One common operation will be applying some factor to an entire sequence to fill out some underspecification. For
+example, specifying a tempo allows the above sequence to be further annotated with time offsets.
+
+The opposite operation is factoring out some property. For example, if you say that
+[ { pitch: c, duration: 4 }, { pitch: d, duration: 8 }, { pitch: e, duration: 8 }, { pitch: g, duration: 2 } ] is
+in C, you could factor out the key to get
+[ { degree: 1, duration: 4 }, { degree: 2, duration: 8 }, { degree: 3, duration: 8 }, { degree: 5, duration: 2 } ]
+
+Here are some fundamental operations that I think will be important to us:
+
+1. concatenation: e.g. [ w, x ] CONCATENATE [ y, z ] => [ w, x, y, z]
+2. unification: e.g. [ { x: 1 }, { x: 2} ] UNIFY [ { y : 3 }, { y : 4 } ] => [ { x: 1, y: 3 }, { x: 2, y: 4 } ]
+3. applying some factor: e.g. { key : C } APPLY [ { degree: 1 }, { degree : 3} ] => [ { pitch: c }, { pitch: e} ]
+
+It might be worth thinking of applying a factor might be
+
+{ key : C } APPLY [ { degree: 1 }, { degree : 3} ] =>
+[ { degree: 1, key: C }, { degree 3, key: C } ] =>
+[ { pitch: c }, { pitch: e} ]
+
+or even better, with all information maintained (i.e. make it monotonic):
+
+{ key : C } APPLY  [ { degree: 1 }, { degree : 3} ] =>
+[ { degree: 1, key: C }, { degree 3, key: C } ] =>
+[ { degree: 1, key: C, pitch: c }, { degree 3, key: C, pitch: e} ]
+
+I think there's a 4th operation which is how we indicate two melodies (or notes) are actually played at the same
+time. Simultaneous notes is one of a number of reasons I have for favouring sets with offsets over sequences as the
+*internal* representation. That makes it MUCH easier to convey, for example, that C and E are played at the same
+time versus one after the other.
+
+Saying two melodies are played together just becomes taking the union of two sets if offsets are in the feature
+structures.
+
+Using sets with offsets rather than sequences also allows unification of sequences with different timing. For
+example, we might have a sequence that expresses what beats are to be accented. Unifying that with a rhythm
+sequence would be easier if the *internal* representation included offsets and didn't just rely on the sequence
+ordering.
+
+Note: I'm fine with using sequences that contain offsets as well. This is a little redundant but I'm fine with it.
+
+Obviously something like [ { offset: 4 }, { offset : 2 } ] would be illegal.
