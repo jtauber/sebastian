@@ -1,1 +1,2 @@
-nothing here yet
+Initially this just contains a first pass at the score for In C in lilypond format but this will eventually
+contain the code that uses (yet to be written) Sebastian libraries to generate a performance of In C.
