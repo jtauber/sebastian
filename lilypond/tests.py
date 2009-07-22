@@ -45,7 +45,19 @@ test(
 
 # rests
 
-# @@@
+test(
+    "c4 r4 r8 c8 c4",
+    [
+        (0, 0, 0), (0, 0, 0), (0, 0, 0),
+    ]
+)
+
+test(
+    "r8 c d e",
+    [
+        (0, 0, 0), (0, 0, 0), (0, 0, 0),
+    ]
+)
 
 
 # accidentals
@@ -105,21 +117,23 @@ test(
 
 test(
     "a2 ~ a",
-    ...
+    [
+        (0, 57, 64)
+    ]
 )
 
 
 # octave check
 
-test(
-    r"\relative c'' { c2 d='4 d e2 f }",
-    ...
-)
+# test(
+#     r"\relative c'' { c2 d='4 d e2 f }",
+#     ...
+# )
 
 
 # acciaccatura
 
-test(
-    r"\acciaccatura d8 c4",
-    ...
-)
+# test(
+#     r"\acciaccatura d8 c4",
+#     ...
+# )
