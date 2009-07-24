@@ -20,7 +20,7 @@ def parse(s):
     offset = 0
     
     for token in tokenize(s):
-        m = re.match("((?P<note>[abcdefg])(?P<octave>'+|,+)?|(?P<rest>r))(?P<duration>\d+)?", token)
+        m = re.match("((?P<note>[abcdefg])(?P<octave>'+|,+)?|(?P<rest>r))(?P<duration>\d+\.*)?", token)
         if m:
             note = m.groupdict()["note"]
             octave_marker = m.groupdict()["octave"]
@@ -34,8 +34,14 @@ def parse(s):
                 duration = 32
             elif duration_marker == "4":
                 duration = 16
+            elif duration_marker == "4.":
+                duration = 24
+            elif duration_marker == "4..":
+                duration = 28
             elif duration_marker == "8":
                 duration = 8
+            elif duration_marker == "8.":
+                duration = 12
             else:
                 raise Exception("unsupported duration %s" % duration_marker)
             if not rest:
