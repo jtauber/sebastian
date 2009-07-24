@@ -1,9 +1,21 @@
 
 ## graded tests derived from lilypond documentation that are likely to be relevant to In C implementation
 
-# test (not written yet) takes two arguments. The first is a lilypond fragment. The second is the intended
-# interpretation, a sequence of (offset, pitch, duration) tuples where offset and duration are in multiples of a 
-# 64th note and pitch is MIDI note number.
+# test takes two arguments. The first is a lilypond fragment. The second is the intended interpretation, a sequence
+# of (offset, pitch, duration) tuples where offset and duration are in multiples of a 64th note and pitch is MIDI
+# note number.
+
+from interp import parse
+
+def test(lilypond, midi):
+    print "\nTEST: %s" % lilypond
+    result = list(parse(lilypond))
+    for i, event in enumerate(midi):
+        if event != result[i]:
+            print "%s != %s" % (event, result[i])
+            break
+        else:
+            print "%s == %s" % (event, result[i])
 
 # absolute octave entry
 
