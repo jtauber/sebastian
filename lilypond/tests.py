@@ -13,9 +13,12 @@ def test(lilypond, midi):
     for i, event in enumerate(midi):
         if event != result[i]:
             print "%s != %s" % (event, result[i])
+            print "FAIL"
             break
         else:
             print "%s == %s" % (event, result[i])
+    else:
+        print "SUCCESS"
 
 # absolute octave entry
 
