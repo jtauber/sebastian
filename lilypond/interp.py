@@ -65,9 +65,7 @@ def absolute_note_value(token_dict):
     if accidental_flat:
         accidental_change -= len(accidental_flat) / 2
     
-    note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
-    
-    return note_value
+    return MIDI_NOTE_VALUES[note], accidental_change, octave
 
 
 def parse_duration(duration_marker):
@@ -115,7 +113,8 @@ def parse_block(token_generator, prev_note_value = None, relative_mode = False, 
                 duration = parse_duration(duration_marker)
             
             if not rest:
-                note_value = absolute_note_value(token_dict)
+                note_base, accidental_change, octave = absolute_note_value(token_dict)
+                note_value = note_base + (12 * octave) + accidental_change
                 
                 if tie_deferred:
                     # if the previous note was deferred due to a tie
