@@ -23,6 +23,8 @@ token_pattern = re.compile(r"""
         (?P<duration>\d+\.*) ?                      # DURATION ?
     )
     |
+    (?P<tie>~)                                      # TIE
+    |
     \\(?P<command>(relative))                       # COMMANDS
     |
     (?P<open_brace>{) | (?P<close_brace>})          # { or }
@@ -61,12 +63,15 @@ def parse(s):
             command = m.groupdict()["command"]
             open_brace = m.groupdict()["open_brace"]
             close_brace = m.groupdict()["close_brace"]
+            tie = m.groupdict()["tie"]
             
             if command:
                 pass # @@@ NYI
             elif open_brace:
                 pass # @@@ NYI
             elif close_brace:
+                pass # @@@ NYI
+            elif tie:
                 pass # @@@ NYI
             else:
                 note = m.groupdict()["note"]
