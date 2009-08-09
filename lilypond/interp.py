@@ -15,7 +15,7 @@ token_pattern = re.compile("""
     (
         (?P<note>[abcdefg])                     # NOTE
         (?P<octave>'+|,+) ?                     # OCTAVE ?
-        ((?P<sharp>(is)*)(?P<flat>(es)*))       # ACCIDENTALS
+        ((?P<sharp>(is)+)|(?P<flat>(es)+)) ?    # ACCIDENTALS ?
         |                                       # |
         (?P<rest>r)                             # REST
     )
