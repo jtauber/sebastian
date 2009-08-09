@@ -22,6 +22,23 @@ RE_ACCIDENTALS = "(%s%s)?"%(RE_SHARP, RE_FLAT)
 def tokenize(s):
     return s.split()
 
+
+def parse_duration(duration_marker):
+    if "." in duration_marker:
+        first_dot = duration_marker.find(".")
+        core = int(duration_marker[:first_dot])
+        # this doesn't actually check they are all dots, but regex wouldn't
+        # match in the first place otherwise
+        dots = len(duration_marker[first_dot:])
+    else:
+        core = int(duration_marker)
+        dots = 0
+    
+    duration = (2 - (2**-dots)) * 64 / core
+    
+    return duration
+
+
 def parse(s):
     duration = 16
     curr_octave = 4
@@ -42,22 +59,8 @@ def parse(s):
             print m.groupdict()
             if duration_marker is None:
                 pass # leave duration the way it was
-            elif duration_marker == "1":
-                duration = 64
-            elif duration_marker == "2":
-                duration = 32
-            elif duration_marker == "4":
-                duration = 16
-            elif duration_marker == "4.":
-                duration = 24
-            elif duration_marker == "4..":
-                duration = 28
-            elif duration_marker == "8":
-                duration = 8
-            elif duration_marker == "8.":
-                duration = 12
             else:
-                raise Exception("unsupported duration %s" % duration_marker)
+                duration = parse_duration(duration_marker)
             if not rest:
                 if octave_marker == "'":
                     octave = curr_octave + 1
