@@ -66,7 +66,6 @@ def parse_duration(duration_marker):
 def parse_block(token_generator):
     prev_note_value = None
     prev_duration = 16
-    curr_octave = 4
     offset = 0
     tie_deferred = False
     
@@ -101,11 +100,11 @@ def parse_block(token_generator):
             
             if not rest:
                 if octave_marker is None:
-                    octave = curr_octave
+                    octave = 4
                 elif "'" in octave_marker:
-                    octave = curr_octave + len(octave_marker)
+                    octave = 4 + len(octave_marker)
                 elif "," in octave_marker:
-                    octave = curr_octave - len(octave_marker)
+                    octave = 4 - len(octave_marker)
                 if accidental_sharp:
                     accidental_change += len(accidental_sharp) / 2
                 if accidental_flat:
