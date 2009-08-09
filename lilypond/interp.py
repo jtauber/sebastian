@@ -18,15 +18,15 @@ token_pattern = re.compile(r"""^\s*                 # INITIAL WHITESPACE
                 (?P<note>[abcdefg])                     # NOTE NAME
                 (?P<octave>'+|,+) ?                     # OCTAVE ?
                 ((?P<sharp>(is)+)|(?P<flat>(es)+)) ?    # ACCIDENTALS ?
-                |                                       # |
+                |                                       # or
                 (?P<rest>r)                             # REST
             )
             (?P<duration>\d+\.*) ?                      # DURATION ?
             (\s*(?P<tie>~)) ?                           # TIE ?
         )
-        |
+        |                                           # or
         \\(?P<command>(relative))                   # COMMANDS
-        |
+        |                                           # or
         (?P<open_brace>{) | (?P<close_brace>})      # { or }
     )
     """, 
