@@ -84,7 +84,7 @@ def parse_duration(duration_marker):
     return duration
 
 
-def parse_block(token_generator, prev_note_value = None, relative_mode = False, offset = 0):
+def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, offset = 0):
     prev_duration = 16
     tie_deferred = False
     
@@ -118,6 +118,7 @@ def parse_block(token_generator, prev_note_value = None, relative_mode = False, 
                 
                 if tie_deferred:
                     # if the previous note was deferred due to a tie
+                    prev_note_value = prev_note_tuple[0] + (12 * prev_note_tuple[2]) + prev_note_tuple[1]
                     if note_value != prev_note_value:
                         raise Exception("ties are only supported between notes of same pitch")
                     duration += prev_duration
@@ -129,7 +130,7 @@ def parse_block(token_generator, prev_note_value = None, relative_mode = False, 
                 else:
                     yield (offset, note_value, duration)
                 
-                prev_note_value = note_value
+                prev_note_tuple = note_base, accidental_change, octave
             
             if not tie_deferred:
                 offset += duration
