@@ -79,9 +79,10 @@ def parse_block(token_generator):
         if command:
             pass # @@@ NYI
         elif open_brace:
-            pass # @@@ NYI
+            for obj in parse_block(token_generator):
+                yield obj
         elif close_brace:
-            pass # @@@ NYI
+            raise StopIteration
         else:
             note = token_dict["note"]
             octave_marker = token_dict["octave"]
