@@ -43,8 +43,7 @@ def parse(s):
     duration = 16
     curr_octave = 4
     offset = 0
-    token_matcher = "(%s%s?%s|%s)%s?"%(RE_NOTE, RE_8VE, RE_ACCIDENTALS, RE_REST,
-            RE_DURATION)
+    token_matcher = "(%s%s?%s|%s)%s?" % (RE_NOTE, RE_8VE, RE_ACCIDENTALS, RE_REST, RE_DURATION)
     
     for token in tokenize(s):
         m = re.match(token_matcher, token)
@@ -73,11 +72,12 @@ def parse(s):
                 else:
                     octave = curr_octave
                 if accidental_sharp:
-                    accidental_change+=len(accidental_sharp)/2
+                    accidental_change += len(accidental_sharp) / 2
                 if accidental_flat:
-                    accidental_change-=len(accidental_flat)/2
-                note_value = MIDI_NOTE_VALUES[note] + (12 * octave) +\
-                        accidental_change
+                    accidental_change -= len(accidental_flat) / 2
+                
+                note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
+                
                 yield (offset, note_value, duration)
             offset += duration
         else:
