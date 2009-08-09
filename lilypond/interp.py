@@ -47,19 +47,32 @@ def tokenize(s):
             raise StopIteration
 
 
-def absolute_note_value(token_dict):
+def note_tuple(token_dict, relative_note_tuple=None):
     note = token_dict["note"]
     octave_marker = token_dict["octave"]
     accidental_sharp = token_dict["sharp"]
     accidental_flat = token_dict["flat"]
     accidental_change = 0
     
+    if relative_note_tuple:
+        prev_note, prev_accidental_change, prev_octave = relative_note_tuple
+        
+        diff = MIDI_NOTE_VALUES[note] - prev_note
+        if diff >= 7:
+            base_octave = prev_octave - 1
+        elif diff <= -7:
+            base_octave = prev_octave + 1
+        else:
+            base_octave = prev_octave
+    else:
+        base_octave = 4
+    
     if octave_marker is None:
-        octave = 4
+        octave = base_octave
     elif "'" in octave_marker:
-        octave = 4 + len(octave_marker)
+        octave = base_octave + len(octave_marker)
     elif "," in octave_marker:
-        octave = 4 - len(octave_marker)
+        octave = base_octave - len(octave_marker)
     if accidental_sharp:
         accidental_change += len(accidental_sharp) / 2
     if accidental_flat:
@@ -96,7 +109,18 @@ def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, 
         close_brace = token_dict["close_brace"]
         
         if command:
-            pass # @@@ NYI
+            if command == "relative":
+                
+                token_dict = token_generator.next()
+                
+                base_note_tuple = note_tuple(token_dict)
+                
+                token_dict = token_generator.next()
+                if not token_dict["open_brace"]:
+                    raise Exception("\\relative must be followed by note then {...} block")
+                
+                for obj in parse_block(token_generator, prev_note_tuple=base_note_tuple, relative_mode=True, offset=offset):
+                    yield obj
         elif open_brace:
             for obj in parse_block(token_generator):
                 yield obj
@@ -113,7 +137,10 @@ def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, 
                 duration = parse_duration(duration_marker)
             
             if not rest:
-                note_base, accidental_change, octave = absolute_note_value(token_dict)
+                if relative_mode:
+                    note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
+                else:
+                    note_base, accidental_change, octave = note_tuple(token_dict)
                 note_value = note_base + (12 * octave) + accidental_change
                 
                 if tie_deferred:
