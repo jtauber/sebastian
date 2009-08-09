@@ -10,14 +10,19 @@ MIDI_NOTE_VALUES = {
     "b": 11,
 }
 
-# Cutting up the regex into manageable components - helps with testing
-RE_NOTE = "(?P<note>[abcdefg])"
-RE_8VE = "(?P<octave>'+|,+)"
-RE_REST = "(?P<rest>r)"
-RE_DURATION = "(?P<duration>\d+\.*)"
-RE_SHARP = "(?P<sharp>(is)*)"
-RE_FLAT = "(?P<flat>(es)*)"
-RE_ACCIDENTALS = "(%s%s)?"%(RE_SHARP, RE_FLAT)
+
+token_pattern = re.compile("""
+    (
+        (?P<note>[abcdefg])                     # NOTE
+        (?P<octave>'+|,+) ?                     # OCTAVE ?
+        ((?P<sharp>(is)*)(?P<flat>(es)*))       # ACCIDENTALS
+        |                                       # |
+        (?P<rest>r)                             # REST
+    )
+    (?P<duration>\d+\.*) ?                      # DURATION ?
+    """, re.VERBOSE
+)
+
 
 def tokenize(s):
     return s.split()
@@ -43,10 +48,9 @@ def parse(s):
     duration = 16
     curr_octave = 4
     offset = 0
-    token_matcher = "(%s%s?%s|%s)%s?" % (RE_NOTE, RE_8VE, RE_ACCIDENTALS, RE_REST, RE_DURATION)
     
     for token in tokenize(s):
-        m = re.match(token_matcher, token)
+        m = token_pattern.match(token)
         if m:
             note = m.groupdict()["note"]
             octave_marker = m.groupdict()["octave"]
