@@ -59,7 +59,7 @@ def parse(s):
             accidental_flat = m.groupdict()["flat"]
             rest = m.groupdict()["rest"]
             accidental_change = 0
-            print m.groupdict()
+            
             if duration_marker is None:
                 pass # leave duration the way it was
             else:
