@@ -64,10 +64,11 @@ def parse_duration(duration_marker):
 
 
 def parse_block(token_generator):
-    duration = 16
+    prev_note_value = None
+    prev_duration = 16
     curr_octave = 4
     offset = 0
-    tie_deferred_note = None
+    tie_deferred = False
     
     while True:
         token_dict = token_generator.next()
@@ -94,7 +95,7 @@ def parse_block(token_generator):
             accidental_change = 0
             
             if duration_marker is None:
-                pass # leave duration the way it was
+                duration = prev_duration
             else:
                 duration = parse_duration(duration_marker)
             
@@ -112,21 +113,25 @@ def parse_block(token_generator):
                 
                 note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
                 
-                if tie_deferred_note:
+                if tie_deferred:
                     # if the previous note was deferred due to a tie
-                    if note_value != tie_deferred_note[0]:
+                    if note_value != prev_note_value:
                         raise Exception("ties are only supported between notes of same pitch")
-                    duration += tie_deferred_note[1]
-                    tie_deferred_note = None
+                    duration += prev_duration
+                    tie_deferred = False
                 
                 if tie:
                     # if there is a tie following this note, we defer it
-                    tie_deferred_note = (note_value, duration)
+                    tie_deferred = True
                 else:
                     yield (offset, note_value, duration)
+                
+                prev_note_value = note_value
             
-            if not tie_deferred_note:
+            if not tie_deferred:
                 offset += duration
+            
+            prev_duration = duration
 
 
 def parse(s):
