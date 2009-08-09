@@ -63,13 +63,15 @@ def parse_duration(duration_marker):
     return duration
 
 
-def parse(s):
+def parse_block(token_generator):
     duration = 16
     curr_octave = 4
     offset = 0
     tie_deferred_note = None
     
-    for token_dict in tokenize(s):
+    while True:
+        token_dict = token_generator.next()
+        
         command = token_dict["command"]
         open_brace = token_dict["open_brace"]
         close_brace = token_dict["close_brace"]
@@ -124,3 +126,7 @@ def parse(s):
             
             if not tie_deferred_note:
                 offset += duration
+
+
+def parse(s):
+    return parse_block(tokenize(s))
