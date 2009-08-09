@@ -47,6 +47,29 @@ def tokenize(s):
             raise StopIteration
 
 
+def absolute_note_value(token_dict):
+    note = token_dict["note"]
+    octave_marker = token_dict["octave"]
+    accidental_sharp = token_dict["sharp"]
+    accidental_flat = token_dict["flat"]
+    accidental_change = 0
+    
+    if octave_marker is None:
+        octave = 4
+    elif "'" in octave_marker:
+        octave = 4 + len(octave_marker)
+    elif "," in octave_marker:
+        octave = 4 - len(octave_marker)
+    if accidental_sharp:
+        accidental_change += len(accidental_sharp) / 2
+    if accidental_flat:
+        accidental_change -= len(accidental_flat) / 2
+    
+    note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
+    
+    return note_value
+
+
 def parse_duration(duration_marker):
     if "." in duration_marker:
         first_dot = duration_marker.find(".")
@@ -82,14 +105,9 @@ def parse_block(token_generator, prev_note_value = None, relative_mode = False, 
         elif close_brace:
             raise StopIteration
         else:
-            note = token_dict["note"]
-            octave_marker = token_dict["octave"]
             duration_marker = token_dict["duration"]
-            accidental_sharp = token_dict["sharp"]
-            accidental_flat = token_dict["flat"]
             rest = token_dict["rest"]
             tie = token_dict["tie"]
-            accidental_change = 0
             
             if duration_marker is None:
                 duration = prev_duration
@@ -97,18 +115,7 @@ def parse_block(token_generator, prev_note_value = None, relative_mode = False, 
                 duration = parse_duration(duration_marker)
             
             if not rest:
-                if octave_marker is None:
-                    octave = 4
-                elif "'" in octave_marker:
-                    octave = 4 + len(octave_marker)
-                elif "," in octave_marker:
-                    octave = 4 - len(octave_marker)
-                if accidental_sharp:
-                    accidental_change += len(accidental_sharp) / 2
-                if accidental_flat:
-                    accidental_change -= len(accidental_flat) / 2
-                
-                note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
+                note_value = absolute_note_value(token_dict)
                 
                 if tie_deferred:
                     # if the previous note was deferred due to a tie
