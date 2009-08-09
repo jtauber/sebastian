@@ -22,9 +22,8 @@ token_pattern = re.compile(r"""^\s*                 # INITIAL WHITESPACE
                 (?P<rest>r)                             # REST
             )
             (?P<duration>\d+\.*) ?                      # DURATION ?
+            (\s*(?P<tie>~)) ?                           # TIE ?
         )
-        |
-        (?P<tie>~)                                  # TIE
         |
         \\(?P<command>(relative))                   # COMMANDS
         |
@@ -68,20 +67,18 @@ def parse(s):
     duration = 16
     curr_octave = 4
     offset = 0
+    tie_deferred_note = None
     
     for token_dict in tokenize(s):
         command = token_dict["command"]
         open_brace = token_dict["open_brace"]
         close_brace = token_dict["close_brace"]
-        tie = token_dict["tie"]
         
         if command:
             pass # @@@ NYI
         elif open_brace:
             pass # @@@ NYI
         elif close_brace:
-            pass # @@@ NYI
-        elif tie:
             pass # @@@ NYI
         else:
             note = token_dict["note"]
@@ -90,12 +87,14 @@ def parse(s):
             accidental_sharp = token_dict["sharp"]
             accidental_flat = token_dict["flat"]
             rest = token_dict["rest"]
+            tie = token_dict["tie"]
             accidental_change = 0
             
             if duration_marker is None:
                 pass # leave duration the way it was
             else:
                 duration = parse_duration(duration_marker)
+            
             if not rest:
                 if octave_marker is None:
                     octave = curr_octave
@@ -110,5 +109,18 @@ def parse(s):
                 
                 note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
                 
-                yield (offset, note_value, duration)
-            offset += duration
+                if tie_deferred_note:
+                    # if the previous note was deferred due to a tie
+                    if note_value != tie_deferred_note[0]:
+                        raise Exception("ties are only supported between notes of same pitch")
+                    duration += tie_deferred_note[1]
+                    tie_deferred_note = None
+                
+                if tie:
+                    # if there is a tie following this note, we defer it
+                    tie_deferred_note = (note_value, duration)
+                else:
+                    yield (offset, note_value, duration)
+            
+            if not tie_deferred_note:
+                offset += duration
