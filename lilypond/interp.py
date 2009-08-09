@@ -18,6 +18,7 @@ token_pattern = re.compile(r"""^\s*                 # INITIAL WHITESPACE
                 (?P<note>[abcdefg])                     # NOTE NAME
                 (?P<octave>'+|,+) ?                     # OCTAVE ?
                 ((?P<sharp>(is)+)|(?P<flat>(es)+)) ?    # ACCIDENTALS ?
+                (=(?P<octave_check>'+|,+)) ?            # OCTAVE CHECK ?
                 |                                       # or
                 (?P<rest>r)                             # REST
             )

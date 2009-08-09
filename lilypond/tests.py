@@ -140,10 +140,16 @@ test(
 
 # octave check
 
-# test(
-#     r"\relative c'' { c2 d='4 d e2 f }",
-#     ...
-# )
+test(
+    r"\relative c'' { c2 d='4 d e2 f }",
+    [
+        (0, 72, 32),
+        (32, 74, 16),
+        (48, 74, 16),
+        (64, 76, 32),
+        (96, 77, 32),
+    ]
+)
 
 
 # acciaccatura
