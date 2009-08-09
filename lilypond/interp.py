@@ -11,29 +11,41 @@ MIDI_NOTE_VALUES = {
 }
 
 
-token_pattern = re.compile(r"""
+token_pattern = re.compile(r"""^\s*                 # INITIAL WHITESPACE
     (
-        (
-            (?P<note>[abcdefg])                     # NOTE
-            (?P<octave>'+|,+) ?                     # OCTAVE ?
-            ((?P<sharp>(is)+)|(?P<flat>(es)+)) ?    # ACCIDENTALS ?
-            |                                       # |
-            (?P<rest>r)                             # REST
+        (                                           # NOTE
+            (
+                (?P<note>[abcdefg])                     # NOTE NAME
+                (?P<octave>'+|,+) ?                     # OCTAVE ?
+                ((?P<sharp>(is)+)|(?P<flat>(es)+)) ?    # ACCIDENTALS ?
+                |                                       # |
+                (?P<rest>r)                             # REST
+            )
+            (?P<duration>\d+\.*) ?                      # DURATION ?
         )
-        (?P<duration>\d+\.*) ?                      # DURATION ?
+        |
+        (?P<tie>~)                                  # TIE
+        |
+        \\(?P<command>(relative))                   # COMMANDS
+        |
+        (?P<open_brace>{) | (?P<close_brace>})      # { or }
     )
-    |
-    (?P<tie>~)                                      # TIE
-    |
-    \\(?P<command>(relative))                       # COMMANDS
-    |
-    (?P<open_brace>{) | (?P<close_brace>})          # { or }
-    """, re.VERBOSE
+    """, 
+    re.VERBOSE
 )
 
 
 def tokenize(s):
-    return s.split()
+    while True:
+        if s:
+            m = token_pattern.match(s)
+            if m:
+                yield m.groupdict()
+            else:
+                raise Exception("unknown token at: '%s'" % s[:20])
+            s = s[m.end():]
+        else:
+            raise StopIteration
 
 
 def parse_duration(duration_marker):
@@ -57,50 +69,46 @@ def parse(s):
     curr_octave = 4
     offset = 0
     
-    for token in tokenize(s):
-        m = token_pattern.match(token)
-        if m:
-            command = m.groupdict()["command"]
-            open_brace = m.groupdict()["open_brace"]
-            close_brace = m.groupdict()["close_brace"]
-            tie = m.groupdict()["tie"]
-            
-            if command:
-                pass # @@@ NYI
-            elif open_brace:
-                pass # @@@ NYI
-            elif close_brace:
-                pass # @@@ NYI
-            elif tie:
-                pass # @@@ NYI
-            else:
-                note = m.groupdict()["note"]
-                octave_marker = m.groupdict()["octave"]
-                duration_marker = m.groupdict()["duration"]
-                accidental_sharp = m.groupdict()["sharp"]
-                accidental_flat = m.groupdict()["flat"]
-                rest = m.groupdict()["rest"]
-                accidental_change = 0
-                
-                if duration_marker is None:
-                    pass # leave duration the way it was
-                else:
-                    duration = parse_duration(duration_marker)
-                if not rest:
-                    if octave_marker is None:
-                        octave = curr_octave
-                    elif "'" in octave_marker:
-                        octave = curr_octave + len(octave_marker)
-                    elif "," in octave_marker:
-                        octave = curr_octave - len(octave_marker)
-                    if accidental_sharp:
-                        accidental_change += len(accidental_sharp) / 2
-                    if accidental_flat:
-                        accidental_change -= len(accidental_flat) / 2
-                    
-                    note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
-                    
-                    yield (offset, note_value, duration)
-                offset += duration
+    for token_dict in tokenize(s):
+        command = token_dict["command"]
+        open_brace = token_dict["open_brace"]
+        close_brace = token_dict["close_brace"]
+        tie = token_dict["tie"]
+        
+        if command:
+            pass # @@@ NYI
+        elif open_brace:
+            pass # @@@ NYI
+        elif close_brace:
+            pass # @@@ NYI
+        elif tie:
+            pass # @@@ NYI
         else:
-            raise Exception("unsupported token %s" % token)
+            note = token_dict["note"]
+            octave_marker = token_dict["octave"]
+            duration_marker = token_dict["duration"]
+            accidental_sharp = token_dict["sharp"]
+            accidental_flat = token_dict["flat"]
+            rest = token_dict["rest"]
+            accidental_change = 0
+            
+            if duration_marker is None:
+                pass # leave duration the way it was
+            else:
+                duration = parse_duration(duration_marker)
+            if not rest:
+                if octave_marker is None:
+                    octave = curr_octave
+                elif "'" in octave_marker:
+                    octave = curr_octave + len(octave_marker)
+                elif "," in octave_marker:
+                    octave = curr_octave - len(octave_marker)
+                if accidental_sharp:
+                    accidental_change += len(accidental_sharp) / 2
+                if accidental_flat:
+                    accidental_change -= len(accidental_flat) / 2
+                
+                note_value = MIDI_NOTE_VALUES[note] + (12 * octave) + accidental_change
+                
+                yield (offset, note_value, duration)
+            offset += duration
