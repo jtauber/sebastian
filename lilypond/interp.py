@@ -65,16 +65,12 @@ def parse(s):
             else:
                 duration = parse_duration(duration_marker)
             if not rest:
-                if octave_marker == "'":
-                    octave = curr_octave + 1
-                elif octave_marker == "''":
-                    octave = curr_octave + 2
-                elif octave_marker == ",":
-                    octave = curr_octave - 1
-                elif octave_marker == ",,":
-                    octave = curr_octave - 2
-                else:
+                if octave_marker is None:
                     octave = curr_octave
+                elif "'" in octave_marker:
+                    octave = curr_octave + len(octave_marker)
+                elif "," in octave_marker:
+                    octave = curr_octave - len(octave_marker)
                 if accidental_sharp:
                     accidental_change += len(accidental_sharp) / 2
                 if accidental_flat:
