@@ -63,10 +63,8 @@ def parse_duration(duration_marker):
     return duration
 
 
-def parse_block(token_generator):
-    prev_note_value = None
+def parse_block(token_generator, prev_note_value = None, relative_mode = False, offset = 0):
     prev_duration = 16
-    offset = 0
     tie_deferred = False
     
     while True:
