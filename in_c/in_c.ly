@@ -14,13 +14,13 @@
 \relative c' { e8 f8 g8 r8 }
 
 %6
-\relative c'' { c1~ ~c1 }
+\relative c'' { c1~ c1 }
 
 %7 
 \relative c' { r4 r4 r4 r8 c16 c16 c8 r8 r4 r4 r4 r4 }
 
 %8 
-\relative c'' { g1. f1~ ~f1 }
+\relative c'' { g1. f1~ f1 }
 
 %9 
 \relative c'' { b16 g16 r8 r4 r4 r4 }
@@ -141,7 +141,7 @@ a8 g8~ g8 b8 a4. g8 e2. g8 fis8~ fis2. r4 r4 r8 e8~ e2 f1. }
 \relative c'' { d16 e16 d8 }
 
 %48
-\relative c'' { g1. g1 f1~ ~f4 }
+\relative c'' { g1. g1 f1~ f4 }
 
 %49
 \relative c' { f16 g16 bes16 g16 bes16 g16 }
