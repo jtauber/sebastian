@@ -26,7 +26,9 @@ token_pattern = re.compile(r"""^\s*                 # INITIAL WHITESPACE
             (\s*(?P<tie>~)) ?                           # TIE ?
         )
         |                                           # or
-        \\(?P<command>(relative))                   # COMMANDS
+        \\(?P<command>(                             # COMMANDS
+            relative | acciaccatura
+        ))
         |                                           # or
         (?P<open_brace>{) | (?P<close_brace>})      # { or }
     )
@@ -122,6 +124,36 @@ def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, 
                 
                 for obj in parse_block(token_generator, prev_note_tuple=base_note_tuple, relative_mode=True, offset=offset):
                     yield obj
+            elif command == "acciaccatura":
+                # @@@ there is much code duplication between here and the main parsing further on
+                
+                token_dict = token_generator.next()
+                duration_marker = token_dict["duration"]
+                # duration must be explicit
+                duration = parse_duration(duration_marker)
+                if relative_mode:
+                    note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
+                else:
+                    note_base, accidental_change, octave = note_tuple(token_dict)
+                note_value = note_base + (12 * octave) + accidental_change
+                
+                yield (offset - duration / 2, note_value, duration / 2)
+                
+                token_dict = token_generator.next()
+                duration_marker = token_dict["duration"]
+                # duration must be explicit
+                duration = parse_duration(duration_marker)
+                if relative_mode:
+                    note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
+                else:
+                    note_base, accidental_change, octave = note_tuple(token_dict)
+                note_value = note_base + (12 * octave) + accidental_change
+                
+                yield (offset, note_value, duration)
+                
+                offset += duration
+                prev_duration = duration
+                
         elif open_brace:
             for obj in parse_block(token_generator):
                 yield obj

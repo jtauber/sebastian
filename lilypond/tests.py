@@ -150,7 +150,9 @@ test(
 
 # acciaccatura
 
-# test(
-#     r"\acciaccatura d8 c4",
-#     ...
-# )
+test(
+    r"\acciaccatura d8 c4",
+    [
+        (-4, 50, 4), (0, 48, 16)
+    ]
+)
