@@ -2,21 +2,26 @@
 
 from cStringIO import StringIO
 
+
 def write_chars(out, chars):
     out.write(chars)
+
 
 def write_byte(out, b):
     out.write(chr(b))
 
+
 def write_ushort(out, s):
     write_byte(out, (s >> 8) % 256)
     write_byte(out, (s >> 0) % 256)
+
 
 def write_ulong(out, l):
     write_byte(out, (l >> 24) % 256)
     write_byte(out, (l >> 16) % 256)
     write_byte(out, (l >> 8) % 256)
     write_byte(out, (l >> 0) % 256)
+
 
 def write_varlen(out, n):
     data = chr(n & 0x7F)
@@ -28,16 +33,31 @@ def write_varlen(out, n):
             break
     out.write(data)
 
+
 class SMF:
     
+    def __init__(self, events):
+        self.events = events
+        
     def write(self, out):
         
-        Thd(format=1, num_tracks=1, division=120).write(out)
+        Thd(format=1, num_tracks=2, division=16).write(out)
+        T = 1 # how to translate events times into time_delta using the division above
+        
         t = Trk()
         t.sequence_track_name("untitled")
         t.time_signature(4, 2, 24, 8)
         t.key_signature(254, 0)
         t.tempo(6, 138, 27)
+        t.track_end()
+        t.write(out)
+        
+        t = Trk()
+        tick = 0
+        for offset, note_value, duration in self.events:
+            t.start_note((offset * T) - tick, note_value)
+            t.end_note(duration * T, note_value)
+            tick = (offset + duration) * T
         t.track_end()
         t.write(out)
 
@@ -96,6 +116,18 @@ class Trk:
         write_byte(self.data, b)
         write_byte(self.data, c)
     
+    def start_note(self, time_delta, note_number):
+        write_varlen(self.data, time_delta)
+        write_byte(self.data, 0x91)
+        write_byte(self.data, note_number)
+        write_byte(self.data, 64) # velocity
+    
+    def end_note(self, time_delta, note_number):
+        write_varlen(self.data, time_delta)
+        write_byte(self.data, 0x81)
+        write_byte(self.data, note_number)
+        write_byte(self.data, 0) # velocity
+    
     def track_end(self):
         write_varlen(self.data, 0) # tick
         write_byte(self.data, 0xFF)
@@ -109,78 +141,14 @@ class Trk:
         out.write(d)
 
 
-class xxTrk:
-    
-    def process_event(self, time_delta, status):
-        if 0x80 <= status <= 0xEF:
-            event_type = status // 0x10
-            channel = status % 0x10
-            if event_type == 0x8: # note off
-                note_number = self.get_byte()
-                velocity = self.get_byte()
-                self.ticks += time_delta
-                if self.current_note[0] == channel + 1 and self.current_note[1] == note_number:
-                    pass
-                else:
-                    raise Exception("overlapping notes")
-                start_ticks = self.current_note[2]
-                beat, tick = divmod(start_ticks, 480)
-                bar, beat = divmod(beat, 4)
-                est_dur = divmod(time_delta + 21, 60)
-                assert est_dur[1] == 0
-                est_dur = est_dur[0]
-                tick = divmod(tick, 60)
-                assert tick[1] == 0
-                tick = tick[0]
-                note_name = divmod(note_number, 12)
-                if self.next_note != start_ticks:
-                    rest = divmod(start_ticks - self.next_note, 60)
-                    assert rest[1] == 0
-                    rest = rest[0]
-                    print "0:0:%d" % rest,
-                if bar + 1 > self.prev_bar:
-                    print "\n# bar %s" % (bar + 1)
-                    self.prev_bar = bar + 1
-                print "%d:%d:%d" % (note_name[0], note_name[1], est_dur),
-                self.next_note = start_ticks + (est_dur * 60)
-            elif event_type == 0x9: # note on
-                note_number = self.get_byte()
-                velocity = self.get_byte()
-                self.ticks += time_delta
-                self.current_note = (channel + 1, note_number, self.ticks)
-                # print "event", "%s:%s:%s" % (bar + 1, beat, tick), time_delta, "note_on", channel + 1, note_number, velocity
-            elif event_type == 0xB: # controller
-                controller = self.get_byte()
-                value = self.get_byte()
-                pass #print "event", time_delta, "controller", channel + 1, controller, value
-            elif event_type == 0xC: # program change
-                program = self.get_byte()
-                pass #print "event", time_delta, "program", channel + 1, program
-            else:
-                raise Exception("unknown event type " + hex(event_type))
-    
-    def parse(self):
-        self.ticks = 0
-        self.next_note = 0
-        self.prev_bar = 0
-        global track
-        track += 1
-        print "\n## Track %s" % track
-        self.track_end = False
-        while self.index < len(self.data):
-            if self.track_end:
-                raise Exception("more data after track end")
-            time_delta = self.get_varlen()
-            next_byte = self.peek_byte()
-            if next_byte >= 0x80:
-                status = self.get_byte()
-                self.process_event(time_delta, status)
-            else: # running status
-                self.process_event(time_delta, status) # previous status
-        if not self.track_end:
-            raise Exception("no track end")
-
 f = open("test.mid", "w")
-s = SMF()
+
+test = [ # this is the same format as the test answers in lilypond/tests.py
+(0, 60, 16), (16, 72, 16), (32, 64, 16), (48, 55, 16), (64, 74, 16), (80, 62, 16), (96, 50, 16),
+(112, 48, 16), (128, 36, 16), (144, 24, 16), (160, 40, 16), (176, 55, 16), (192, 26, 16), (208, 38, 16),
+(224, 50, 16), (240, 48, 16)
+]
+
+s = SMF(test)
 s.write(f)
 f.close()
