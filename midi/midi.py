@@ -1,7 +1,24 @@
 #!/usr/bin/env python
 
-class Base:
+"""
+A library for parsing Standard MIDI Files (SMFs).
 
+Currently it just outputs the data it finds.
+"""
+
+class Base:
+    """
+    Base is a generic base class for parsing binary files. It cannot be
+    instantiated directly, you need to sub-class it and implement a parse()
+    method.
+    
+    Your sub-class can then be instantiated with a single argument, a byte
+    array.
+    
+    Base provides a number of basic methods for pulling data out of the byte
+    array and incrementing the index appropriately.
+    """
+    
     def __init__(self, data):
         self.data = data
         self.index = 0
@@ -44,7 +61,11 @@ class Base:
             if not high_bit:
                 return data
 
+
 class SMF(Base):
+    """
+    A parser for Simple MIDI files.
+    """
     
     def parse_chunk(self):
         chunk_id = self.get_char(4)
@@ -63,7 +84,11 @@ class SMF(Base):
                 print chunk_id
                 pass # ignore unknown chunk type
 
+
 class Thd(Base):
+    """
+    A parser for the Thd chunk in a MIDI file.
+    """
     
     def parse(self):
         format = self.get_ushort()
@@ -71,7 +96,11 @@ class Thd(Base):
         division = self.get_ushort()
         print "Thd", format, num_tracks, division
 
+
 class Trk(Base):
+    """
+    A parser for the Trk chunk in a MIDI file.
+    """
     
     def process_event(self, time_delta, status):
         if status == 0xFF:
@@ -170,7 +199,9 @@ class Trk(Base):
         if not self.track_end:
             raise Exception("no track end")
 
-track = -1
-import sys
-filename = sys.argv[1]
-f = SMF(open(filename).read())
+
+if __name__ == "__main__":
+    track = -1
+    import sys
+    filename = sys.argv[1]
+    f = SMF(open(filename).read())
