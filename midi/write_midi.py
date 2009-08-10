@@ -53,11 +53,28 @@ class SMF:
         t.write(out)
         
         t = Trk()
-        tick = 0
+        
+        
+        # we make a list of events including note off events so we can sort by
+        # offset including them (to avoid negative time deltas)
+        
+        events_with_noteoff = []
         for offset, note_value, duration in self.events:
-            t.start_note((offset * T) - tick, note_value)
-            t.end_note(duration * T, note_value)
-            tick = (offset + duration) * T
+            events_with_noteoff.append((True, offset, note_value))
+            events_with_noteoff.append((False, offset + duration, note_value))
+        
+        prev_offset = None
+        for on, offset, note_value in sorted(events_with_noteoff, key=lambda x: x[1]):
+            if prev_offset is None:
+                time_delta = 0
+            else:
+                time_delta = (offset - prev_offset) * T
+            if on:
+                t.start_note(time_delta, note_value)
+            else:
+                t.end_note(time_delta, note_value)
+            prev_offset = offset
+            
         t.track_end()
         t.write(out)
 

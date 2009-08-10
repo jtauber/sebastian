@@ -4,8 +4,8 @@ from lilypond.interp import parse
 from midi.write_midi import SMF
 
 patterns = [
-    "", #    r"\relative c' { \acciaccatura c8 e4 \acciaccatura c8 e4 \acciaccatura c8 e4 }",
-    "", #    r"\relative c' { \acciaccatura c8 e8 f8 e4 }",
+    r"\relative c' { \acciaccatura c8 e4 \acciaccatura c8 e4 \acciaccatura c8 e4 }",
+    r"\relative c' { \acciaccatura c8 e8 f8 e4 }",
     r"\relative c' { r8 e8 f8 e8 }",
     r"\relative c' { r8 e8 f8 g8 }",
     r"\relative c' { e8 f8 g8 r8 }",
