@@ -154,6 +154,9 @@ def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, 
                 offset += duration
                 prev_duration = duration
                 
+                # @@@ this should be uncommented but I'll wait until a unit test proves it should be uncommented!
+                # prev_note_tuple = note_base, accidental_change, octave
+                
         elif open_brace:
             for obj in parse_block(token_generator):
                 yield obj
