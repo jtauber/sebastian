@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys; sys.path.append("..")
 
 from lilypond.interp import parse
@@ -60,10 +62,16 @@ patterns = [
 ]
 
 
-for num, pattern in enumerate(patterns):
-    p = parse(pattern)
-    print num + 1, list(p)
-    f = open("in_c_%s.mid" % (num + 1), "w")
-    s = SMF(parse(pattern))
-    s.write(f)
-    f.close()
+# make a separate MIDI file for each pattern
+
+def separate_files():
+    for num, pattern in enumerate(patterns):
+        p = parse(pattern)
+        print num + 1, list(p)
+        f = open("in_c_%s.mid" % (num + 1), "w")
+        s = SMF(parse(pattern))
+        s.write(f)
+        f.close()
+
+
+separate_files()
