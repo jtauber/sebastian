@@ -1,9 +1,11 @@
 import sys; sys.path.append("..")
+
 from lilypond.interp import parse
+from midi.write_midi import SMF
 
 patterns = [
-    r"\relative c' { \acciaccatura c8 e4 \acciaccatura c8 e4 \acciaccatura c8 e4 }",
-    r"\relative c' { \acciaccatura c8 e8 f8 e4 }",
+    "", #    r"\relative c' { \acciaccatura c8 e4 \acciaccatura c8 e4 \acciaccatura c8 e4 }",
+    "", #    r"\relative c' { \acciaccatura c8 e8 f8 e4 }",
     r"\relative c' { r8 e8 f8 e8 }",
     r"\relative c' { r8 e8 f8 g8 }",
     r"\relative c' { e8 f8 g8 r8 }",
@@ -58,5 +60,10 @@ patterns = [
 ]
 
 
-for pattern in patterns:
-    list(parse(pattern))
+for num, pattern in enumerate(patterns):
+    p = parse(pattern)
+    print num + 1, list(p)
+    f = open("in_c_%s.mid" % (num + 1), "w")
+    s = SMF(parse(pattern))
+    s.write(f)
+    f.close()
