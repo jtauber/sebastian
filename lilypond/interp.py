@@ -100,7 +100,7 @@ def parse_duration(duration_marker):
     return duration
 
 
-def process_note(token_dict, relative_mode, relative_note_tuple):
+def process_note(token_dict, relative_mode, prev_note_tuple):
     # @@@ there is still code duplication between here and the main parsing further on
     # @@@ some of the args passed in above could be avoided if this and parse_block were methods on a class
     
