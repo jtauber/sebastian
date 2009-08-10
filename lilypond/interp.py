@@ -95,7 +95,7 @@ def parse_duration(duration_marker):
         core = int(duration_marker)
         dots = 0
     
-    duration = (2 - (2**-dots)) * 64 / core
+    duration = int((2 - (2**-dots)) * 64 / core)
     
     return duration
 
