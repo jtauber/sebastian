@@ -100,6 +100,24 @@ def parse_duration(duration_marker):
     return duration
 
 
+def process_note(token_dict, relative_mode, relative_note_tuple):
+    # @@@ there is still code duplication between here and the main parsing further on
+    # @@@ some of the args passed in above could be avoided if this and parse_block were methods on a class
+    
+    duration_marker = token_dict["duration"]
+    # duration must be explicit
+    duration = parse_duration(duration_marker)
+    
+    if relative_mode:
+        note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
+    else:
+        note_base, accidental_change, octave = note_tuple(token_dict)
+    
+    note_value = note_base + (12 * octave) + accidental_change
+    
+    return note_value, duration
+
+
 def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, offset = 0):
     prev_duration = 16
     tie_deferred = False
@@ -128,27 +146,11 @@ def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, 
                 # @@@ there is much code duplication between here and the main parsing further on
                 
                 token_dict = token_generator.next()
-                duration_marker = token_dict["duration"]
-                # duration must be explicit
-                duration = parse_duration(duration_marker)
-                if relative_mode:
-                    note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
-                else:
-                    note_base, accidental_change, octave = note_tuple(token_dict)
-                note_value = note_base + (12 * octave) + accidental_change
-                
+                note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
                 yield (offset - duration / 2, note_value, duration / 2)
                 
                 token_dict = token_generator.next()
-                duration_marker = token_dict["duration"]
-                # duration must be explicit
-                duration = parse_duration(duration_marker)
-                if relative_mode:
-                    note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
-                else:
-                    note_base, accidental_change, octave = note_tuple(token_dict)
-                note_value = note_base + (12 * octave) + accidental_change
-                
+                note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
                 yield (offset, note_value, duration)
                 
                 offset += duration
