@@ -74,4 +74,18 @@ def separate_files():
         f.close()
 
 
-separate_files()
+# make a single MIDI file with all the patterns in a row
+
+def one_file():
+    big_pattern = []
+    offset = 0
+    for num, pattern in enumerate(patterns):
+        p = list(parse(pattern, offset))
+        offset = p[-1][0] + p[-1][2]
+        big_pattern.extend(p)
+        f = open("in_c_all.mid", "w")
+        s = SMF(big_pattern)
+        s.write(f)
+        f.close()
+
+one_file()
