@@ -122,85 +122,91 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
     prev_duration = 16
     tie_deferred = False
     
-    while True:
-        token_dict = token_generator.next()
-        
-        command = token_dict["command"]
-        open_brace = token_dict["open_brace"]
-        close_brace = token_dict["close_brace"]
-        
-        if command:
-            if command == "relative":
-                
-                token_dict = token_generator.next()
-                
-                base_note_tuple = note_tuple(token_dict)
-                
-                token_dict = token_generator.next()
-                if not token_dict["open_brace"]:
-                    raise Exception("\\relative must be followed by note then {...} block")
-                
-                for obj in parse_block(token_generator, prev_note_tuple=base_note_tuple, relative_mode=True, offset=offset):
-                    yield obj
-            elif command == "acciaccatura":
-                # @@@ there is much code duplication between here and the main parsing further on
-                
-                token_dict = token_generator.next()
-                note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
-                yield (offset - duration / 2, note_value, duration / 2)
-                
-                token_dict = token_generator.next()
-                note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
-                yield (offset, note_value, duration)
-                
-                offset += duration
-                prev_duration = duration
-                
-                # @@@ this should be uncommented but I'll wait until a unit test proves it should be uncommented!
-                # prev_note_tuple = note_base, accidental_change, octave
-                
-        elif open_brace:
-            for obj in parse_block(token_generator):
-                yield obj
-        elif close_brace:
-            raise StopIteration
-        else:
-            duration_marker = token_dict["duration"]
-            rest = token_dict["rest"]
-            tie = token_dict["tie"]
+    try:
+        while True:
+            token_dict = token_generator.next()
             
-            if duration_marker is None:
-                duration = prev_duration
-            else:
-                duration = parse_duration(duration_marker)
+            command = token_dict["command"]
+            open_brace = token_dict["open_brace"]
+            close_brace = token_dict["close_brace"]
             
-            if not rest:
-                if relative_mode:
-                    note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
-                else:
-                    note_base, accidental_change, octave = note_tuple(token_dict)
-                note_value = note_base + (12 * octave) + accidental_change
-                
-                if tie_deferred:
-                    # if the previous note was deferred due to a tie
-                    prev_note_value = prev_note_tuple[0] + (12 * prev_note_tuple[2]) + prev_note_tuple[1]
-                    if note_value != prev_note_value:
-                        raise Exception("ties are only supported between notes of same pitch")
-                    duration += prev_duration
-                    tie_deferred = False
-                
-                if tie:
-                    # if there is a tie following this note, we defer it
-                    tie_deferred = True
-                else:
+            if command:
+                if command == "relative":
+                    
+                    token_dict = token_generator.next()
+                    
+                    base_note_tuple = note_tuple(token_dict)
+                    
+                    token_dict = token_generator.next()
+                    if not token_dict["open_brace"]:
+                        raise Exception("\\relative must be followed by note then {...} block")
+                    
+                    for obj in parse_block(token_generator, prev_note_tuple=base_note_tuple, relative_mode=True, offset=offset):
+                        yield obj
+                        last_offset = obj[0]
+                    offset = last_offset
+                elif command == "acciaccatura":
+                    # @@@ there is much code duplication between here and the main parsing further on
+                    
+                    token_dict = token_generator.next()
+                    note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
+                    yield (offset - duration / 2, note_value, duration / 2)
+                    
+                    token_dict = token_generator.next()
+                    note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
                     yield (offset, note_value, duration)
+                    
+                    offset += duration
+                    prev_duration = duration
+                    
+                    # @@@ this should be uncommented but I'll wait until a unit test proves it should be uncommented!
+                    # prev_note_tuple = note_base, accidental_change, octave
+                    
+            elif open_brace:
+                for obj in parse_block(token_generator):
+                    yield obj
+            elif close_brace:
+                raise StopIteration
+            else:
+                duration_marker = token_dict["duration"]
+                rest = token_dict["rest"]
+                tie = token_dict["tie"]
                 
-                prev_note_tuple = note_base, accidental_change, octave
-            
-            if not tie_deferred:
-                offset += duration
-            
-            prev_duration = duration
+                if duration_marker is None:
+                    duration = prev_duration
+                else:
+                    duration = parse_duration(duration_marker)
+                
+                if not rest:
+                    if relative_mode:
+                        note_base, accidental_change, octave = note_tuple(token_dict, relative_note_tuple=prev_note_tuple)
+                    else:
+                        note_base, accidental_change, octave = note_tuple(token_dict)
+                    note_value = note_base + (12 * octave) + accidental_change
+                    
+                    if tie_deferred:
+                        # if the previous note was deferred due to a tie
+                        prev_note_value = prev_note_tuple[0] + (12 * prev_note_tuple[2]) + prev_note_tuple[1]
+                        if note_value != prev_note_value:
+                            raise Exception("ties are only supported between notes of same pitch")
+                        duration += prev_duration
+                        tie_deferred = False
+                    
+                    if tie:
+                        # if there is a tie following this note, we defer it
+                        tie_deferred = True
+                    else:
+                        yield (offset, note_value, duration)
+                    
+                    prev_note_tuple = note_base, accidental_change, octave
+                
+                if not tie_deferred:
+                    offset += duration
+                
+                prev_duration = duration
+    except StopIteration:
+        yield (offset, -1, -1)
+        raise StopIteration
 
 
 def parse(s, offset=0):
