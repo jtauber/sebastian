@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 ## graded tests derived from lilypond documentation that are likely to be relevant to In C implementation
 
