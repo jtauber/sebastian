@@ -80,9 +80,10 @@ def one_file():
     big_pattern = []
     offset = 0
     for num, pattern in enumerate(patterns):
-        p = list(parse(pattern, offset))
-        offset = p[-1][0] + p[-1][2]
-        big_pattern.extend(p)
+        for ev in parse(pattern, offset):
+            if ev[1] != -1: # -1 means a offset check with no sound
+                big_pattern.append(ev)
+            offset = ev[0] # remember the last offset so the next pattern can use it
         f = open("in_c_all.mid", "w")
         s = SMF(big_pattern)
         s.write(f)
