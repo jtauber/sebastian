@@ -50,8 +50,8 @@ patterns = [
     r"\relative c'' { c1 b1 a1 c1 }",
     r"\relative c'' { f16 e16 f16 e16 e8 e8 e8 f16 e16 }",
     r"\relative c'' { f8 e8~ e8 e8 c4 }",
-    r"\relative c'' { d4 d4 g='4 }",#45
-    r"\relative c'' { g16 d=''16 e16 d16 r8 g='8 r8 g8 r8 g8 g16 d=''16 e16 d16 }",
+    r"\relative c'' { d4 d4 g,4 }",#45
+    r"\relative c'' { g16 d'16 e16 d16 r8 g,8 r8 g8 r8 g8 g16 d'16 e16 d16 }",
     r"\relative c'' { d16 e16 d8 }",
     r"\relative c'' { g1. g1 f1~ f4 }",
     r"\relative c' { f16 g16 bes16 g16 bes16 g16 }",
@@ -67,7 +67,6 @@ patterns = [
 def separate_files():
     for num, pattern in enumerate(patterns):
         p = parse(pattern)
-        print num + 1, list(p)
         f = open("in_c_%s.mid" % (num + 1), "w")
         s = SMF(parse(pattern))
         s.write(f)
