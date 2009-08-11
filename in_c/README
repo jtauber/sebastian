@@ -1,2 +1,12 @@
-Initially this just contains a first pass at the score for In C in lilypond format but this will eventually
-contain the code that uses (yet to be written) Sebastian libraries to generate a performance of In C.
+This directory contains a first pass at the score for In C in lilypond format
+as well as the beginnings of code for generating a performance of In C.
+
+Running
+
+    ./in_c2midi.py
+
+will, depending on which function is called at the top-level in the source
+code, either generate a MIDI file for each In C pattern or a single MIDI file
+with each of the patterns played once.
+
+The next step is to support multiple instruments and aleatoric repetitions.

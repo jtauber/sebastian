@@ -1,0 +1,8 @@
+This is a library for parsing and writing Standard MIDI Files (SMFs)
+
+The parser currently just outputs the data it finds and can be run with
+
+    ./midi.py [midi-file]
+
+write_midi.py is intended to be used as a library for generating MIDI files
+and, while currently limited, can be seen in action in in_c/in_c2midi.py
