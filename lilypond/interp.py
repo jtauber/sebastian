@@ -118,7 +118,7 @@ def process_note(token_dict, relative_mode, prev_note_tuple):
     return note_value, duration
 
 
-def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, offset = 0):
+def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offset=0):
     prev_duration = 16
     tie_deferred = False
     
@@ -203,5 +203,5 @@ def parse_block(token_generator, prev_note_tuple = None, relative_mode = False, 
             prev_duration = duration
 
 
-def parse(s):
-    return parse_block(tokenize(s))
+def parse(s, offset=0):
+    return parse_block(tokenize(s), offset=offset)
