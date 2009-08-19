@@ -68,9 +68,9 @@ patterns = [
 
 def separate_files():
     for num, pattern in enumerate(patterns):
-        p = parse(pattern)
+        sequence = parse(pattern)
         f = open("in_c_%s.mid" % (num + 1), "w")
-        s = SMF(parse(pattern))
+        s = SMF(sequence)
         s.write(f)
         f.close()
 
