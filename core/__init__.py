@@ -14,30 +14,33 @@ class Sequence(list):
 
 
 class Point(dict):
-    pass
+    
+    def tuple(self, *attributes):
+        return tuple(self.get(attribute) for attribute in attributes)
+
+
+OFFSET_64 = Attribute("offset_64")
+MIDI_PITCH = Attribute("midi_pitch")
+DURATION_64 = Attribute("duration_64")
 
 
 if __name__ == "__main__":
     
-    OFFSET = Attribute("offset")
-    PITCH = Attribute("pitch")
-    DURATION = Attribute("duration")
-    
     p1 = Point({
-        OFFSET: 16,
-        PITCH: 50,
-        DURATION: 16,
+        OFFSET_64: 16,
+        MIDI_PITCH: 50,
+        DURATION_64: 16,
     })
     
     p2 = Point({
-        OFFSET: 32,
-        PITCH: 52,
-        DURATION: 16,
+        OFFSET_64: 32,
+        MIDI_PITCH: 52,
+        DURATION_64: 16,
     })
     
     s1 = Sequence([p1, p2])
     
     assert s1 == [
-        {'duration': 16, 'offset': 16, 'pitch': 50},
-        {'duration': 16, 'offset': 32, 'pitch': 52}
+        {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52}
     ]
