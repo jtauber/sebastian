@@ -4,6 +4,8 @@ import sys; sys.path.append("..")
 
 from lilypond.interp import parse
 from midi.write_midi import SMF
+from core import MIDI_PITCH, OFFSET_64
+
 
 patterns = [
     r"\relative c' { \acciaccatura c8 e4 \acciaccatura c8 e4 \acciaccatura c8 e4 }", #1
@@ -74,15 +76,17 @@ def separate_files():
 
 
 # make a single MIDI file with all the patterns in a row
+# @@@ the next step in the feature structure work is making this just a
+# @@@ basic concatenation of Sequence objects
 
 def one_file():
     big_pattern = []
     offset = 0
     for num, pattern in enumerate(patterns):
         for ev in parse(pattern, offset):
-            if ev[1] != -1: # -1 means a offset check with no sound
+            if MIDI_PITCH in ev: # only add points that are notes
                 big_pattern.append(ev)
-            offset = ev[0] # remember the last offset so the next pattern can use it
+            offset = ev[OFFSET_64] # remember the last offset so the next pattern can use it
         f = open("in_c_all.mid", "w")
         s = SMF(big_pattern)
         s.write(f)

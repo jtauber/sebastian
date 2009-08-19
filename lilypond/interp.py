@@ -1,3 +1,5 @@
+from core import Sequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
+
 import re
 
 MIDI_NOTE_VALUES = {
@@ -143,18 +145,18 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
                     
                     for obj in parse_block(token_generator, prev_note_tuple=base_note_tuple, relative_mode=True, offset=offset):
                         yield obj
-                        last_offset = obj[0]
+                        last_offset = obj[OFFSET_64]
                     offset = last_offset
                 elif command == "acciaccatura":
                     # @@@ there is much code duplication between here and the main parsing further on
                     
                     token_dict = token_generator.next()
                     note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
-                    yield (offset - duration / 2, note_value, duration / 2)
+                    yield Point({OFFSET_64: offset - duration / 2, MIDI_PITCH: note_value, DURATION_64: duration / 2})
                     
                     token_dict = token_generator.next()
                     note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
-                    yield (offset, note_value, duration)
+                    yield Point({OFFSET_64: offset, MIDI_PITCH: note_value, DURATION_64: duration})
                     
                     offset += duration
                     prev_duration = duration
@@ -196,7 +198,7 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
                         # if there is a tie following this note, we defer it
                         tie_deferred = True
                     else:
-                        yield (offset, note_value, duration)
+                        yield Point({OFFSET_64: offset, MIDI_PITCH: note_value, DURATION_64: duration})
                     
                     prev_note_tuple = note_base, accidental_change, octave
                 
@@ -205,9 +207,9 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
                 
                 prev_duration = duration
     except StopIteration:
-        yield (offset, -1, -1)
+        yield Point({OFFSET_64: offset})
         raise StopIteration
 
 
 def parse(s, offset=0):
-    return parse_block(tokenize(s), offset=offset)
+    return Sequence(parse_block(tokenize(s), offset=offset))
