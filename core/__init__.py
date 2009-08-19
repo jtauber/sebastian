@@ -32,6 +32,8 @@ if __name__ == "__main__":
         DURATION_64: 16,
     })
     
+    assert p1.tuple(OFFSET_64, DURATION_64) == (16, 16)
+    
     p2 = Point({
         OFFSET_64: 32,
         MIDI_PITCH: 52,
@@ -44,3 +46,4 @@ if __name__ == "__main__":
         {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
         {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52}
     ]
+    
