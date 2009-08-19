@@ -87,9 +87,9 @@ def one_file():
             if MIDI_PITCH in ev: # only add points that are notes
                 big_pattern.append(ev)
             offset = ev[OFFSET_64] # remember the last offset so the next pattern can use it
-        f = open("in_c_all.mid", "w")
-        s = SMF(big_pattern)
-        s.write(f)
-        f.close()
+    f = open("in_c_all.mid", "w")
+    s = SMF(big_pattern)
+    s.write(f)
+    f.close()
 
 one_file()
