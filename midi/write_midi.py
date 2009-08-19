@@ -67,8 +67,9 @@ class SMF:
         events_with_noteoff = []
         for point in self.sequence:
             offset, note_value, duration = point.tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
-            events_with_noteoff.append((True, offset, note_value))
-            events_with_noteoff.append((False, offset + duration, note_value))
+            if note_value is not None:
+                events_with_noteoff.append((True, offset, note_value))
+                events_with_noteoff.append((False, offset + duration, note_value))
         
         prev_offset = None
         for on, offset, note_value in sorted(events_with_noteoff, key=lambda x: x[1]):
