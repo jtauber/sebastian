@@ -2,12 +2,11 @@ This is the beginnings of a library and test suite for reading lilypond
 fragments.
 
 lilypond.interp.parse will take a lilypond fragment and generate a series of
-tuples of the form (offset, note_value, duration) where offset and duration
-is measured in 64th notes and note_value is the MIDI note number.
+core.Points with attributes OFFSET_64, MIDI_PITCH and DURATION_64.
 
-To ensure trailing rests don't get lost, some tuples are of the form
-(offset, -1, -1) which don't correspond to any note but instead mark the end
-of the block.
+To ensure trailing rests don't get lost, some Points have an OFFSET_64 but
+no MIDI_PITCH or DURATION_64. These don't correspond to any note but instead
+mark the end of the block.
 
 You can run unit tests with
 
