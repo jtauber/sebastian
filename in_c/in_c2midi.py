@@ -4,7 +4,7 @@ import sys; sys.path.append("..")
 
 from lilypond.interp import parse
 from midi.write_midi import SMF
-from core import MIDI_PITCH, OFFSET_64
+from core import Sequence
 
 
 patterns = [
@@ -76,20 +76,13 @@ def separate_files():
 
 
 # make a single MIDI file with all the patterns in a row
-# @@@ the next step in the feature structure work is making this just a
-# @@@ basic concatenation of Sequence objects
 
 def one_file():
-    big_pattern = []
-    offset = 0
+    seq = Sequence()
     for num, pattern in enumerate(patterns):
-        for repeat in range(10):
-            seq = parse(pattern, offset)
-            for ev in seq:
-                big_pattern.append(ev)
-                offset = ev[OFFSET_64] # remember the last offset so the next pattern can use it
+        seq = seq + parse(pattern) * 10
     f = open("in_c_all.mid", "w")
-    s = SMF(big_pattern)
+    s = SMF(seq)
     s.write(f)
     f.close()
 
