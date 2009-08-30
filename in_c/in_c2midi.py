@@ -83,10 +83,11 @@ def one_file():
     big_pattern = []
     offset = 0
     for num, pattern in enumerate(patterns):
-        for ev in parse(pattern, offset):
-            if MIDI_PITCH in ev: # only add points that are notes
-                big_pattern.append(ev)
-            offset = ev[OFFSET_64] # remember the last offset so the next pattern can use it
+        for repeat in range(10):
+            for ev in parse(pattern, offset):
+                if MIDI_PITCH in ev: # only add points that are notes
+                    big_pattern.append(ev)
+                offset = ev[OFFSET_64] # remember the last offset so the next pattern can use it
     f = open("in_c_all.mid", "w")
     s = SMF(big_pattern)
     s.write(f)
