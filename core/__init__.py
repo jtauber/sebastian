@@ -10,7 +10,28 @@ class Attribute(str):
 
 
 class Sequence(list):
-    pass
+    
+    def __add__(self, next_seq):
+        l = self.last_offset()
+        return Sequence(list.__add__(self, next_seq.offset_all(l)))
+    
+    def __mul__(self, count):
+        x = Sequence(self)
+        for i in range(count - 1):
+            x = x + Sequence(self)
+        return x
+    
+    def last_offset(self):
+        last_point = sorted(self, key=lambda x: x[OFFSET_64])[-1]
+        return last_point[OFFSET_64] + last_point[DURATION_64]
+    
+    def offset_all(self, offset):
+        x = []
+        for point in self:
+            new_point = Point(point)
+            new_point[OFFSET_64] = new_point[OFFSET_64] + offset
+            x.append(new_point)
+        return Sequence(x)
 
 
 class Point(dict):
@@ -47,3 +68,25 @@ if __name__ == "__main__":
         {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52}
     ]
     
+    assert s1 + s1 == [
+        {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52},
+        {'duration_64': 16, 'offset_64': 64, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52}
+    ]
+    
+    assert s1 * 2 == [
+        {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52},
+        {'duration_64': 16, 'offset_64': 64, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52}
+    ]
+    
+    assert s1 * 3 == [
+        {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52},
+        {'duration_64': 16, 'offset_64': 64, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52},
+        {'duration_64': 16, 'offset_64': 112, 'midi_pitch': 50},
+        {'duration_64': 16, 'offset_64': 128, 'midi_pitch': 52}
+    ]
