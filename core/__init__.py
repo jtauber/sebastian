@@ -22,8 +22,10 @@ class Sequence(list):
         return x
     
     def last_offset(self):
+        if len(self) == 0:
+            return 0
         last_point = sorted(self, key=lambda x: x[OFFSET_64])[-1]
-        return last_point[OFFSET_64] + last_point[DURATION_64]
+        return last_point[OFFSET_64] + last_point.get(DURATION_64, 0)
     
     def offset_all(self, offset):
         x = []
