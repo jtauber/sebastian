@@ -185,3 +185,8 @@ test(
         (16, None, None),
     ]
 )
+
+
+# regression test for a bug in ordering of accidental and octave
+test("fis'", [])
+
