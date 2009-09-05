@@ -8,6 +8,7 @@
 # where offset and duration are in multiples of a 64th note and pitch is MIDI
 # note number.
 
+import sys; sys.path.append("..")
 
 from core import OFFSET_64, MIDI_PITCH, DURATION_64
 from interp import parse
