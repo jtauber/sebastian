@@ -36,6 +36,9 @@ class Sequence(list):
             x = x + Sequence(self)
         return x
     
+    def __floordiv__(self, parallel_seq):
+        return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
+    
     def last_point(self):
         if len(self) == 0:
             return Point({OFFSET_64: 0, DURATION_64: 0})
@@ -114,4 +117,34 @@ if __name__ == "__main__":
         {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52},
         {'duration_64': 16, 'offset_64': 112, 'midi_pitch': 50},
         {'duration_64': 16, 'offset_64': 128, 'midi_pitch': 52}
+    ]
+    
+    p3 = Point({
+        OFFSET_64: 0,
+        MIDI_PITCH: 64,
+        DURATION_64: 16,
+    })
+    
+    p4 = Point({
+        OFFSET_64: 0,
+        MIDI_PITCH: 66,
+        DURATION_64: 8,
+    })
+    
+    s2 = Sequence([p3]) * 4
+    s3 = Sequence([p4]) * 8
+    
+    assert s2 // s3 == [
+        {'midi_pitch': 64, 'offset_64': 0, 'duration_64': 16},
+        {'midi_pitch': 66, 'offset_64': 0, 'duration_64': 8},
+        {'midi_pitch': 66, 'offset_64': 8, 'duration_64': 8},
+        {'midi_pitch': 64, 'offset_64': 16, 'duration_64': 16},
+        {'midi_pitch': 66, 'offset_64': 16, 'duration_64': 8},
+        {'midi_pitch': 66, 'offset_64': 24, 'duration_64': 8},
+        {'midi_pitch': 64, 'offset_64': 32, 'duration_64': 16},
+        {'midi_pitch': 66, 'offset_64': 32, 'duration_64': 8},
+        {'midi_pitch': 66, 'offset_64': 40, 'duration_64': 8},
+        {'midi_pitch': 64, 'offset_64': 48, 'duration_64': 16},
+        {'midi_pitch': 66, 'offset_64': 48, 'duration_64': 8},
+        {'midi_pitch': 66, 'offset_64': 56, 'duration_64': 8}
     ]
