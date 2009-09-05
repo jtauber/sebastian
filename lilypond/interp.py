@@ -103,8 +103,10 @@ def parse_duration(duration_marker):
 
 
 def process_note(token_dict, relative_mode, prev_note_tuple):
-    # @@@ there is still code duplication between here and the main parsing further on
-    # @@@ some of the args passed in above could be avoided if this and parse_block were methods on a class
+    # @@@ there is still code duplication between here and the main parsing
+    # further on
+    # @@@ some of the args passed in above could be avoided if this and
+    # parse_block were methods on a class
     
     duration_marker = token_dict["duration"]
     # duration must be explicit
@@ -148,7 +150,8 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
                         last_offset = obj[OFFSET_64]
                     offset = last_offset
                 elif command == "acciaccatura":
-                    # @@@ there is much code duplication between here and the main parsing further on
+                    # @@@ there is much code duplication between here and the
+                    # main parsing further on
                     
                     token_dict = token_generator.next()
                     note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
@@ -161,7 +164,8 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
                     offset += duration
                     prev_duration = duration
                     
-                    # @@@ this should be uncommented but I'll wait until a unit test proves it should be uncommented!
+                    # @@@ this should be uncommented but I'll wait until a
+                    # unit test proves it should be uncommented!
                     # prev_note_tuple = note_base, accidental_change, octave
                     
             elif open_brace:

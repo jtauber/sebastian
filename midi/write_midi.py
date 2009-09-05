@@ -44,7 +44,8 @@ class SMF:
     def write(self, out):
         
         Thd(format=1, num_tracks=2, division=16).write(out)
-        T = 1 # how to translate events times into time_delta using the division above
+        T = 1 # how to translate events times into time_delta using the
+              # division above
         
         # first track will just contain time/key/tempo info
         t = Trk()

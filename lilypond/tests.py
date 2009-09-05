@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
-## graded tests derived from lilypond documentation that are likely to be relevant to In C implementation
+## graded tests derived from lilypond documentation that are likely to be
+## relevant to In C implementation
 
-# test takes two arguments. The first is a lilypond fragment. The second is the intended interpretation, a sequence
-# of (offset, pitch, duration) tuples where offset and duration are in multiples of a 64th note and pitch is MIDI
+# test takes two arguments. The first is a lilypond fragment. The second is
+# the intended interpretation, a sequence of (offset, pitch, duration) tuples
+# where offset and duration are in multiples of a 64th note and pitch is MIDI
 # note number.
+
 
 from core import OFFSET_64, MIDI_PITCH, DURATION_64
 from interp import parse
+
 
 def test(lilypond, answer):
     print "\nTEST: %s" % lilypond
@@ -22,6 +26,7 @@ def test(lilypond, answer):
             print "%s == %s" % (event, r)
     else:
         print "SUCCESS"
+
 
 # absolute octave entry
 

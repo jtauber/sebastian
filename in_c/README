@@ -7,6 +7,6 @@ Running
 
 will, depending on which function is called at the top-level in the source
 code, either generate a MIDI file for each In C pattern or a single MIDI file
-with each of the patterns played once.
+with each of the patterns played ten times.
 
 The next step is to support multiple instruments and aleatoric repetitions.

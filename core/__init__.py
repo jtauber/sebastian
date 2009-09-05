@@ -1,12 +1,27 @@
 # this is just an initial sketch of the data structures so don't read too 
 # much into them at this stage.
 
-# these are empty classes at the moment but are designed to eventually have
-# extra methods on top of the str, list and dict types they extend
+# basically, a Sequence is just a list of Points and a Point is just a dict
+# giving values to certain Attributes.
+#
+# currently, Sequence assumes the Points have OFFSET_64 attribute values and
+# will also make use of the DURATION_64 attribute. I'm not completely happy
+# with this coupling but not sure how else to do it given Sequence needs to
+# be offset aware.
+#
+# see datastructure_notes.txt for some of the thinking behind this whole
+# approach and a bit of roadmap as to where things are headed.
 
+
+# this str subclass exists as we may later add methods
 
 class Attribute(str):
     pass
+
+
+OFFSET_64 = Attribute("offset_64")
+MIDI_PITCH = Attribute("midi_pitch")
+DURATION_64 = Attribute("duration_64")
 
 
 class Sequence(list):
@@ -53,10 +68,7 @@ class Point(dict):
         return tuple(self.get(attribute) for attribute in attributes)
 
 
-OFFSET_64 = Attribute("offset_64")
-MIDI_PITCH = Attribute("midi_pitch")
-DURATION_64 = Attribute("duration_64")
-
+# some mainline tests
 
 if __name__ == "__main__":
     
