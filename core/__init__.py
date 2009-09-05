@@ -12,8 +12,8 @@ class Attribute(str):
 class Sequence(list):
     
     def __add__(self, next_seq):
-        l = self.last_offset()
-        return Sequence(list.__add__(self, next_seq.offset_all(l)))
+        offset = self.next_offset()
+        return Sequence(list.__add__(self, next_seq.offset_all(offset)))
     
     def __mul__(self, count):
         x = Sequence(self)
@@ -21,19 +21,30 @@ class Sequence(list):
             x = x + Sequence(self)
         return x
     
-    def last_offset(self):
+    def last_point(self):
         if len(self) == 0:
-            return 0
-        last_point = sorted(self, key=lambda x: x[OFFSET_64])[-1]
-        return last_point[OFFSET_64] + last_point.get(DURATION_64, 0)
+            return Point({OFFSET_64: 0, DURATION_64: 0})
+        else:
+            return sorted(self, key=lambda x: x[OFFSET_64])[-1]
     
-    def offset_all(self, offset):
+    def next_offset(self):
+        point = self.last_point()
+        return point[OFFSET_64] + point.get(DURATION_64, 0)
+    
+    def map(self, func):
         x = []
         for point in self:
-            new_point = Point(point)
-            new_point[OFFSET_64] = new_point[OFFSET_64] + offset
+            new_point = func(Point(point))
             x.append(new_point)
         return Sequence(x)
+    
+    def offset_all(self, offset):
+        
+        def _(point):
+            point[OFFSET_64] = point[OFFSET_64] + offset
+            return point
+        
+        return self.map(_)
 
 
 class Point(dict):
