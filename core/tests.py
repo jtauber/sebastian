@@ -80,11 +80,8 @@ assert s2 // s3 == [
     {'midi_pitch': 66, 'offset_64': 56, 'duration_64': 8}
 ]
 
-def transpose(semitones):
-    def _(point):
-        point[MIDI_PITCH] = point[MIDI_PITCH] + semitones
-        return point
-    return _
+
+from core.transforms import transpose
 
 assert s1 | transpose(12) == [
     {'midi_pitch': 62, 'offset_64': 16, 'duration_64': 16},
