@@ -21,12 +21,12 @@ def test(lilypond, answer):
         r = result[i].tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
         if event != r:
             print "%s != %s" % (event, r)
-            print "FAIL"
+            print "\x1B[31mFAIL\x1B[0m"
             break
         else:
             print "%s == %s" % (event, r)
     else:
-        print "SUCCESS"
+        print "\x1B[32mSUCCESS\x1B[0m"
 
 
 # absolute octave entry
