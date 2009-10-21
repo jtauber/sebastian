@@ -97,7 +97,7 @@ assert s2 // s3 == [
 
 ## point transformation
 
-from core.transforms import transpose
+from core.transforms import transpose, reverse
 
 assert s1 | transpose(12) == [
     {MIDI_PITCH: 62, OFFSET_64: 16, DURATION_64: 16},
@@ -105,3 +105,8 @@ assert s1 | transpose(12) == [
 ]
 
 assert s1 | transpose(5) | transpose(-5) == s1
+
+assert s1 | reverse() == [
+    {MIDI_PITCH: 52, OFFSET_64: 0, DURATION_64: 16},
+    {MIDI_PITCH: 50, OFFSET_64: 16, DURATION_64: 16}
+]
