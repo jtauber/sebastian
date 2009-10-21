@@ -197,5 +197,10 @@ test(
 
 
 # regression test for a bug in ordering of accidental and octave
-test("fis'", [])
-
+test(
+    "fis'",
+    [
+        (0, 66, 16),
+        (16, None, None),
+    ]
+)
