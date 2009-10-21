@@ -17,6 +17,7 @@ from interp import parse
 def test(lilypond, answer):
     print "\nTEST: %s" % lilypond
     result = parse(lilypond)
+    i = -1 # so available in else clause of for
     for i, event in enumerate(answer):
         r = result[i].tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
         if event != r:
@@ -26,7 +27,12 @@ def test(lilypond, answer):
         else:
             print "%s == %s" % (event, r)
     else:
-        print "\x1B[32mSUCCESS\x1B[0m"
+        if len(answer) != len(result):
+            print "\x1B[31mFAIL (different length)\x1B[0m"
+            for j in range(i + 1, len(result)):
+                print "!= %s" % (result[j].tuple(OFFSET_64, MIDI_PITCH, DURATION_64), )
+        else:
+            print "\x1B[32mSUCCESS\x1B[0m"
 
 
 # absolute octave entry
