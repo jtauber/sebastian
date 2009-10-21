@@ -8,13 +8,6 @@ def transpose(semitones):
     return lambda seq: seq.map_points(_)
 
 
-def shift(offset):
-    def _(point):
-        point[OFFSET_64] = point[OFFSET_64] + offset
-        return point
-    return lambda seq: seq.map_points(_)
-
-
 def stretch(multiplier):
     def _(point):
         point[OFFSET_64] = int(point[OFFSET_64] * multiplier)

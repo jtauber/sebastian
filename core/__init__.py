@@ -24,7 +24,11 @@ MIDI_PITCH = Attribute("midi_pitch")
 DURATION_64 = Attribute("duration_64")
 
 
-from transforms import shift
+def shift(offset):
+    def _(point):
+        point[OFFSET_64] = point[OFFSET_64] + offset
+        return point
+    return lambda seq: seq.map_points(_)
 
 
 class Sequence(list):
