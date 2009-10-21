@@ -37,5 +37,5 @@ def reverse():
             new_point = Point(point)
             new_point[OFFSET_64] = last_offset - new_point[OFFSET_64]
             new_sequence.append(new_point)
-        return new_sequence
+        return Sequence(new_sequence)
     return _
