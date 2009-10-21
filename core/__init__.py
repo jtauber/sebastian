@@ -26,21 +26,8 @@ DURATION_64 = Attribute("duration_64")
 
 class Sequence(list):
     
-    def __add__(self, next_seq):
-        offset = self.next_offset()
-        return Sequence(list.__add__(self, next_seq.offset_all(offset)))
     
-    def __mul__(self, count):
-        x = Sequence(self)
-        for i in range(count - 1):
-            x = x + Sequence(self)
-        return x
-    
-    def __floordiv__(self, parallel_seq):
-        return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
-    
-    def __or__(self, func):
-        return self.map(func)
+    ## utility methods
     
     def last_point(self):
         if len(self) == 0:
@@ -52,6 +39,22 @@ class Sequence(list):
         point = self.last_point()
         return point[OFFSET_64] + point.get(DURATION_64, 0)
     
+    
+    ## operations
+    
+    def concatenate(self, next_seq):
+        offset = self.next_offset()
+        return Sequence(list.__add__(self, next_seq.offset_all(offset)))
+    
+    def repeat(self, count):
+        x = Sequence(self)
+        for i in range(count - 1):
+            x = x + Sequence(self)
+        return x
+    
+    def merge(self, parallel_seq):
+        return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
+    
     def map(self, func):
         x = []
         for point in self:
@@ -59,6 +62,16 @@ class Sequence(list):
             x.append(new_point)
         return Sequence(x)
     
+    
+    ## operator overloading
+    
+    __add__ = concatenate
+    __mul__ = repeat
+    __floordiv__ = merge
+    __or__ = map
+    
+    
+    # @@@ this can now live elsewhere
     def offset_all(self, offset):
         
         def _(point):
