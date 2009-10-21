@@ -75,7 +75,7 @@ class Sequence(list):
         combine the points in two sequences, putting them in offset order
         """
         
-        return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
+        return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x.get(OFFSET_64, 0)))
     
     def transform(self, func):
         """
