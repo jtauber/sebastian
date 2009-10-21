@@ -32,10 +32,15 @@ def invert(midi_pitch_pivot):
 def reverse():
     def _(sequence):
         new_sequence = []
-        last_offset = sequence.last_point()[OFFSET_64]
-        for point in sorted(sequence, key=lambda x: x[OFFSET_64], reverse=True):
+        last_offset = sequence.next_offset()
+        if sequence and sequence[0][OFFSET_64] != 0:
+            old_sequence = [Point({OFFSET_64: 0})] + sequence
+        else:
+            old_sequence = sequence
+        for point in old_sequence:
             new_point = Point(point)
-            new_point[OFFSET_64] = last_offset - new_point[OFFSET_64]
-            new_sequence.append(new_point)
-        return Sequence(new_sequence)
+            new_point[OFFSET_64] = last_offset - new_point[OFFSET_64] - new_point.get(DURATION_64, 0)
+            if new_point != {OFFSET_64: 0}:
+                new_sequence.append(new_point)
+        return Sequence(sorted(new_sequence, key=lambda x: x[OFFSET_64]))
     return _
