@@ -55,6 +55,7 @@ def tokenize(s):
 def note_tuple(token_dict, relative_note_tuple=None):
     note = token_dict["note"]
     octave_marker = token_dict["octave"]
+    octave_check = token_dict["octave_check"]
     accidental_sharp = token_dict["sharp"]
     accidental_flat = token_dict["flat"]
     accidental_change = 0
@@ -82,6 +83,19 @@ def note_tuple(token_dict, relative_note_tuple=None):
         accidental_change += len(accidental_sharp) / 2
     if accidental_flat:
         accidental_change -= len(accidental_flat) / 2
+    
+    if octave_check is None:
+        pass
+    elif "'" in octave_check:
+        correct_octave = 4 + len(octave_check)
+        if octave != correct_octave:
+            print "WARNING: failed octave check" # @@@ better reporting of warning
+            octave = correct_octave
+    elif "," in octave_check:
+        correct_octave = 4 - len(octave_check)
+        if octave != correct_octave:
+            print "WARNING: failed octave check" # @@@ better reporting of warning
+            octave = correct_octave
     
     return MIDI_NOTE_VALUES[note], accidental_change, octave
 
