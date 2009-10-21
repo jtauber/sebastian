@@ -32,6 +32,14 @@ assert s1 == [
     {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52}
 ]
 
+assert s1.last_point() == {
+    MIDI_PITCH: 52, OFFSET_64: 32, DURATION_64: 16
+}
+
+assert Sequence([]).last_point() == {
+    OFFSET_64: 0, DURATION_64: 0
+}
+
 
 ## concatenation
 
