@@ -25,7 +25,8 @@ lh = parse(r"""
 # operator overloading FTW!
 seq = rh // lh
 
-f = open("var1.mid", "w")
-s = SMF(seq)
-s.write(f)
-f.close()
+if __name__ == "__main__":
+    f = open("var1.mid", "w")
+    s = SMF(seq)
+    s.write(f)
+    f.close()
