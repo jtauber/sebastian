@@ -23,31 +23,31 @@ p2 = Point({
 s1 = Sequence([p1, p2])
 
 assert s1 == [
-    {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52}
+    {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52}
 ]
 
 assert s1 + s1 == [
-    {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52},
-    {'duration_64': 16, 'offset_64': 64, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52}
+    {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52},
+    {DURATION_64: 16, OFFSET_64: 64, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 80, MIDI_PITCH: 52}
 ]
 
 assert s1 * 2 == [
-    {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52},
-    {'duration_64': 16, 'offset_64': 64, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52}
+    {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52},
+    {DURATION_64: 16, OFFSET_64: 64, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 80, MIDI_PITCH: 52}
 ]
 
 assert s1 * 3 == [
-    {'duration_64': 16, 'offset_64': 16, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 32, 'midi_pitch': 52},
-    {'duration_64': 16, 'offset_64': 64, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 80, 'midi_pitch': 52},
-    {'duration_64': 16, 'offset_64': 112, 'midi_pitch': 50},
-    {'duration_64': 16, 'offset_64': 128, 'midi_pitch': 52}
+    {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52},
+    {DURATION_64: 16, OFFSET_64: 64, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 80, MIDI_PITCH: 52},
+    {DURATION_64: 16, OFFSET_64: 112, MIDI_PITCH: 50},
+    {DURATION_64: 16, OFFSET_64: 128, MIDI_PITCH: 52}
 ]
 
 p3 = Point({
@@ -66,26 +66,26 @@ s2 = Sequence([p3]) * 4
 s3 = Sequence([p4]) * 8
 
 assert s2 // s3 == [
-    {'midi_pitch': 64, 'offset_64': 0, 'duration_64': 16},
-    {'midi_pitch': 66, 'offset_64': 0, 'duration_64': 8},
-    {'midi_pitch': 66, 'offset_64': 8, 'duration_64': 8},
-    {'midi_pitch': 64, 'offset_64': 16, 'duration_64': 16},
-    {'midi_pitch': 66, 'offset_64': 16, 'duration_64': 8},
-    {'midi_pitch': 66, 'offset_64': 24, 'duration_64': 8},
-    {'midi_pitch': 64, 'offset_64': 32, 'duration_64': 16},
-    {'midi_pitch': 66, 'offset_64': 32, 'duration_64': 8},
-    {'midi_pitch': 66, 'offset_64': 40, 'duration_64': 8},
-    {'midi_pitch': 64, 'offset_64': 48, 'duration_64': 16},
-    {'midi_pitch': 66, 'offset_64': 48, 'duration_64': 8},
-    {'midi_pitch': 66, 'offset_64': 56, 'duration_64': 8}
+    {MIDI_PITCH: 64, OFFSET_64: 0, DURATION_64: 16},
+    {MIDI_PITCH: 66, OFFSET_64: 0, DURATION_64: 8},
+    {MIDI_PITCH: 66, OFFSET_64: 8, DURATION_64: 8},
+    {MIDI_PITCH: 64, OFFSET_64: 16, DURATION_64: 16},
+    {MIDI_PITCH: 66, OFFSET_64: 16, DURATION_64: 8},
+    {MIDI_PITCH: 66, OFFSET_64: 24, DURATION_64: 8},
+    {MIDI_PITCH: 64, OFFSET_64: 32, DURATION_64: 16},
+    {MIDI_PITCH: 66, OFFSET_64: 32, DURATION_64: 8},
+    {MIDI_PITCH: 66, OFFSET_64: 40, DURATION_64: 8},
+    {MIDI_PITCH: 64, OFFSET_64: 48, DURATION_64: 16},
+    {MIDI_PITCH: 66, OFFSET_64: 48, DURATION_64: 8},
+    {MIDI_PITCH: 66, OFFSET_64: 56, DURATION_64: 8}
 ]
 
 
 from core.transforms import transpose
 
 assert s1 | transpose(12) == [
-    {'midi_pitch': 62, 'offset_64': 16, 'duration_64': 16},
-    {'midi_pitch': 64, 'offset_64': 32, 'duration_64': 16}
+    {MIDI_PITCH: 62, OFFSET_64: 16, DURATION_64: 16},
+    {MIDI_PITCH: 64, OFFSET_64: 32, DURATION_64: 16}
 ]
 
 assert s1 | transpose(5) | transpose(-5) == s1
