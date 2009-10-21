@@ -20,6 +20,15 @@ def stretch(multiplier):
     return lambda seq: seq.map_points(_)
 
 
+def invert(midi_pitch_pivot):
+    def _(point):
+        if MIDI_PITCH in point:
+            interval = point[MIDI_PITCH] - midi_pitch_pivot
+            point[MIDI_PITCH] = midi_pitch_pivot - interval
+        return point
+    return lambda seq: seq.map_points(_)
+
+
 def reverse():
     def _(sequence):
         new_sequence = []
