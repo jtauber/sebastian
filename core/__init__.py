@@ -39,6 +39,9 @@ class Sequence(list):
     def __floordiv__(self, parallel_seq):
         return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
     
+    def __or__(self, func):
+        return self.map(func)
+    
     def last_point(self):
         if len(self) == 0:
             return Point({OFFSET_64: 0, DURATION_64: 0})
