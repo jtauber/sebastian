@@ -42,6 +42,9 @@ class Sequence(list):
         point = self.last_point()
         return point[OFFSET_64] + point.get(DURATION_64, 0)
     
+    def map_points(self, func):
+        return Sequence([func(Point(point)) for point in self])
+    
     
     ## operations
     
@@ -70,16 +73,13 @@ class Sequence(list):
         
         return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
     
-    def transform_points(self, func):
+    def transform(self, func):
         """
-        applies function to a point at a time to produce a new sequence
+        applies function to a sequence to produce a new sequence
         """
         
-        x = []
-        for point in self:
-            new_point = func(Point(point))
-            x.append(new_point)
-        return Sequence(x)
+        # @@@ should this assume func will do the copying
+        return func(self)
     
     
     ## operator overloading
@@ -87,7 +87,7 @@ class Sequence(list):
     __add__ = concatenate
     __mul__ = repeat
     __floordiv__ = merge
-    __or__ = transform_points
+    __or__ = transform
 
 
 class Point(dict):
