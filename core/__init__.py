@@ -24,6 +24,9 @@ MIDI_PITCH = Attribute("midi_pitch")
 DURATION_64 = Attribute("duration_64")
 
 
+from transforms import shift
+
+
 class Sequence(list):
     
     
@@ -48,7 +51,7 @@ class Sequence(list):
         """
         
         offset = self.next_offset()
-        return Sequence(list.__add__(self, next_seq.offset_all(offset)))
+        return Sequence(list.__add__(self, next_seq | shift(offset)))
     
     def repeat(self, count):
         """
@@ -85,16 +88,6 @@ class Sequence(list):
     __mul__ = repeat
     __floordiv__ = merge
     __or__ = transform_points
-    
-    
-    # @@@ this can now live elsewhere
-    def offset_all(self, offset):
-        
-        def _(point):
-            point[OFFSET_64] = point[OFFSET_64] + offset
-            return point
-        
-        return self.transform_points(_)
 
 
 class Point(dict):
