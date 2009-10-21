@@ -43,19 +43,35 @@ class Sequence(list):
     ## operations
     
     def concatenate(self, next_seq):
+        """
+        concatenates two sequences to produce a new sequence
+        """
+        
         offset = self.next_offset()
         return Sequence(list.__add__(self, next_seq.offset_all(offset)))
     
     def repeat(self, count):
+        """
+        repeat sequence given number of times to produce a new sequence
+        """
+        
         x = Sequence(self)
         for i in range(count - 1):
             x = x + Sequence(self)
         return x
     
     def merge(self, parallel_seq):
+        """
+        combine the points in two sequences, putting them in offset order
+        """
+        
         return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
     
     def map(self, func):
+        """
+        applies function to a point at a time to produce a new sequence
+        """
+        
         x = []
         for point in self:
             new_point = func(Point(point))
