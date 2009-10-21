@@ -67,7 +67,7 @@ class Sequence(list):
         
         return Sequence(sorted(list.__add__(self, parallel_seq), key=lambda x: x[OFFSET_64]))
     
-    def map(self, func):
+    def transform_points(self, func):
         """
         applies function to a point at a time to produce a new sequence
         """
@@ -84,7 +84,7 @@ class Sequence(list):
     __add__ = concatenate
     __mul__ = repeat
     __floordiv__ = merge
-    __or__ = map
+    __or__ = transform_points
     
     
     # @@@ this can now live elsewhere
@@ -94,7 +94,7 @@ class Sequence(list):
             point[OFFSET_64] = point[OFFSET_64] + offset
             return point
         
-        return self.map(_)
+        return self.transform_points(_)
 
 
 class Point(dict):
