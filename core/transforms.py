@@ -1,5 +1,6 @@
 from core import MIDI_PITCH, OFFSET_64, DURATION_64
 from core import Point, Sequence
+from core import shift
 
 
 def transpose(semitones):
