@@ -89,6 +89,11 @@ class OSequence(SequenceBase):
     def map_points(self, func):
         return OSequence([func(Point(point)) for point in self.elements])
     
+    def append(self, point):
+        point = Point(point)
+        point[OFFSET_64] = self.next_offset()
+        self.elements.append(point)
+    
     
     ## operations
     
@@ -135,7 +140,40 @@ class HSequence(SequenceBase):
     a horizontal sequence where each element follows the previous
     """
     
-    pass
+    def to_osequence(self):
+        x = OSequence([])
+        for element in self.elements:
+            x.append(element)
+        return x
+    
+    
+    ## operations
+    
+    def concatenate(self, next_seq):
+        """
+        concatenates two sequences to produce a new sequence
+        """
+        
+        return HSequence(self.elements + next_seq.elements)
+    
+    def repeat(self, count):
+        """
+        repeat sequence given number of times to produce a new sequence
+        """
+        
+        x = HSequence([])
+        for i in range(count):
+            x = x.concatenate(self)
+        return x
+    
+    def __eq__(self, other):
+        return self.elements == other.elements
+    
+    
+    ## operator overloading
+    
+    __add__ = concatenate
+    __mul__ = repeat
 
 
 class VSequence(SequenceBase):
@@ -143,4 +181,20 @@ class VSequence(SequenceBase):
     a vertical sequence where each element is coincident with the others
     """
     
-    pass
+    ## operations
+    
+    def merge(self, parallel_seq):
+        """
+        combine the points in two sequences, putting them in offset order
+        """
+        
+        return VSequence(self.elements + parallel_seq.elements)
+    
+    
+    def __eq__(self, other):
+        return self.elements == other.elements
+    
+    
+    ## operator overloading
+    
+    __floordiv__ = merge
