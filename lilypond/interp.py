@@ -1,4 +1,4 @@
-from core import Sequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
+from core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
 
 import re
 
@@ -230,4 +230,4 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
 
 
 def parse(s, offset=0):
-    return Sequence(parse_block(tokenize(s), offset=offset))
+    return OSequence(list(parse_block(tokenize(s), offset=offset)))

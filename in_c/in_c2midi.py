@@ -4,7 +4,7 @@ import sys; sys.path.append("..")
 
 from lilypond.interp import parse
 from midi.write_midi import SMF
-from core import Sequence
+from core import OSequence
 
 
 patterns = [
@@ -78,7 +78,7 @@ def separate_files():
 # make a single MIDI file with all the patterns in a row
 
 def one_file():
-    seq = Sequence()
+    seq = OSequence([])
     for num, pattern in enumerate(patterns):
         seq = seq + parse(pattern) * 10
     f = open("in_c_all.mid", "w")
