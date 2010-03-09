@@ -3,6 +3,22 @@ from core import Point, OSequence
 from core import shift
 
 
+def add(properties):
+    def _(point):
+        point.update(properties)
+        return point
+    return lambda seq: seq.map_points(_)
+
+
+def degree_in_key(key):
+    def _(point):
+        degree = point["degree"]
+        pitch = key.degree_to_pitch(degree)
+        point["pitch"] = pitch
+        return point
+    return lambda seq: seq.map_points(_)
+
+
 def transpose(semitones):
     def _(point):
         if MIDI_PITCH in point:
