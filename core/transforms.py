@@ -1,5 +1,5 @@
 from core import MIDI_PITCH, OFFSET_64, DURATION_64
-from core import Point, Sequence
+from core import Point, OSequence
 from core import shift
 
 
@@ -31,16 +31,16 @@ def invert(midi_pitch_pivot):
 
 def reverse():
     def _(sequence):
-        new_sequence = []
+        new_elements = []
         last_offset = sequence.next_offset()
         if sequence and sequence[0][OFFSET_64] != 0:
-            old_sequence = [Point({OFFSET_64: 0})] + sequence
+            old_sequence = OSequence([Point({OFFSET_64: 0})]) + sequence
         else:
             old_sequence = sequence
         for point in old_sequence:
             new_point = Point(point)
             new_point[OFFSET_64] = last_offset - new_point[OFFSET_64] - new_point.get(DURATION_64, 0)
             if new_point != {OFFSET_64: 0}:
-                new_sequence.append(new_point)
-        return Sequence(sorted(new_sequence, key=lambda x: x[OFFSET_64]))
+                new_elements.append(new_point)
+        return OSequence(sorted(new_elements, key=lambda x: x[OFFSET_64]))
     return _

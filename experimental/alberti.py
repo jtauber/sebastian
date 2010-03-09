@@ -6,22 +6,28 @@ import sys
 sys.path.append("..")
 
 from core import MIDI_PITCH, OFFSET_64, DURATION_64
-from core import Sequence, Point
+from core import VSequence, HSequence, Point
 
 from midi.player import play
 
-C = Sequence([Point({MIDI_PITCH: 60})])
-E = Sequence([Point({MIDI_PITCH: 64})])
-G = Sequence([Point({MIDI_PITCH: 67})])
+C = VSequence([Point({MIDI_PITCH: 60})])
+E = VSequence([Point({MIDI_PITCH: 64})])
+G = VSequence([Point({MIDI_PITCH: 67})])
 
 C_major_root = C // E // G
 
 def alberti(triad, duration):
-    return Sequence([
-        Point({OFFSET_64: 0 * duration, MIDI_PITCH: triad[0][MIDI_PITCH], DURATION_64: duration}),
-        Point({OFFSET_64: 1 * duration, MIDI_PITCH: triad[2][MIDI_PITCH], DURATION_64: duration}),
-        Point({OFFSET_64: 2 * duration, MIDI_PITCH: triad[1][MIDI_PITCH], DURATION_64: duration}),
-        Point({OFFSET_64: 3 * duration, MIDI_PITCH: triad[2][MIDI_PITCH], DURATION_64: duration}),
+    """
+    takes a VSequence of 3 notes and returns an HSequence of those notes
+    in an alberti figuration
+    """
+    
+    return HSequence([
+        Point({MIDI_PITCH: triad[0][MIDI_PITCH], DURATION_64: duration}),
+        Point({MIDI_PITCH: triad[2][MIDI_PITCH], DURATION_64: duration}),
+        Point({MIDI_PITCH: triad[1][MIDI_PITCH], DURATION_64: duration}),
+        Point({MIDI_PITCH: triad[2][MIDI_PITCH], DURATION_64: duration}),
     ])
 
-play(alberti(C_major_root, 8) * 16)
+seq = (alberti(C_major_root, 8) * 16).to_osequence()
+play(seq)

@@ -2,7 +2,7 @@
 
 from cStringIO import StringIO
 
-from core import Sequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
+from core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
 
 
 def write_chars(out, chars):
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     
     f = open("test.mid", "w")
     
-    test = Sequence([
+    test = OSequence([
         Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
             (0, 60, 16), (16, 72, 16), (32, 64, 16), (48, 55, 16),
             (64, 74, 16), (80, 62, 16), (96, 50, 16), (112, 48, 16),

@@ -4,7 +4,6 @@ import sys; sys.path.append("..")
 
 from lilypond.interp import parse
 from midi.write_midi import SMF
-from core import Sequence
 
 rh = parse(r"""
     \relative c'' {

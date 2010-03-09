@@ -2,7 +2,7 @@
 
 import sys; sys.path.append("..")
 
-from core import Point, Sequence
+from core import Point, OSequence
 from core import OFFSET_64, MIDI_PITCH, DURATION_64
 
 
@@ -25,9 +25,9 @@ p2 = Point({
     DURATION_64: 16,
 })
 
-s1 = Sequence([p1, p2])
+s1 = OSequence([p1, p2])
 
-assert s1 == [
+assert s1.to_list() == [
     {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
     {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52}
 ]
@@ -36,14 +36,14 @@ assert s1.last_point() == {
     MIDI_PITCH: 52, OFFSET_64: 32, DURATION_64: 16
 }
 
-assert Sequence([]).last_point() == {
+assert OSequence([]).last_point() == {
     OFFSET_64: 0, DURATION_64: 0
 }
 
 
 ## concatenation
 
-assert s1 + s1 == [
+assert (s1 + s1).to_list() == [
     {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
     {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52},
     {DURATION_64: 16, OFFSET_64: 64, MIDI_PITCH: 50},
@@ -53,14 +53,14 @@ assert s1 + s1 == [
 
 ## repetition
 
-assert s1 * 2 == [
+assert (s1 * 2).to_list() == [
     {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
     {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52},
     {DURATION_64: 16, OFFSET_64: 64, MIDI_PITCH: 50},
     {DURATION_64: 16, OFFSET_64: 80, MIDI_PITCH: 52}
 ]
 
-assert s1 * 3 == [
+assert (s1 * 3).to_list() == [
     {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
     {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 52},
     {DURATION_64: 16, OFFSET_64: 64, MIDI_PITCH: 50},
@@ -84,10 +84,10 @@ p4 = Point({
     DURATION_64: 8,
 })
 
-s2 = Sequence([p3]) * 4
-s3 = Sequence([p4]) * 8
+s2 = OSequence([p3]) * 4
+s3 = OSequence([p4]) * 8
 
-assert s2 // s3 == [
+assert (s2 // s3).to_list() == [
     {MIDI_PITCH: 64, OFFSET_64: 0, DURATION_64: 16},
     {MIDI_PITCH: 66, OFFSET_64: 0, DURATION_64: 8},
     {MIDI_PITCH: 66, OFFSET_64: 8, DURATION_64: 8},
@@ -109,7 +109,7 @@ from core.transforms import transpose, reverse, stretch, invert
 
 # transpose
 
-assert s1 | transpose(12) == [
+assert (s1 | transpose(12)).to_list() == [
     {MIDI_PITCH: 62, OFFSET_64: 16, DURATION_64: 16},
     {MIDI_PITCH: 64, OFFSET_64: 32, DURATION_64: 16}
 ]
@@ -118,7 +118,7 @@ assert s1 | transpose(5) | transpose(-5) == s1
 
 # reverse
 
-assert s1 | reverse() == [
+assert (s1 | reverse()).to_list() == [
     {MIDI_PITCH: 52, OFFSET_64: 0, DURATION_64: 16},
     {MIDI_PITCH: 50, OFFSET_64: 16, DURATION_64: 16},
     {OFFSET_64: 48}
@@ -128,7 +128,7 @@ assert s1 | reverse() | reverse() == s1
 
 # stretch
 
-assert s1 | stretch(2) == [
+assert (s1 | stretch(2)).to_list() == [
     {MIDI_PITCH: 50, OFFSET_64: 32, DURATION_64: 32},
     {MIDI_PITCH: 52, OFFSET_64: 64, DURATION_64: 32}
 ]
@@ -137,7 +137,7 @@ assert s1 | stretch(2) | stretch(0.5) == s1
 
 # invert
 
-assert s1 | invert(50) == [
+assert (s1 | invert(50)).to_list() == [
     {DURATION_64: 16, OFFSET_64: 16, MIDI_PITCH: 50},
     {DURATION_64: 16, OFFSET_64: 32, MIDI_PITCH: 48}
 ]
