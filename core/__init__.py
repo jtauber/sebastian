@@ -52,6 +52,9 @@ class SequenceBase(object):
     def __getitem__(self, item):
         return self.elements[item]
     
+    def map_points(self, func):
+        return self.__class__([func(Point(point)) for point in self.elements])
+    
     
     ## operations
     
@@ -85,9 +88,6 @@ class OSequence(SequenceBase):
     def next_offset(self):
         point = self.last_point()
         return point[OFFSET_64] + point.get(DURATION_64, 0)
-    
-    def map_points(self, func):
-        return OSequence([func(Point(point)) for point in self.elements])
     
     def append(self, point):
         point = Point(point)
