@@ -95,29 +95,31 @@ def major_scale(tonic):
 def minor_scale(tonic):
     return [tonic + i for i in [0, 2, -3, -1, 1, -4, -2]]
 
+
 ## TESTS
 
-assert natural(-3)
-assert natural(2)
-assert natural(0)
-assert not natural(-4)
-assert not natural(5)
-
-assert not single_sharp(0)
-assert not single_sharp(-5)
-assert single_sharp(4)
-assert not single_sharp(12)
-
-assert modifiers(0) == 0
-assert modifiers(2) == 0
-assert modifiers(-1) == 0
-assert modifiers(-5) == -1
-assert modifiers(-11) == -2
-assert modifiers(-17) == -2
-assert modifiers(4) == 1
-assert modifiers(13) == 2
-assert modifiers(17) == 2
-
-assert value("G#") == 6
-
-print [name(x) for x in major_scale(value("G#"))]
+if __name__ == "__main__":
+    assert natural(-3)
+    assert natural(2)
+    assert natural(0)
+    assert not natural(-4)
+    assert not natural(5)
+    
+    assert not single_sharp(0)
+    assert not single_sharp(-5)
+    assert single_sharp(4)
+    assert not single_sharp(12)
+    
+    assert modifiers(0) == 0
+    assert modifiers(2) == 0
+    assert modifiers(-1) == 0
+    assert modifiers(-5) == -1
+    assert modifiers(-11) == -2
+    assert modifiers(-17) == -2
+    assert modifiers(4) == 1
+    assert modifiers(13) == 2
+    assert modifiers(17) == 2
+    
+    assert value("G#") == 6
+    
+    print [name(x) for x in major_scale(value("G#"))]
