@@ -96,6 +96,14 @@ def minor_scale(tonic):
     return [tonic + i for i in [0, 2, -3, -1, 1, -4, -2]]
 
 
+class Key:
+    def __init__(self, tonic, scale):
+        self.notes = scale(value(tonic))
+    
+    def degree_to_pitch(self, degree):
+        return self.notes[degree - 1]
+
+
 ## TESTS
 
 if __name__ == "__main__":

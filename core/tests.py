@@ -2,8 +2,9 @@
 
 import sys; sys.path.append("..")
 
-from core import Point, OSequence
+from core import Point, OSequence, HSeq
 from core import OFFSET_64, MIDI_PITCH, DURATION_64
+from core.notes import Key, major_scale
 
 
 ## points
@@ -104,7 +105,7 @@ assert (s2 // s3)._elements == [
 
 ## point transformation
 
-from core.transforms import transpose, reverse, stretch, invert
+from core.transforms import transpose, reverse, stretch, invert, add, degree_in_key, midi_pitch
 
 # transpose
 
@@ -142,3 +143,46 @@ assert (s1 | invert(50))._elements == [
 ]
 
 assert s1 | invert(100) | invert(100) == s1
+
+
+s4 = HSeq([Point(degree=degree) for degree in [1, 2, 3, 2, 1]])
+
+#seq1 = seq1 | degree_in_key(Key("C", major_scale)) | add({"octave": 4}) | \
+#    add({DURATION_64: 4}) | midi_pitch()
+
+
+# add
+
+s5 = s4 | add({"octave": 4, DURATION_64: 8})
+
+assert list(s5) == [
+    {'degree': 1, DURATION_64: 8, 'octave': 4},
+    {'degree': 2, DURATION_64: 8, 'octave': 4},
+    {'degree': 3, DURATION_64: 8, 'octave': 4},
+    {'degree': 2, DURATION_64: 8, 'octave': 4},
+    {'degree': 1, DURATION_64: 8, 'octave': 4}
+]
+
+# degree_in_key
+
+s6 = s5 | degree_in_key(Key("C", major_scale))
+
+assert list(s6) == [
+    {'degree': 1, DURATION_64: 8, 'octave': 4, 'pitch': -2},
+    {'degree': 2, DURATION_64: 8, 'octave': 4, 'pitch': 0},
+    {'degree': 3, DURATION_64: 8, 'octave': 4, 'pitch': 2},
+    {'degree': 2, DURATION_64: 8, 'octave': 4, 'pitch': 0},
+    {'degree': 1, DURATION_64: 8, 'octave': 4, 'pitch': -2}
+]
+
+# midi_pitch
+
+s7 = s6 | midi_pitch()
+
+assert list(s7) == [
+    {'degree': 1, MIDI_PITCH: 48, DURATION_64: 8, 'octave': 4, 'pitch': -2},
+    {'degree': 2, MIDI_PITCH: 50, DURATION_64: 8, 'octave': 4, 'pitch': 0},
+    {'degree': 3, MIDI_PITCH: 52, DURATION_64: 8, 'octave': 4, 'pitch': 2},
+    {'degree': 2, MIDI_PITCH: 50, DURATION_64: 8, 'octave': 4, 'pitch': 0},
+    {'degree': 1, MIDI_PITCH: 48, DURATION_64: 8, 'octave': 4, 'pitch': -2}
+]

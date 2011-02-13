@@ -1,9 +1,10 @@
 from core import MIDI_PITCH, OFFSET_64, DURATION_64
 from core import Point, OSequence
 
+from core.notes import modifiers
+
 
 def add(properties):
-    # x
     def _(point):
         point.update(properties)
         return point
@@ -11,7 +12,6 @@ def add(properties):
 
 
 def degree_in_key(key):
-    # x
     def _(point):
         degree = point["degree"]
         pitch = key.degree_to_pitch(degree)
@@ -61,3 +61,16 @@ def reverse():
                 new_elements.append(new_point)
         return OSequence(sorted(new_elements, key=lambda x: x[OFFSET_64]))
     return _
+
+
+def midi_pitch():
+    def _(point):
+        octave = point["octave"]
+        pitch = point["pitch"]
+        midi_pitch = [2, 9, 4, 11, 5, 0, 7][pitch % 7]
+        midi_pitch += modifiers(pitch)
+        midi_pitch += 12 * octave
+        point[MIDI_PITCH] = midi_pitch
+        return point
+    return lambda seq: seq.map_points(_)
+
