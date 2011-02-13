@@ -3,6 +3,7 @@ from core import Point, OSequence
 
 
 def add(properties):
+    # x
     def _(point):
         point.update(properties)
         return point
@@ -10,6 +11,7 @@ def add(properties):
 
 
 def degree_in_key(key):
+    # x
     def _(point):
         degree = point["degree"]
         pitch = key.degree_to_pitch(degree)

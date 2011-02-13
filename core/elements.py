@@ -39,6 +39,18 @@ class SeqBase:
     
     def __len__(self):
         return len(self._elements)
+    
+    def map_points(self, func):
+        return self.__class__([func(Point(point)) for point in self._elements])
+        
+    
+    def transform(self, func):
+        """
+        applies function to a sequence to produce a new sequence
+        """
+        return func(self)
+    
+    __or__ = transform
 
 
 def OSeq(offset_attr, duration_attr):
@@ -64,9 +76,6 @@ def OSeq(offset_attr, duration_attr):
             if offset_attr not in point:
                 point[offset_attr] = self.next_offset()
             self._elements.append(point)
-        
-        def map_points(self, func):
-            return _OSeq([func(Point(point)) for point in self._elements])
         
         def concatenate(self, next_seq):
             """
@@ -96,19 +105,12 @@ def OSeq(offset_attr, duration_attr):
             """
             return _OSeq(sorted(self._elements + parallel_seq._elements, key=lambda x: x.get(offset_attr, 0)))
         
-        def transform(self, func):
-            """
-            applies function to a sequence to produce a new sequence
-            """
-            return func(self)
-        
         def __eq__(self, other):
             return self._elements == other._elements
         
         __add__ = concatenate
         __mul__ = repeat
         __floordiv__ = merge
-        __or__ = transform
     
     
     return _OSeq
