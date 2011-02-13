@@ -20,6 +20,16 @@ def degree_in_key(key):
     return lambda seq: seq.map_points(_)
 
 
+def degree_in_key_with_octave(key, base_octave):
+    def _(point):
+        degree = point["degree"]
+        pitch, octave = key.degree_to_pitch_and_octave(degree)
+        point["pitch"] = pitch
+        point["octave"] = octave + base_octave
+        return point
+    return lambda seq: seq.map_points(_)
+
+
 def transpose(semitones):
     def _(point):
         if MIDI_PITCH in point:

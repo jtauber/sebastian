@@ -4,19 +4,37 @@ import sys; sys.path.append("..")
 
 from lilypond.interp import parse
 from midi.write_midi import SMF
-from core import OSequence, HSeq, Point, MIDI_PITCH, DURATION_64
+from core import OSequence, Point, MIDI_PITCH, DURATION_64
 from core.notes import Key, major_scale
-from core.transforms import add, degree_in_key, midi_pitch
+from core.transforms import degree_in_key_with_octave, midi_pitch, transpose
 
 
-degrees = [1, 3, 4, 5, 6, 5, 4, 3]
-seq1 = HSeq([Point({"degree": degree}) for degree in degrees])
+# Hanon 1
 
+up_degrees = [1, 3, 4, 5, 6, 5, 4, 3]
+down_degrees = [6, 4, 3, 2, 1, 2, 3, 4]
+final_degree = [1]
 
-seq1 = seq1 | degree_in_key(Key("C", major_scale)) | add({"octave": 4}) | \
-    add({DURATION_64: 4}) | midi_pitch()
+sections = [
+    (up_degrees, 4, range(14)),
+    (down_degrees, 4, range(13, -2, -1)),
+    (final_degree, 32, range(1)),
+]
 
-seq = OSequence(seq1)
+hanon_1 = OSequence()
+
+for section in sections:
+    pattern, duration_64, offset = section
+    for o in offset:
+        for note in pattern:
+            hanon_1.append({"degree": note + o, DURATION_64: duration_64})
+
+hanon_1 = hanon_1 | degree_in_key_with_octave(Key("C", major_scale), 4) | midi_pitch()
+
+hanon_rh_1 = hanon_1
+hanon_lh_1 = hanon_1 | transpose(-12)
+
+seq = hanon_lh_1 // hanon_rh_1
 
 
 if __name__ == "__main__":

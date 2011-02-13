@@ -102,6 +102,10 @@ class Key:
     
     def degree_to_pitch(self, degree):
         return self.notes[degree - 1]
+    
+    def degree_to_pitch_and_octave(self, degree):
+        o, d = divmod(degree - 1, 7)
+        return self.notes[d], o
 
 
 ## TESTS
