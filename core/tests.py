@@ -147,10 +147,6 @@ assert s1 | invert(100) | invert(100) == s1
 
 s4 = HSeq([Point(degree=degree) for degree in [1, 2, 3, 2, 1]])
 
-#seq1 = seq1 | degree_in_key(Key("C", major_scale)) | add({"octave": 4}) | \
-#    add({DURATION_64: 4}) | midi_pitch()
-
-
 # add
 
 s5 = s4 | add({"octave": 4, DURATION_64: 8})
