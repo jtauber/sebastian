@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from lilypond.interp import parse
 from midi import write_midi, player
 from core.transforms import transpose, reverse, stretch, invert
