@@ -1,11 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name = "sebastian",
-    version = "0.0.1",
+    version = "0.0.2",
     description = "symbolic music analysis and composition library in Python",
     url = "http://github.com/jtauber/sebastian",
     author = "James Tauber",
     author_email = "jtauber@jtauber.com",
-    packages = ["sebastian"],
+    packages = find_packages(),
 )
