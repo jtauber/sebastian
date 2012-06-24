@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import sys; sys.path.append("..")
-
-from lilypond.interp import parse
-from midi.write_midi import SMF
-from core import OSequence, Point, MIDI_PITCH, DURATION_64
-from core.notes import Key, major_scale
-from core.transforms import degree_in_key_with_octave, midi_pitch, transpose
+from sebastian.lilypond.interp import parse
+from sebastian.midi.write_midi import SMF
+from sebastian.core import OSequence, Point, MIDI_PITCH, DURATION_64
+from sebastian.core.notes import Key, major_scale
+from sebastian.core.transforms import degree_in_key_with_octave, midi_pitch, transpose
 
 
 # Hanon 1

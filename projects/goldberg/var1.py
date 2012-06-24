@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import sys; sys.path.append("..")
-
-from lilypond.interp import parse
-from midi.write_midi import SMF
+from sebastian.lilypond.interp import parse
+from sebastian.midi.write_midi import SMF
 
 rh = parse(r"""
     \relative c'' {

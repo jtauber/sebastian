@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import sys; sys.path.append("..")
-
-from lilypond.interp import parse
-from midi.write_midi import SMF
-from core import OSequence
+from sebastian.lilypond.interp import parse
+from sebastian.midi.write_midi import SMF
+from sebastian.core import OSequence
 
 
 patterns = [

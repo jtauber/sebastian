@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from elements import Point, OSeq, UnificationError
+from sebastian.core.elements import Point, OSeq, UnificationError
 
 p1 = Point(a=1, b="foo")
 

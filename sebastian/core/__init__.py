@@ -18,7 +18,7 @@ OFFSET_64 = "offset_64"
 MIDI_PITCH = "midi_pitch"
 DURATION_64 = "duration_64"
 
-from elements import OSeq, Point, VSeq, HSeq
+from sebastian.core.elements import OSeq, Point, VSeq, HSeq
 
 OSequence = OSeq(OFFSET_64, DURATION_64)
 

@@ -2,13 +2,10 @@
 
 ## this is the beginning of an experiment for the next level of the algebra
 
-import sys
-sys.path.append("..")
+from sebastian.core import MIDI_PITCH, OFFSET_64, DURATION_64
+from sebastian.core import VSeq, HSeq, Point, OSequence
 
-from core import MIDI_PITCH, OFFSET_64, DURATION_64
-from core import VSeq, HSeq, Point, OSequence
-
-from midi.player import play
+from sebastian.midi.player import play
 
 C = VSeq([Point({MIDI_PITCH: 60})])
 E = VSeq([Point({MIDI_PITCH: 64})])

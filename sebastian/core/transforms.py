@@ -1,7 +1,7 @@
-from core import MIDI_PITCH, OFFSET_64, DURATION_64
-from core import Point, OSequence
+from sebastian.core import MIDI_PITCH, OFFSET_64, DURATION_64
+from sebastian.core import Point, OSequence
 
-from core.notes import modifiers
+from sebastian.core.notes import modifiers
 
 
 def add(properties):

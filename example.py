@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from lilypond.interp import parse
-from midi import write_midi, player
-from core import OSequence, HSeq, Point, DURATION_64
-from core.transforms import transpose, reverse, stretch, invert, add, degree_in_key, midi_pitch
-from core.notes import Key, major_scale
+from sebastian.lilypond.interp import parse
+from sebastian.midi import write_midi, player
+from sebastian.core import OSequence, HSeq, Point, DURATION_64
+from sebastian.core.transforms import transpose, reverse, stretch, invert, add, degree_in_key, midi_pitch
+from sebastian.core.notes import Key, major_scale
 
 # construct sequences using lilypond syntax
 seq1 = parse("c d e")

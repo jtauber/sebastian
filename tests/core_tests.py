@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import sys; sys.path.append("..")
-
-from core import Point, OSequence, HSeq
-from core import OFFSET_64, MIDI_PITCH, DURATION_64
-from core.notes import Key, major_scale
+from sebastian.core import Point, OSequence, HSeq
+from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+from sebastian.core.notes import Key, major_scale
 
 
 ## points
@@ -105,7 +103,7 @@ assert (s2 // s3)._elements == [
 
 ## point transformation
 
-from core.transforms import transpose, reverse, stretch, invert, add, degree_in_key, midi_pitch
+from sebastian.core.transforms import transpose, reverse, stretch, invert, add, degree_in_key, midi_pitch
 
 # transpose
 

@@ -7,7 +7,8 @@
 import sys
 import tempfile
 import subprocess
-import write_midi
+
+from sebastian.midi import write_midi
 
 def play(sequence):
     if sys.platform == "darwin":

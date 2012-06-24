@@ -2,7 +2,7 @@
 
 from cStringIO import StringIO
 
-from core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
+from sebastian.core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
 
 
 def write_chars(out, chars):
