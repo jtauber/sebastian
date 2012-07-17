@@ -92,7 +92,7 @@ def one_file():
 
 def performance():
     tracks = []
-    for track_num in range(8):  # 10 tracks
+    for track_num in range(8):  # 8 tracks
         seq = OSequence([])
         for pattern in patterns:
             seq += parse(pattern) * random.randint(2, 5)  # repeat 2-5 times
