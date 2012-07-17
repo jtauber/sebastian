@@ -24,6 +24,6 @@ seq = rh // lh
 
 if __name__ == "__main__":
     f = open("var1.mid", "w")
-    s = SMF(seq)
+    s = SMF([seq])
     s.write(f)
     f.close()

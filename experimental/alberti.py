@@ -28,4 +28,4 @@ def alberti(triad, duration):
 
 seq = OSequence(alberti(C_major_root, 8) * 16)
 
-play(seq)
+play([seq])

@@ -37,6 +37,6 @@ seq = hanon_lh_1 // hanon_rh_1
 
 if __name__ == "__main__":
     f = open("hanon.mid", "w")
-    s = SMF(seq)
+    s = SMF([seq])
     s.write(f)
     f.close()
