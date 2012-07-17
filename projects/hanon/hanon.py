@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-from sebastian.lilypond.interp import parse
 from sebastian.midi.write_midi import SMF
-from sebastian.core import OSequence, Point, MIDI_PITCH, DURATION_64
+from sebastian.core import OSequence, DURATION_64
 from sebastian.core.notes import Key, major_scale
 from sebastian.core.transforms import degree_in_key_with_octave, midi_pitch, transpose
 

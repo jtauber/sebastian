@@ -2,7 +2,7 @@
 
 ## this is the beginning of an experiment for the next level of the algebra
 
-from sebastian.core import MIDI_PITCH, OFFSET_64, DURATION_64
+from sebastian.core import MIDI_PITCH, DURATION_64
 from sebastian.core import VSeq, HSeq, Point, OSequence
 
 from sebastian.midi.player import play
@@ -12,6 +12,7 @@ E = VSeq([Point({MIDI_PITCH: 64})])
 G = VSeq([Point({MIDI_PITCH: 67})])
 
 C_major_root = C // E // G
+
 
 def alberti(triad, duration):
     """
