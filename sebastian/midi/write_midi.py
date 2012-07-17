@@ -45,16 +45,16 @@ class SMF:
         
         num_tracks = 1 + len(self.tracks)
         Thd(format=1, num_tracks=num_tracks, division=16).write(out)
-        T = 1 # how to translate events times into time_delta using the
-              # division above
+        T = 1  # how to translate events times into time_delta using the
+               # division above
         
         # first track will just contain time/key/tempo info
         t = Trk()
         
         t.sequence_track_name("untitled")
-        t.time_signature(4, 2, 24, 8) # 4 4 (2nd arg is power of 2)
-        t.key_signature(0, 0) # C
-        t.tempo(500000) # in microseconds per quarter note
+        t.time_signature(4, 2, 24, 8)  # 4 4 (2nd arg is power of 2)
+        t.key_signature(0, 0)  # C
+        t.tempo(500000)  # in microseconds per quarter note
         t.track_end()
         t.write(out)
         
@@ -110,14 +110,14 @@ class Trk:
         self.data = StringIO()
     
     def sequence_track_name(self, name):
-        write_varlen(self.data, 0) # tick
+        write_varlen(self.data, 0)  # tick
         write_byte(self.data, 0xFF)
         write_byte(self.data, 0x03)
         write_varlen(self.data, len(name))
         write_chars(self.data, name)
     
     def time_signature(self, a, b, c, d):
-        write_varlen(self.data, 0) # tick
+        write_varlen(self.data, 0)  # tick
         write_byte(self.data, 0xFF)
         write_byte(self.data, 0x58)
         write_varlen(self.data, 4)
@@ -127,7 +127,7 @@ class Trk:
         write_byte(self.data, d)
     
     def key_signature(self, a, b):
-        write_varlen(self.data, 0) # tick
+        write_varlen(self.data, 0)  # tick
         write_byte(self.data, 0xFF)
         write_byte(self.data, 0x59)
         write_varlen(self.data, 2)
@@ -135,7 +135,7 @@ class Trk:
         write_byte(self.data, b)
     
     def tempo(self, t):
-        write_varlen(self.data, 0) # tick
+        write_varlen(self.data, 0)  # tick
         write_byte(self.data, 0xFF)
         write_byte(self.data, 0x51)
         write_varlen(self.data, 3)
@@ -147,16 +147,16 @@ class Trk:
         write_varlen(self.data, time_delta)
         write_byte(self.data, 0x91)
         write_byte(self.data, note_number)
-        write_byte(self.data, 64) # velocity
+        write_byte(self.data, 64)  # velocity
     
     def end_note(self, time_delta, note_number):
         write_varlen(self.data, time_delta)
         write_byte(self.data, 0x81)
         write_byte(self.data, note_number)
-        write_byte(self.data, 0) # velocity
+        write_byte(self.data, 0)  # velocity
     
     def track_end(self):
-        write_varlen(self.data, 0) # tick
+        write_varlen(self.data, 0)  # tick
         write_byte(self.data, 0xFF)
         write_byte(self.data, 0x2F)
         write_varlen(self.data, 0)
