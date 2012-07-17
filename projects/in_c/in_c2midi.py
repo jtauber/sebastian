@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+import random
+
 from sebastian.lilypond.interp import parse
 from sebastian.midi.write_midi import SMF
 from sebastian.core import OSequence
+from sebastian.core.transforms import transpose
 
 
 patterns = [
@@ -84,4 +87,20 @@ def one_file():
     s.write(f)
     f.close()
 
-one_file()
+# performance
+
+
+def performance():
+    tracks = []
+    for track_num in range(8):  # 10 tracks
+        seq = OSequence([])
+        for pattern in patterns:
+            seq += parse(pattern) * random.randint(2, 5)  # repeat 2-5 times
+        tracks.append(seq | transpose(random.choice([-12, 0, 12])))  # transpose -1, 0 or 1 octaves
+    f = open("in_c_performance.mid", "w")
+    s = SMF(tracks)
+    s.write(f)
+    f.close()
+
+
+performance()
