@@ -10,6 +10,7 @@ import subprocess
 
 from sebastian.midi import write_midi
 
+
 def play(tracks):
     if sys.platform == "darwin":
         

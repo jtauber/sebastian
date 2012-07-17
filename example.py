@@ -3,7 +3,7 @@
 from sebastian.lilypond.interp import parse
 from sebastian.midi import write_midi, player
 from sebastian.core import OSequence, HSeq, Point, DURATION_64
-from sebastian.core.transforms import transpose, reverse, stretch, invert, add, degree_in_key, midi_pitch
+from sebastian.core.transforms import transpose, reverse, add, degree_in_key, midi_pitch
 from sebastian.core.notes import Key, major_scale
 
 # construct sequences using lilypond syntax
