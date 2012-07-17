@@ -20,11 +20,11 @@ seq4 = seq3 | transpose(12) | reverse()
 seq5 = seq3 // seq4
 
 # play MIDI
-player.play(seq5)
+player.play([seq5])
 
 # write to MIDI
 f = open("seq5.mid", "w")
-s = write_midi.SMF(seq5)
+s = write_midi.SMF([seq5])
 s.write(f)
 f.close()
 
@@ -36,4 +36,4 @@ C_MAJOR = Key("C", major_scale)
 seq7 = seq6 | add({"octave": 4, DURATION_64: 8}) | degree_in_key(C_MAJOR)
 
 # convert to MIDI pitch and play
-player.play(OSequence(seq7 | midi_pitch()))
+player.play([OSequence(seq7 | midi_pitch())])

@@ -10,11 +10,11 @@ import subprocess
 
 from sebastian.midi import write_midi
 
-def play(sequence):
+def play(tracks):
     if sys.platform == "darwin":
         
         f = tempfile.NamedTemporaryFile(suffix=".mid", delete=False)
-        s = write_midi.SMF(sequence)
+        s = write_midi.SMF(tracks)
         s.write(f)
         f.close()
         

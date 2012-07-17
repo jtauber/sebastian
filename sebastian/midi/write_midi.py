@@ -181,6 +181,6 @@ if __name__ == "__main__":
         ]
     ])
     
-    s = SMF(test)
+    s = SMF([test])
     s.write(f)
     f.close()
