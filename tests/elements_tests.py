@@ -4,6 +4,8 @@ from sebastian.core.elements import Point, OSeq, UnificationError
 
 p1 = Point(a=1, b="foo")
 
+assert p1.tuple("b", "a") == ("foo", 1)
+
 p2 = Point(a=1, b="foo")
 
 assert p1 == p2
