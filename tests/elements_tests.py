@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from sebastian.core.elements import Point, OSeq, UnificationError
+from sebastian.core.elements import Point, HSeq, OSeq, UnificationError
 
 p1 = Point(a=1, b="foo")
 
@@ -54,3 +54,24 @@ assert s7._elements[-1]["offset"] == 30
 s8 = OffsetSequence(Point(a=1, offset=0), Point(a=2, offset=20)) // OffsetSequence(Point(a=3, offset=10))
 
 assert s8._elements[1]["a"] == 3
+
+s9 = HSeq(p1, p3)
+assert len(s9) == 2
+assert s9[1] == p3
+
+
+def double_a(point):
+    if "a" in point:
+        point["a"] *= 2
+    return point
+
+s10 = s9.map_points(double_a)
+assert s10[0]["a"] == 2
+
+
+def reverse(seq):
+    return seq.__class__(seq._elements[::-1])
+
+s11 = s9.transform(reverse)
+
+assert s11[0] == p3
