@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from sebastian.core.elements import Point, HSeq, OSeq, UnificationError
+from sebastian.core.elements import Point, HSeq, OSeq, VSeq, UnificationError
 
 p1 = Point(a=1, b="foo")
 
@@ -82,3 +82,8 @@ assert s9 + s12 == HSeq(p1, p3, p2, p4)
 
 assert s9 * 3 == s9 + s9 + s9
 
+s13 = VSeq(p1)
+
+s13.append(p3)
+
+assert s13[1] == p3
