@@ -1,4 +1,5 @@
 
+
 class UnificationError(Exception):
     pass
 
@@ -48,7 +49,6 @@ class SeqBase:
     
     def map_points(self, func):
         return self.__class__([func(Point(point)) for point in self._elements])
-        
     
     def transform(self, func):
         """
@@ -114,7 +114,6 @@ def OSeq(offset_attr, duration_attr):
         __add__ = concatenate
         __mul__ = repeat
         __floordiv__ = merge
-    
     
     return _OSeq
 
