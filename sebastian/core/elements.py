@@ -40,6 +40,12 @@ class SeqBase:
     def __len__(self):
         return len(self._elements)
     
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self._elements == other._elements
+    
+    def __ne__(self, other):
+        return not (isinstance(other, self.__class__) and self._elements == other._elements)
+    
     def map_points(self, func):
         return self.__class__([func(Point(point)) for point in self._elements])
         
@@ -105,12 +111,6 @@ def OSeq(offset_attr, duration_attr):
             """
             return _OSeq(sorted(self._elements + parallel_seq._elements, key=lambda x: x.get(offset_attr, 0)))
         
-        def __eq__(self, other):
-            return self._elements == other._elements
-        
-        def __ne__(self, other):
-            return self._elements != other._elements
-
         __add__ = concatenate
         __mul__ = repeat
         __floordiv__ = merge
@@ -146,12 +146,6 @@ class HSeq(SeqBase):
             x = x.concatenate(self)
         return x
     
-    def __eq__(self, other):
-        return self._elements == other._elements
-    
-    def __ne__(self, other):
-        return self._elements != other._elements
-    
     __add__ = concatenate
     __mul__ = repeat
 
@@ -173,11 +167,5 @@ class VSeq(SeqBase):
         combine the points in two sequences
         """
         return VSeq(self._elements + parallel_seq._elements)
-    
-    def __eq__(self, other):
-        return self._elements == other._elements
-    
-    def __ne__(self, other):
-        return self._elements != other._elements
     
     __floordiv__ = merge
