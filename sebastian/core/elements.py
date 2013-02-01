@@ -144,7 +144,7 @@ class HSeq(SeqBase):
         return x
     
     def __eq__(self, other):
-        return self.elements == other.elements
+        return self._elements == other._elements
     
     __add__ = concatenate
     __mul__ = repeat
