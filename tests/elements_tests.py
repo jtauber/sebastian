@@ -79,3 +79,6 @@ assert s11[0] == p3
 s12 = HSeq(p2, p4)
 
 assert s9 + s12 == HSeq(p1, p3, p2, p4)
+
+assert s9 * 3 == s9 + s9 + s9
+
