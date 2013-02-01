@@ -108,6 +108,9 @@ def OSeq(offset_attr, duration_attr):
         def __eq__(self, other):
             return self._elements == other._elements
         
+        def __ne__(self, other):
+            return self._elements != other._elements
+
         __add__ = concatenate
         __mul__ = repeat
         __floordiv__ = merge
@@ -146,6 +149,9 @@ class HSeq(SeqBase):
     def __eq__(self, other):
         return self._elements == other._elements
     
+    def __ne__(self, other):
+        return self._elements != other._elements
+    
     __add__ = concatenate
     __mul__ = repeat
 
@@ -170,5 +176,8 @@ class VSeq(SeqBase):
     
     def __eq__(self, other):
         return self._elements == other._elements
+    
+    def __ne__(self, other):
+        return self._elements != other._elements
     
     __floordiv__ = merge
