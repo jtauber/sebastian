@@ -168,4 +168,7 @@ class VSeq(SeqBase):
         """
         return VSeq(self._elements + parallel_seq._elements)
     
+    def __eq__(self, other):
+        return self._elements == other._elements
+    
     __floordiv__ = merge
