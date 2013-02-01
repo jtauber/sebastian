@@ -87,3 +87,5 @@ s13 = VSeq(p1)
 s13.append(p3)
 
 assert s13[1] == p3
+
+assert s13 == VSeq(p1) // VSeq(p3)
