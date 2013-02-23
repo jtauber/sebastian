@@ -6,6 +6,7 @@ A library for parsing Standard MIDI Files (SMFs).
 Currently it just outputs the data it finds.
 """
 
+
 class Base:
     """
     Base is a generic base class for parsing binary files. It cannot be
@@ -82,7 +83,7 @@ class SMF(Base):
                 Trk(data)
             else:
                 print chunk_id
-                pass # ignore unknown chunk type
+                pass  # ignore unknown chunk type
 
 
 class Thd(Base):
@@ -126,13 +127,13 @@ class Trk(Base):
                 print "time signature %d %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3]))
             elif status2 == 0x59:
                 assert varlen2 == 2, varlen2
-                print "key signature %d %d" % (ord(data[0]), ord(data[1])) # @@@ first arg signed?
+                print "key signature %d %d" % (ord(data[0]), ord(data[1]))  # @@@ first arg signed?
             else:
                 raise Exception("unknown metaevent status " + hex(status2))
         elif 0x80 <= status <= 0xEF:
             event_type = status // 0x10
             channel = status % 0x10
-            if event_type == 0x8: # note off
+            if event_type == 0x8:  # note off
                 note_number = self.get_byte()
                 velocity = self.get_byte()
                 self.ticks += time_delta
@@ -160,17 +161,17 @@ class Trk(Base):
                     self.prev_bar = bar + 1
                 print "%d:%d:%d" % (note_name[0], note_name[1], est_dur),
                 self.next_note = start_ticks + (est_dur * 60)
-            elif event_type == 0x9: # note on
+            elif event_type == 0x9:  # note on
                 note_number = self.get_byte()
                 velocity = self.get_byte()
                 self.ticks += time_delta
                 self.current_note = (channel + 1, note_number, self.ticks)
                 # print "event", "%s:%s:%s" % (bar + 1, beat, tick), time_delta, "note_on", channel + 1, note_number, velocity
-            elif event_type == 0xB: # controller
+            elif event_type == 0xB:  # controller
                 controller = self.get_byte()
                 value = self.get_byte()
                 print "event", time_delta, "controller", channel + 1, controller, value
-            elif event_type == 0xC: # program change
+            elif event_type == 0xC:  # program change
                 program = self.get_byte()
                 print "event", time_delta, "program", channel + 1, program
             else:
@@ -194,8 +195,8 @@ class Trk(Base):
             if next_byte >= 0x80:
                 status = self.get_byte()
                 self.process_event(time_delta, status)
-            else: # running status
-                self.process_event(time_delta, status) # previous status
+            else:  # running status
+                self.process_event(time_delta, status)  # previous status
         if not self.track_end:
             raise Exception("no track end")
 
