@@ -131,8 +131,7 @@ class Trk(Base):
             else:
                 raise Exception("unknown metaevent status " + hex(status2))
         elif 0x80 <= status <= 0xEF:
-            event_type = status // 0x10
-            channel = status % 0x10
+            event_type, channel = divmod(status, 0x10)
             if event_type == 0x8:  # note off
                 note_number = self.get_byte()
                 velocity = self.get_byte()
