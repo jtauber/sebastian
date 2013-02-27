@@ -168,9 +168,13 @@ class Trk:
         out.write(d)
 
 
+def write(filename, tracks):
+    with open(filename, "w") as f:
+        s = SMF(tracks)
+        s.write(f)
+
+
 if __name__ == "__main__":
-    
-    f = open("test.mid", "w")
     
     test = OSequence([
         Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
@@ -181,6 +185,4 @@ if __name__ == "__main__":
         ]
     ])
     
-    s = SMF([test])
-    s.write(f)
-    f.close()
+    write("test.mid", [test])

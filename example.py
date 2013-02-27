@@ -23,10 +23,7 @@ seq5 = seq3 // seq4
 player.play([seq5])
 
 # write to MIDI
-f = open("seq5.mid", "w")
-s = write_midi.SMF([seq5])
-s.write(f)
-f.close()
+write_midi.write("seq5.mid", [seq5])
 
 # contruct a horizontal sequence of scale degrees
 seq6 = HSeq([Point(degree=degree) for degree in [1, 2, 3, 2, 1]])
