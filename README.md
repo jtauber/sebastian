@@ -1,7 +1,5 @@
 # Sebastian
 
-## *symbolic music analysis and composition library in Python*
-
 **Sebastian** is a symbolic music analysis and composition library written in
 Python.
 
