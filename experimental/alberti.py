@@ -12,7 +12,7 @@ from sebastian.midi.write_midi import SMF
 
 def alberti(triad):
     """
-    takes a VSeq of 3 notes and returns an HSequence of those notes in an
+    takes a VSeq of 3 notes and returns an HSeq of those notes in an
     alberti figuration.
     """
     
