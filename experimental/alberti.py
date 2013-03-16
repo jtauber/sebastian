@@ -7,7 +7,7 @@ from sebastian.core import VSeq, HSeq, Point, OSequence
 from sebastian.core.transforms import midi_pitch, degree_in_key_with_octave, add
 from sebastian.core.notes import Key, major_scale
 
-from sebastian.midi.write_midi import SMF
+from sebastian.midi import write_midi
 
 
 def alberti(triad):
@@ -33,6 +33,4 @@ C_major = Key("C", major_scale)
 seq = alberti_osequence | degree_in_key_with_octave(C_major, 5) | midi_pitch()
 
 # write to file:
-
-with open("alberti.mid", "w") as f:
-    s = SMF([seq]).write(f)
+write_midi.write("alberti.mid", [seq])
