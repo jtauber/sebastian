@@ -1,3 +1,7 @@
+# Sebastian
+
+## *symbolic music analysis and composition library in Python*
+
 **Sebastian** is a symbolic music analysis and composition library written in
 Python.
 
@@ -14,7 +18,7 @@ music.
 
 I spoke about Sebastian at PyCon 2013 and my slides are available at:
 
-https://speakerdeck.com/jtauber/music-theory-and-performance-analysis-with-sebastian-and-czerny
+<https://speakerdeck.com/jtauber/music-theory-and-performance-analysis-with-sebastian-and-czerny>
 
 A video of the talk should be available shortly.
 
