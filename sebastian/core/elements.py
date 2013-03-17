@@ -27,7 +27,9 @@ class SeqBase:
     
     def __init__(self, *elements):
         if len(elements) == 1:
-            if isinstance(elements[0], Iterable):
+            if isinstance(elements[0], Point):
+                elements = [elements[0]]
+            elif isinstance(elements[0], Iterable):
                 elements = list(elements[0])
         else:
             elements = list(elements)
