@@ -2,12 +2,6 @@ from collections import Iterable
 import tempfile
 import subprocess as sp
 from StringIO import StringIO
-try:
-    from IPython.core.display import Image
-    ipython = True
-except ImportError:
-    ipython = False
-
 from sebastian.lilypond import write_lilypond
 
 
@@ -78,9 +72,6 @@ class SeqBase:
         """
         Return a PNG representation of this sequence for IPython Notebook.
         """
-        if not ipython:
-            return None
-
         from sebastian.core.transforms import lilypond
         seq = HSeq(self) | lilypond()
         f = tempfile.NamedTemporaryFile(suffix=".preview.png")
@@ -99,9 +90,6 @@ class SeqBase:
         """
         Return a SVG representation of this sequence for IPython Notebook.
         """
-        if not ipython:
-            return None
-
         from sebastian.core.transforms import lilypond
         seq = HSeq(self) | lilypond()
         f = tempfile.NamedTemporaryFile(suffix=".preview.svg")
