@@ -13,6 +13,71 @@ class TestPoint(TestCase):
         })
         return retval
 
+    def test_point_tuple_arbitrary_data(self):
+        """
+        Ensure points can handle arbitrary data
+        """
+        from sebastian.core import Point
+        p1 = Point(a=1, b="foo")
+
+        self.assertEqual(p1.tuple("b", "a"), ("foo", 1))
+
+    def test_point_equality(self):
+        """
+        Ensure equals works on points
+        """
+        from sebastian.core import Point
+        p1 = Point(a=1, b="foo")
+        p2 = Point(a=1, b="foo")
+
+        self.assertEqual(p1, p2)
+
+    def test_point_inequality(self):
+        """
+        Ensure not equals works on points
+        """
+        from sebastian.core import Point
+        p1 = Point(a=1, b="foo")
+        p2 = Point(a=1, b="foo", c=3)
+
+        self.assertNotEqual(p1, p2)
+
+    def test_point_unification(self):
+        """
+        Ensure point unification works happy path
+        """
+        from sebastian.core import Point
+        p1 = Point(a=1, b="foo")
+        p2 = Point(c=3)
+
+        unified = p1 % p2
+        self.assertEqual(Point(a=1, b="foo", c=3), unified)
+
+    def test_unification_error(self):
+        """
+        Ensure invalid unifications make an error
+        """
+        from sebastian.core import Point
+        from sebastian.core.elements import UnificationError
+        p1 = Point(a=1, b="foo")
+        p2 = Point(a=2, b="foo")
+        try:
+            p1 % p2
+            self.assertTrue(False)
+        except UnificationError:
+            self.assertTrue(True)
+
+    def test_reflexive_unification(self):
+        """
+        Ensure reflexive unification is a noop
+        """
+        from sebastian.core import Point
+        p1 = Point(a=1, b="foo")
+        p2 = Point(a=1, b="foo")
+        unified = p1 % p2
+
+        self.assertEqual(p1, unified)
+
     def test_point_tuple(self):
         """
         Ensure Point.tuple works in the nominal case

@@ -32,6 +32,58 @@ class TestSequences(TestCase):
             {DURATION_64: 17 + 50, OFFSET_64: 16 + 50, MIDI_PITCH: 50 + 50}
         ])
 
+    def test_sequence_ctors(self):
+        """
+        Ensure the various sequence ctors work ok
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        p1 = Point(a=3, b="foo")
+        p2 = Point(c=5)
+        s2 = OffsetSequence([p1, p2])
+        s3 = OffsetSequence(p1, p2)
+        s4 = OffsetSequence(p1) + OffsetSequence(p2)
+        self.assertEqual(s2, s3)
+        self.assertEqual(s3, s4)
+        self.assertEqual(s2, s4)
+
+    def test_sequence_duration_and_offset_with_append(self):
+        """
+        Ensure sequences calculate durations correctly on append
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence()
+        s1.append(Point(duration=10))
+        s1.append(Point(duration=10))
+        self.assertEqual(20, s1.next_offset())
+        for point, offset in zip(s1, [0, 10]):
+            self.assertEqual(point['offset'], offset)
+
+    def test_vseq_doesnt_track_duration_on_append(self):
+        """
+        Ensure vseq dont do offset modification
+        """
+        from sebastian.core import VSeq, Point
+        s1 = VSeq()
+        s1.append(Point(duration=10))
+        s1.append(Point(duration=10))
+        for point in s1:
+            self.assertTrue('offset' not in point)
+
+    def test_hseq_doesnt_track_duration_on_append(self):
+        """
+        Ensure hseq doesnt do offset modification
+        """
+        from sebastian.core import HSeq, Point
+        s1 = HSeq()
+        s1.append(Point(duration=10))
+        s1.append(Point(duration=10))
+        for point in s1:
+            self.assertTrue('offset' not in point)
+
     def test_sequence_last_point(self):
         """
         Ensure that OSequence.last_point returns the highest offset note
@@ -98,6 +150,36 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 50, OFFSET_64: 55, DURATION_64: 17},
             {MIDI_PITCH: 53, OFFSET_64: 58, DURATION_64: 20}
         ])
+
+    def test_sequence_ctor_with_merge(self):
+        """
+        Ensure sequences can be made from merged sequences.
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence(Point(a=1, offset=0), Point(a=2, offset=20)) // OffsetSequence(Point(a=3, offset=10))
+
+        self.assertEqual(s1._elements[1]["a"], 3)
+
+    def test_sequence_map(self):
+        """
+        Ensure map_points applys the function
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence(Point(a=3, c=5), OffsetSequence([Point(d=x) for x in range(10)]), Point(a=5))
+
+        def double_a(point):
+            if 'a' in point:
+                point['a'] *= 2
+            return point
+
+        s2 = s1.map_points(double_a)
+
+        self.assertEqual(s2[0]['a'], 6)
+        self.assertEqual(s2[-1]['a'], 10)
 
     def test_sequence_repeats_more(self):
         """
