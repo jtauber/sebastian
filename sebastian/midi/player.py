@@ -7,11 +7,11 @@ import subprocess
 
 from sebastian.midi import write_midi
 
-OPEN = 'open'
-TIMIDITY = 'timidity'
+OPEN = "open"
+TIMIDITY = "timidity"
 
 
-def play(tracks, program=''):
+def play(tracks, program=""):
     f = tempfile.NamedTemporaryFile(suffix=".mid", delete=False)
     s = write_midi.SMF(tracks)
     s.write(f)
@@ -24,4 +24,4 @@ def play(tracks, program=''):
     if program:
         subprocess.call([program, f.name])
     else:
-        print 'A suitable program for your platform is unknown'
+        print "A suitable program for your platform is unknown"
