@@ -1,4 +1,7 @@
 from collections import Iterable
+import tempfile
+import subprocess as sp
+from sebastian.lilypond import write_lilypond
 
 
 class UnificationError(Exception):
@@ -63,6 +66,42 @@ class SeqBase:
         return func(self)
     
     __or__ = transform
+
+    def _repr_png_(self):
+        """
+        Return a PNG representation of this sequence for IPython Notebook.
+        """
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".preview.png")
+        basename = f.name[:-12] # everything except ".preview.png"
+
+        p = sp.Popen(["lilypond", "--png", "-dno-print-pages", 
+            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        return f.read()
+
+    def _repr_svg_(self):
+        """
+        Return a SVG representation of this sequence for IPython Notebook.
+        """
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".preview.svg")
+        basename = f.name[:-12] # everything except ".preview.svg"
+
+        p = sp.Popen(["lilypond", "-dbackend=svg", "-dno-print-pages", 
+            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        return f.read()
 
 
 def OSeq(offset_attr, duration_attr):

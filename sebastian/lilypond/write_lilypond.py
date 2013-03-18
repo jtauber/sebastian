@@ -1,12 +1,12 @@
 
 
+def output(seq):
+    return "{ %s }" % " ".join(point["lilypond"] for point in seq)
+
+
 def write(filename, seq):
     with open(filename, "w") as f:
-        f.write("{ ")
-        for point in seq:
-            f.write(point["lilypond"])
-            f.write(" ")
-        f.write("}\n")
+        f.write(output(seq))
 
 
 if __name__ == "__main__":
