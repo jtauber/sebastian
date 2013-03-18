@@ -22,3 +22,24 @@ class TestWriteMidi(TestCase):
 
         from sebastian.midi.write_midi import write
         write("test.mid", [test])
+
+    def test_write_midi_multi_tacks(self):
+        """
+        Writing out test.mid to ensure midi processing works.
+
+        This isn't really a test.
+        """
+        from sebastian.core import OSequence, Point
+        from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+        test1 = OSequence([
+            Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
+                (0, 60, 16), (16, 72, 16), (32, 64, 16), (48, 55, 16),
+            ]
+        ])
+        test2 = OSequence([
+            Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
+                (0, 55, 16), (16, 55, 16), (32, 64, 16), (48+16, 55, 16*10),
+            ]
+        ])
+        from sebastian.midi.write_midi import write
+        write("test2.mid", [test1, test2], instruments=[0,16], title="test song")
