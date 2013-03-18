@@ -1,3 +1,7 @@
+from collections import Iterable
+import tempfile
+import subprocess as sp
+from sebastian.lilypond import write_lilypond
 
 
 class UnificationError(Exception):
@@ -26,7 +30,9 @@ class SeqBase:
     
     def __init__(self, *elements):
         if len(elements) == 1:
-            if isinstance(elements[0], list) or isinstance(elements[0], SeqBase):
+            if isinstance(elements[0], Point):
+                elements = [elements[0]]
+            elif isinstance(elements[0], Iterable):
                 elements = list(elements[0])
         else:
             elements = list(elements)
@@ -41,6 +47,9 @@ class SeqBase:
     def __len__(self):
         return len(self._elements)
     
+    def __iter__(self):
+        return iter(self._elements)
+
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self._elements == other._elements
     
@@ -57,6 +66,42 @@ class SeqBase:
         return func(self)
     
     __or__ = transform
+
+    def _repr_png_(self):
+        """
+        Return a PNG representation of this sequence for IPython Notebook.
+        """
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".preview.png")
+        basename = f.name[:-12] # everything except ".preview.png"
+
+        p = sp.Popen(["lilypond", "--png", "-dno-print-pages", 
+            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        return f.read()
+
+    def _repr_svg_(self):
+        """
+        Return a SVG representation of this sequence for IPython Notebook.
+        """
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".preview.svg")
+        basename = f.name[:-12] # everything except ".preview.svg"
+
+        p = sp.Popen(["lilypond", "-dbackend=svg", "-dno-print-pages", 
+            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        return f.read()
 
 
 def OSeq(offset_attr, duration_attr):

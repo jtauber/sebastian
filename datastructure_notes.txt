@@ -1,3 +1,8 @@
+[ed: this are some notes I wrote in 2009; I'm keeping them here as they
+explain pretty well the original thinking behind the datastructures we 
+now have in Sebastian.]
+
+
 The primary datastructure I've been thinking about for Sebastian is a sequence
 of feature structures (or a set of feature structures with time offsets)
 
