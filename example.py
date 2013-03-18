@@ -26,7 +26,7 @@ player.play([seq5])
 write_midi.write("seq5.mid", [seq5])
 
 # contruct a horizontal sequence of scale degrees
-seq6 = HSeq([Point(degree=degree) for degree in [1, 2, 3, 2, 1]])
+seq6 = HSeq(Point(degree=degree) for degree in [1, 2, 3, 2, 1])
 
 # put that sequence into C major, octave 4 quavers
 C_MAJOR = Key("C", major_scale)
