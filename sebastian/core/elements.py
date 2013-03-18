@@ -1,7 +1,6 @@
 from collections import Iterable
 import tempfile
 import subprocess as sp
-from StringIO import StringIO
 from sebastian.lilypond import write_lilypond
 
 
