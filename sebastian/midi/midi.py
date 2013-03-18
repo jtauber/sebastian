@@ -167,7 +167,7 @@ class Trk(Base):
                 velocity = self.get_byte()
                 self.ticks += time_delta
                 self.current_note = (channel + 1, note_number, self.ticks)
-                # print "event", "%s:%s:%s" % (bar + 1, beat, tick), time_delta, "note_on", channel + 1, note_number, velocity
+                print "event", time_delta, "note_on", channel + 1, note_number, velocity
             elif event_type == 0xB:  # controller
                 controller = self.get_byte()
                 value = self.get_byte()
