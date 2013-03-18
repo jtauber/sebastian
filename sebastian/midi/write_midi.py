@@ -38,12 +38,19 @@ def write_varlen(out, n):
 
 class SMF:
     
-    def __init__(self, tracks):
+    def __init__(self, tracks, instruments = None):
         self.tracks = tracks
+
+        # instruments are specified per track, 0-127.
+        if instruments is None:
+            # default to every track uses inst. 0 (piano?)
+            instruments = [0]*len(tracks)
+        assert len(instruments) == len(tracks)
+        self.instruments = instruments 
         
     def write(self
             , out
-            , title = "untitled"
+            , title = "untitled" # distinct from filename
             , time_signature = (4, 2, 24, 8) # (2cd arg is power of 2) 
             , key_signature = (0, 0) # C
             , tempo = 500000 # in microseconds per quarter note
@@ -65,10 +72,17 @@ class SMF:
         
         t.track_end()
         t.write(out)
-        
-        for track in self.tracks:
+       
+        # each track is written to it's own channel
+        for channel, track in enumerate(self.tracks):
             t = Trk()
-            
+           
+            # set other track attributes here
+            #t.instrument('my instrument')
+
+            # set the instrument this channel is set for 
+            t.program_change(channel, self.instruments[channel])
+
             # we make a list of events including note off events so we can sort by
             # offset including them (to avoid negative time deltas)
             # @@@ this may eventually be a feature of sequences rather than this
@@ -88,9 +102,9 @@ class SMF:
                 else:
                     time_delta = (offset - prev_offset) * T
                 if on:
-                    t.start_note(time_delta, note_value)
+                    t.start_note(time_delta, channel, note_value)
                 else:
-                    t.end_note(time_delta, note_value)
+                    t.end_note(time_delta, channel, note_value)
                 prev_offset = offset
                 
             t.track_end()
@@ -116,13 +130,24 @@ class Trk:
     
     def __init__(self):
         self.data = StringIO()
-    
-    def sequence_track_name(self, name):
+   
+    def write_meta_info(self, byte1, byte2, data): 
+        "Worker method for writing meta info"
         write_varlen(self.data, 0)  # tick
-        write_byte(self.data, 0xFF)
-        write_byte(self.data, 0x03)
-        write_varlen(self.data, len(name))
-        write_chars(self.data, name)
+        write_byte(self.data, byte1)
+        write_byte(self.data, byte2)
+        write_varlen(self.data, len(data))
+        write_chars(self.data, data)
+
+    def instrument(self, inst):
+        "This works, but does not affect the 'instrument' used."
+        self.write_meta_info(0xFF, 0x04, inst)
+
+    def program_name(self, name):
+        self.write_meta_info(0xFF, 0x08, name)
+
+    def sequence_track_name(self, name):
+        self.write_meta_info(0xFF, 0x03, name)
     
     def time_signature(self, a, b, c, d):
         write_varlen(self.data, 0)  # tick
@@ -151,15 +176,20 @@ class Trk:
         write_byte(self.data, (t >> 8) % 256)
         write_byte(self.data, (t >> 0) % 256)
     
-    def start_note(self, time_delta, note_number):
+    def program_change(self, channel, program):
+        write_varlen(self.data, 0) # tick
+        write_byte(self.data, 0xC0 + channel) 
+        write_byte(self.data, program)
+        
+    def start_note(self, time_delta, channel, note_number):
         write_varlen(self.data, time_delta)
-        write_byte(self.data, 0x91)
+        write_byte(self.data, 0x90 + channel)
         write_byte(self.data, note_number)
         write_byte(self.data, 64)  # velocity
     
-    def end_note(self, time_delta, note_number):
+    def end_note(self, time_delta, channel, note_number):
         write_varlen(self.data, time_delta)
-        write_byte(self.data, 0x81)
+        write_byte(self.data, 0x80 + channel)
         write_byte(self.data, note_number)
         write_byte(self.data, 0)  # velocity
     
@@ -176,8 +206,8 @@ class Trk:
         out.write(d)
 
 
-def write(filename, tracks, **kws):
+def write(filename, tracks, instruments = None, **kws):
     with open(filename, "w") as f:
-        s = SMF(tracks)
+        s = SMF(tracks, instruments = instruments)
         # pass on some attributes, such as tempo, key, etc.
         s.write(f, **kws)
