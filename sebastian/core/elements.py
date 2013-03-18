@@ -1,3 +1,4 @@
+from collections import Iterable
 
 
 class UnificationError(Exception):
@@ -26,7 +27,9 @@ class SeqBase:
     
     def __init__(self, *elements):
         if len(elements) == 1:
-            if isinstance(elements[0], list) or isinstance(elements[0], SeqBase):
+            if isinstance(elements[0], Point):
+                elements = [elements[0]]
+            elif isinstance(elements[0], Iterable):
                 elements = list(elements[0])
         else:
             elements = list(elements)
@@ -41,6 +44,9 @@ class SeqBase:
     def __len__(self):
         return len(self._elements)
     
+    def __iter__(self):
+        return iter(self._elements)
+
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self._elements == other._elements
     

@@ -15,12 +15,12 @@ def alberti(triad):
     takes a VSeq of 3 notes and returns an HSeq of those notes in an
     alberti figuration.
     """
-    
-    return HSeq([triad[0], triad[2], triad[1], triad[2]])
+    return HSeq(triad[i] for i in [0, 2, 1, 2])
 
 
 # an abstract VSeq of 3 notes in root position (degree 1, 3 and 5)
-root_triad = VSeq(Point(degree=1), Point(degree=3), Point(degree=5))
+root_triad = VSeq(Point(degree=n) for n in [1, 3, 5])
+
 
 quaver_point = Point({DURATION_64: 8})
 

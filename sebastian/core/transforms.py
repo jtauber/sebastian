@@ -1,7 +1,7 @@
 from sebastian.core import MIDI_PITCH, OFFSET_64, DURATION_64
 from sebastian.core import Point, OSequence
 
-from sebastian.core.notes import modifiers
+from sebastian.core.notes import modifiers, letter
 
 
 def add(properties):
@@ -84,3 +84,27 @@ def midi_pitch():
         return point
     return lambda seq: seq.map_points(_)
 
+
+def lilypond():
+    def _(point):
+        octave = point["octave"]
+        pitch = point["pitch"]
+        duration = point[DURATION_64]
+        if octave > 4:
+            octave_string = "'" * (octave - 4)
+        elif octave < 4:
+            octave_string = "," * (4 - octave)
+        else:
+            octave_string = ""
+        m = modifiers(pitch)
+        if m > 0:
+            modifier_string = "is" * m
+        elif m < 0:
+            modifier_string = "es" * m
+        else:
+            modifier_string = ""
+        pitch_string = letter(pitch).lower() + modifier_string
+        duration_string = str(64 / duration)  # @@@ doesn't handle dotted notes yet
+        point["lilypond"] = "%s%s%s" % (pitch_string, octave_string, duration_string)
+        return point
+    return lambda seq: seq.map_points(_)
