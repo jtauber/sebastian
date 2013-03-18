@@ -29,3 +29,8 @@ You can join the Sebastian mailing list by emailing `sebastian@librelist.com`
 ## License
 
 Sebastian is open source under an MIT license. See the LICENSE file.
+
+## Running Tests
+
+    pip install nose
+    nosetests
