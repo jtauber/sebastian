@@ -95,6 +95,27 @@ class SeqBase:
 
         return f.read()
 
+    def _repr_svg_(self):
+        """
+        Return a SVG representation of this sequence for IPython Notebook.
+        """
+        if not ipython:
+            return None
+
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".preview.svg")
+        basename = f.name[:-12] # everything except ".preview.svg"
+
+        p = sp.Popen(["lilypond", "-dbackend=svg", "-dno-print-pages", 
+            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        return f.read()
+
 
 def OSeq(offset_attr, duration_attr):
     
