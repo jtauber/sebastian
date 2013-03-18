@@ -1,3 +1,4 @@
+from sebastian import logger
 from sebastian.core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
 
 import re
@@ -89,12 +90,12 @@ def note_tuple(token_dict, relative_note_tuple=None):
     elif "'" in octave_check:
         correct_octave = 4 + len(octave_check)
         if octave != correct_octave:
-            print "WARNING: failed octave check" # @@@ better reporting of warning
+            logger.warn("failed octave check")
             octave = correct_octave
     elif "," in octave_check:
         correct_octave = 4 - len(octave_check)
         if octave != correct_octave:
-            print "WARNING: failed octave check" # @@@ better reporting of warning
+            logger.warn("failed octave check")
             octave = correct_octave
     
     return MIDI_NOTE_VALUES[note], accidental_change, octave
