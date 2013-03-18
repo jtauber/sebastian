@@ -14,12 +14,18 @@ computer-assisted composition. It will also be a bit of a test bed for ideas
 I've had for a while around applying linguistics and abstract algebra to
 music.
 
+## PyCon 2013 Talk
+
 I spoke about Sebastian at PyCon 2013 and my slides are available at:
 
 <https://speakerdeck.com/jtauber/music-theory-and-performance-analysis-with-sebastian-and-czerny>
 
 A video of the talk should be available shortly.
 
+## Mailing List
 
-James Tauber
-jtauber@jtauber.com
+You can join the Sebastian mailing list by emailing `sebastian@librelist.com`
+
+## License
+
+Sebastian is open source under an MIT license. See the LICENSE file.
