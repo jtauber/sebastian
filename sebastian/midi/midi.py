@@ -108,7 +108,9 @@ class Trk(Base):
             status2 = self.get_byte()
             varlen2 = self.get_varlen()
             data = self.get_char(varlen2)
-            if status2 == 0x03:
+            if status2 == 0x01:
+                print "text event '%s'" % data
+            elif status2 == 0x03:
                 print "sequence/track name '%s'" % data
             elif status2 == 0x04:
                 print "instrument '%s'" % data
