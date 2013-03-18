@@ -1,4 +1,14 @@
 from collections import Iterable
+import tempfile
+import subprocess as sp
+from StringIO import StringIO
+try:
+    from IPython.core.display import Image
+    ipython = True
+except ImportError:
+    ipython = False
+
+from sebastian.lilypond import write_lilypond
 
 
 class UnificationError(Exception):
@@ -63,6 +73,27 @@ class SeqBase:
         return func(self)
     
     __or__ = transform
+
+    def _repr_png_(self):
+        """
+        Return a PNG representation of this sequence for IPython Notebook.
+        """
+        if not ipython:
+            return None
+
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".preview.png")
+        basename = f.name[:-12] # everything except ".preview.png"
+
+        p = sp.Popen(["lilypond", "--png", "-dno-print-pages", 
+            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        return f.read()
 
 
 def OSeq(offset_attr, duration_attr):
