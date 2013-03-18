@@ -23,8 +23,12 @@ class Base:
     def __init__(self, data):
         self.data = data
         self.index = 0
+        self.init()
         self.parse()
     
+    def init(self):
+        pass
+
     def peek_byte(self):
         data = self.data[self.index]
         return ord(data)
@@ -103,6 +107,9 @@ class Trk(Base):
     A parser for the Trk chunk in a MIDI file.
     """
     
+    def init(self):
+        self.note_started = {}
+
     def process_event(self, time_delta, status):
         if status == 0xFF:
             status2 = self.get_byte()
@@ -166,8 +173,25 @@ class Trk(Base):
                 note_number = self.get_byte()
                 velocity = self.get_byte()
                 self.ticks += time_delta
+                
+                if velocity > 0:
+                    if note_number in self.note_started:
+                        # new note at that pitch started before previous finished
+                        # not sure it should happen but let's handle it anyway
+                        start_ticks, start_velocity = self.note_started.pop(note_number)
+                        duration = self.ticks - start_ticks
+                        print "event", start_ticks, "note", channel + 1, note_number, duration
+                    self.note_started[note_number] = self.ticks, velocity
+                else:  # note end
+                    if note_number not in self.note_started:
+                        # note was never started so ignore
+                        pass
+                    else:
+                        start_ticks, start_velocity = self.note_started.pop(note_number)
+                        duration = self.ticks - start_ticks
+                    print "event", start_ticks, "note", channel + 1, note_number, duration
+
                 self.current_note = (channel + 1, note_number, self.ticks)
-                print "event", time_delta, "note_on", channel + 1, note_number, velocity
             elif event_type == 0xB:  # controller
                 controller = self.get_byte()
                 value = self.get_byte()
