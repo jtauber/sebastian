@@ -1,4 +1,13 @@
 from collections import Iterable
+import tempfile
+import subprocess as sp
+try:
+    from IPython.core.display import Image, SVG
+    ipython = True
+except ImportError:
+    ipython = False
+
+from sebastian.lilypond import write_lilypond
 
 
 class UnificationError(Exception):
@@ -63,6 +72,52 @@ class SeqBase:
         return func(self)
     
     __or__ = transform
+
+    def display(self, format="png"):
+        """
+        Return an object that can be used to display this sequence.
+        This is used for IPython Notebook.
+
+        :param format: "png" or "svg"
+        """
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+
+        if format == "png":
+            suffix = ".preview.png"
+            args = ["lilypond", "--png", "-dno-print-pages", "-dpreview"]
+        elif format == "svg":
+            suffix = ".preview.svg"
+            args = ["lilypond", "-dbackend=svg", "-dno-print-pages", "-dpreview"]
+
+        f = tempfile.NamedTemporaryFile(suffix=suffix)
+        basename = f.name[:-len(suffix)]
+        args.extend(["-o"+basename, "-"])
+
+        p = sp.Popen(args, stdin=sp.PIPE)
+        p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            return None
+
+        if not ipython:
+            return f.read()
+        if format == "png":
+            return Image(data=f.read(), filename=f.name, format="png")
+        else:
+            return SVG(data=f.read(), filename=f.name)
+
+    def _repr_png_(self):
+        f = self.display("png")
+        if not isinstance(f, basestring):
+            return f.data
+        return f
+
+    def _repr_svg_(self):
+        f = self.display("svg")
+        if not isinstance(f, basestring):
+            return f.data
+        return f
 
 
 def OSeq(offset_attr, duration_attr):

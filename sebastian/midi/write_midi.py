@@ -211,32 +211,3 @@ def write(filename, tracks, instruments = None, **kws):
         s = SMF(tracks, instruments = instruments)
         # pass on some attributes, such as tempo, key, etc.
         s.write(f, **kws)
-
-
-if __name__ == "__main__":
-    
-
-    # test 1
-    test = OSequence([
-        Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
-            (0, 60, 16), (16, 72, 16), (32, 64, 16), (48, 55, 16),
-            (64, 74, 16), (80, 62, 16), (96, 50, 16), (112, 48, 16),
-            (128, 36, 16), (144, 24, 16), (160, 40, 16), (176, 55, 16),
-            (192, 26, 16), (208, 38, 16), (224, 50, 16), (240, 48, 16)
-        ]
-    ])
-    
-    write("test.mid", [test], title="mysong1")
-
-    # test 2
-    test1 = OSequence([
-        Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
-            (0, 60, 16), (16, 72, 16), (32, 64, 16), (48, 55, 16),
-        ]
-    ])
-    test2 = OSequence([
-        Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
-            (0, 55, 16), (16, 55, 16), (32, 64, 16), (48+16, 55, 16*10),
-        ]
-    ])
-    write("test2.mid", [test1, test2], instruments=[0,16], title="mysong2")
