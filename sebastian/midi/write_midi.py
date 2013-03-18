@@ -41,8 +41,13 @@ class SMF:
     def __init__(self, tracks):
         self.tracks = tracks
         
-    def write(self, out):
-        
+    def write(self
+            , out
+            , title = "untitled"
+            , time_signature = (4, 2, 24, 8) # (2cd arg is power of 2) 
+            , key_signature = (0, 0) # C
+            , tempo = 500000 # in microseconds per quarter note
+        ):
         num_tracks = 1 + len(self.tracks)
         Thd(format=1, num_tracks=num_tracks, division=16).write(out)
         T = 1  # how to translate events times into time_delta using the
@@ -51,10 +56,13 @@ class SMF:
         # first track will just contain time/key/tempo info
         t = Trk()
         
-        t.sequence_track_name("untitled")
-        t.time_signature(4, 2, 24, 8)  # 4 4 (2nd arg is power of 2)
-        t.key_signature(0, 0)  # C
-        t.tempo(500000)  # in microseconds per quarter note
+        t0, t1, t2, t3 = time_signature
+        t.time_signature(t0, t1, t2, t3) 
+        k0, k1 = key_signature
+        t.key_signature(k0, k1)  
+        t.tempo(tempo)  
+        t.sequence_track_name(title)
+        
         t.track_end()
         t.write(out)
         
@@ -168,10 +176,11 @@ class Trk:
         out.write(d)
 
 
-def write(filename, tracks):
+def write(filename, tracks, **kws):
     with open(filename, "w") as f:
         s = SMF(tracks)
-        s.write(f)
+        # pass on some attributes, such as tempo, key, etc.
+        s.write(f, **kws)
 
 
 if __name__ == "__main__":
@@ -185,4 +194,4 @@ if __name__ == "__main__":
         ]
     ])
     
-    write("test.mid", [test])
+    write("test.mid", [test], title="mysong")
