@@ -43,7 +43,7 @@ class SMF:
         
     def write(self
             , out
-            , title = 'untitled'
+            , title = "untitled"
             , time_signature = (4, 2, 24, 8) # (2cd arg is power of 2) 
             , key_signature = (0, 0) # C
             , tempo = 500000 # in microseconds per quarter note
@@ -194,4 +194,4 @@ if __name__ == "__main__":
         ]
     ])
     
-    write("test.mid", [test], title='mysong')
+    write("test.mid", [test], title="mysong")
