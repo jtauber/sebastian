@@ -3,7 +3,7 @@ This script builds the first movement of Mozart's C major Sonata (K545).
 """
 from pprint import pprint
 from sebastian.core import Point, HSeq, VSeq, OSequence, DURATION_64
-from sebastian.core.transforms import midi_pitch, degree_in_key_with_octave
+from sebastian.core.transforms import midi_pitch, degree_in_key_with_octave, add
 from sebastian.core.notes import Key, major_scale
 from sebastian.midi import write_midi
 
@@ -13,11 +13,6 @@ def sequence_map(key, elements):
 def transpose_degree(point, degree_delta):
     result = Point(point)
     result['degree'] = result['degree'] + degree_delta
-    return result
-
-def combine(a, b):
-    result = Point(a)
-    result.update(b)
     return result
 
 def chord(inversion=(0, 2, 4)):
@@ -35,15 +30,14 @@ def expand_sequences(points):
         result.extend(point['sequence']._elements)
     return HSeq(result)
 
+
 def alberti(vseq, duration):
     """
     takes a VSeq of 3 notes and returns an HSeq of those notes in an
-    alberti figuration.
+    alberti figuration with each new note having the given duration.
     """
-    sequence = []
-    for i in [0, 2, 1, 2]:
-        sequence.append(combine(vseq[i], {DURATION_64: duration}))
-    return HSeq(sequence)
+    return HSeq(vseq[i] for i in [0, 2, 1, 2]) | add(Point({DURATION_64: duration}))
+
 
 def index(points):
     for i, p in enumerate(points):
