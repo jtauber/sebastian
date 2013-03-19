@@ -34,3 +34,8 @@ Sebastian is open source under an MIT license. See the LICENSE file.
 
     pip install nose
     nosetests
+
+or with coverage:
+
+    nosetests --with-coverage --cover-erase --cover-package=sebastian --cover-html
+    open cover/index.html
