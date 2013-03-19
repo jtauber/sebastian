@@ -6,7 +6,7 @@ from unittest import TestCase
 from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64, HSeq
 from sebastian.core.transforms import add, lilypond
 from sebastian.lilypond.interp import parse
-from sebastian.lilypond.write_lilypond import output
+from sebastian.lilypond.write_lilypond import output, write
 
 
 class TestLilyPondParsing(TestCase):
@@ -186,7 +186,16 @@ class TestLilyPondParsing(TestCase):
 
 class TestLilyPondWriting(TestCase):
 
-    def test_basic_writing(self):
+    def test_output(self):
         pitches = HSeq({"pitch": n} for n in [-2, 0, 2, -3])
         seq = pitches | add({"octave": 5, DURATION_64: 16}) | lilypond()
         self.assertEqual(output(seq), "{ c'4 d'4 e'4 f'4 }")
+
+    def test_write(self):
+        import tempfile
+        pitches = HSeq({"pitch": n} for n in [-2, 0, 2, -3])
+        seq = pitches | add({"octave": 5, DURATION_64: 16}) | lilypond()
+        f = tempfile.NamedTemporaryFile(suffix=".ly", delete=False)
+        write(f.name, seq)
+        with open(f.name) as g:
+            self.assertEqual(g.read(), "{ c'4 d'4 e'4 f'4 }")
