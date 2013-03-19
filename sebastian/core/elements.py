@@ -63,7 +63,7 @@ class SeqBase(object):
         return not (isinstance(other, self.__class__) and self._elements == other._elements)
     
     def map_points(self, func):
-        return self.__class__([func(Point(point)) for point in self._elements])
+        return self.__class__([func(point=Point(point)) for point in self._elements])
     
     def transform(self, func):
         """
