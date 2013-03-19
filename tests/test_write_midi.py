@@ -62,3 +62,62 @@ class TestWriteMidi(TestCase):
         actual_bytes = out_fd.getvalue()
 
         self.assertEqual(expected_bytes, actual_bytes)
+
+    def test_velocity(self):
+        from sebastian.midi.write_midi import Trk
+
+        t = Trk()
+        t.start_note(0, 1, 60, 10)
+        self.assertEqual(b'\x00\x91\x3c\x0a', t.data.getvalue())
+
+    def test_velocity_from_note(self):
+        from sebastian.core import OSequence, Point
+        from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+
+        test = OSequence([
+            Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
+                (0, 60, 16), (16, 72, 16), (32, 64, 16)
+            ]
+        ])
+
+        test[0]['velocity'] = 10
+        test[1]['velocity'] = 255
+
+        from sebastian.midi.write_midi import SMF
+        from io import BytesIO
+        out_fd = BytesIO(bytearray())
+
+        expected_bytes = b'MThd\x00\x00\x00\x06\x00\x01\x00\x02\x00\x10MTrk\x00\x00\x00&\x00\xffX\x04\x04\x02\x18\x08\x00\xffY\x02\x00\x00\x00\xffQ\x03\x07\xa1 \x00\xff\x03\ttest song\x00\xff/\x00MTrk\x00\x00\x00\x1f\x00\xc0\x00\x00\x90<\x0A\x10\x80<\x00\x00\x90H\xff\x10\x80H\x00\x00\x90@@\x10\x80@\x00\x00\xff/\x00'
+
+        s = SMF([test])
+        s.write(out_fd, title="test song")
+        actual_bytes = out_fd.getvalue()
+        print actual_bytes
+
+        self.assertEqual(expected_bytes, actual_bytes)
+
+    def test_velocity_from_note_with_invalid_velocities(self):
+        from sebastian.core import OSequence, Point
+        from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+
+        test = OSequence([
+            Point({OFFSET_64: o, MIDI_PITCH: m, DURATION_64: d}) for (o, m, d) in [
+                (0, 60, 16), (16, 72, 16), (32, 64, 16)
+            ]
+        ])
+
+        test[0]['velocity'] = -1
+        test[1]['velocity'] = 300
+
+        from sebastian.midi.write_midi import SMF
+        from io import BytesIO
+        out_fd = BytesIO(bytearray())
+
+        expected_bytes = b'MThd\x00\x00\x00\x06\x00\x01\x00\x02\x00\x10MTrk\x00\x00\x00&\x00\xffX\x04\x04\x02\x18\x08\x00\xffY\x02\x00\x00\x00\xffQ\x03\x07\xa1 \x00\xff\x03\ttest song\x00\xff/\x00MTrk\x00\x00\x00\x1f\x00\xc0\x00\x00\x90<\x00\x10\x80<\x00\x00\x90H\xff\x10\x80H\x00\x00\x90@@\x10\x80@\x00\x00\xff/\x00'
+
+        s = SMF([test])
+        s.write(out_fd, title="test song")
+        actual_bytes = out_fd.getvalue()
+        print actual_bytes
+
+        self.assertEqual(expected_bytes, actual_bytes)
