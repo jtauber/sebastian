@@ -1,5 +1,6 @@
 """
-This script builds the first movement of Mozart's C major Sonata (K545).
+This script will build up the first movement of Mozart's C major Sonata (K545)
+while trying out experimental features of Sebastian.
 """
 from pprint import pprint
 from sebastian.core import Point, HSeq, VSeq, OSequence, DURATION_64
@@ -52,9 +53,9 @@ def index(points):
 def build_movement():
     C_major = Key("C", major_scale)
     intervals = sequence_map("degree", [1, 5, 1, 4, 1, 5, 1])
-    intervals[1]["inversion"] = (-3, -1, 0, 2)
-    intervals[3]["inversion"] = (-3, 0, 2)
-    intervals[5]["inversion"] = (-5, -3, 0)
+    intervals[1]["inversion"] = (-3, -1, 0, 2)  # second inversion 7th
+    intervals[3]["inversion"] = (-3, 0, 2)  # second inversion
+    intervals[5]["inversion"] = (-5, -3, 0)  # first inversion
     rhythm = sequence_map(DURATION_64, [128, 64, 64, 64, 64, 64, 64])
     melody = intervals & rhythm
     melody = melody.map_points(chord())
