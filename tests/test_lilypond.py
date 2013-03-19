@@ -23,13 +23,13 @@ class TestLilyPond(TestCase):
             r = result[i].tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
             if event != r:
                 print "%s != %s" % (event, r)
-                print "\x1B[31mFAIL\x1B[0m"
+                assert False, "\x1B[31mFAIL\x1B[0m"
                 break
             else:
                 print "%s == %s" % (event, r)
         else:
             if len(answer) != len(result):
-                print "\x1B[31mFAIL (different length)\x1B[0m"
+                assert False, "\x1B[31mFAIL (different length)\x1B[0m"
                 for j in range(i + 1, len(result)):
                     print "!= %s" % (result[j].tuple(OFFSET_64, MIDI_PITCH, DURATION_64), )
             else:
