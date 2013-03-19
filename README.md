@@ -49,5 +49,3 @@ or with coverage:
 and install Lilypond, making sure commandline `lilypond` is on your path then:
 
     ipython notebook
-
-![screenshot of initial IPython Notebook integration](http://d.pr/i/CWh8)
