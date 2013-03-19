@@ -184,7 +184,26 @@ def OSeq(offset_attr, duration_attr):
             combine the points in two sequences, putting them in offset order
             """
             return _OSeq(sorted(self._elements + parallel_seq._elements, key=lambda x: x.get(offset_attr, 0)))
-        
+
+        def subseq(self, start_offset=0, end_offset=None):
+            """
+            Return a subset of the sequence
+            starting at start_offset (defaulting to the beginning)
+            ending at end_offset (None representing the end, whih is the default)
+            """
+            def subseq_iter(start_offset, end_offset):
+                for point in self._elements:
+                    #Skip until start
+                    if point[offset_attr] < start_offset:
+                        continue
+
+                    #Yield points start_offset <=  point < end_offset
+                    if end_offset is None or point[offset_attr] < end_offset:
+                        yield point
+                    else:
+                        raise StopIteration
+            return _OSeq(subseq_iter(start_offset, end_offset))
+
         __add__ = concatenate
         __mul__ = repeat
         __floordiv__ = merge

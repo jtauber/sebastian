@@ -262,3 +262,24 @@ class TestTransforms(TestCase):
               'octave': 4,
               'pitch': -11}
         ])
+
+    def test_subseq(self):
+        from sebastian.core.transforms import subseq
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence(
+            Point(a=2, offset=0),
+            Point(a=2, offset=20),
+            Point(a=2, offset=25),
+            Point(a=2, offset=30),
+            Point(a=2, offset=50),
+        )
+        s2 = s1 | subseq(20, 30)
+        self.assertEqual(
+            s2,
+            OffsetSequence(
+                Point(a=2, offset=20),
+                Point(a=2, offset=25)
+            )
+        )
