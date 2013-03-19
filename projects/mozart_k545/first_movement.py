@@ -59,8 +59,9 @@ def build_movement():
     rhythm = sequence_map(DURATION_64, [128, 64, 64, 64, 64, 64, 64])
     melody = intervals & rhythm
     melody = melody.map_points(chord())
+    duration = 8
     for point in melody:
-        point["sequence"] = alberti(point["sequence"], 8) * (point[DURATION_64] / 64)
+        point["sequence"] = alberti(point["sequence"], duration) * (point[DURATION_64] / (8 * duration))
     melody = expand_sequences(melody)
 
     # note values filled-out for C major in octave 5 then MIDI pitches calculated
