@@ -34,3 +34,18 @@ Sebastian is open source under an MIT license. See the LICENSE file.
 
     pip install nose
     nosetests
+
+or with coverage:
+
+    nosetests --with-coverage --cover-erase --cover-package=sebastian --cover-html
+    open cover/index.html
+
+## IPython Notebook Integration
+
+    pip install ipython
+    pip install tornado
+    pip install pyzmq
+    
+and install Lilypond, making sure commandline `lilypond` is on your path then:
+
+    ipython notebook
