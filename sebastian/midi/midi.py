@@ -83,9 +83,9 @@ class SMF(Base):
     def parse(self):
         while self.index < len(self.data):
             chunk_id, data = self.parse_chunk()
-            if chunk_id == "MThd":
+            if chunk_id == b"MThd":
                 Thd(data, self.handler)
-            elif chunk_id == "MTrk":
+            elif chunk_id == b"MTrk":
                 Trk(data, self.handler)
             else:
                 raise Exception("unknown chunk type")
@@ -304,8 +304,8 @@ class SebastianHandler(BaseHandler):
         self.tracks[track_num] = self.current_sequence
 
     def note(self, offset, channel, midi_pitch, duration):
-        offset_64 = 16 * offset / self.division
-        duration_64 = 16 * duration / self.division
+        offset_64 = 16 * offset // self.division
+        duration_64 = 16 * duration // self.division
         point = Point({OFFSET_64: offset_64, MIDI_PITCH: midi_pitch, DURATION_64: duration_64})
         self.current_sequence.append(point)
 
