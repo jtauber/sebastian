@@ -39,3 +39,15 @@ or with coverage:
 
     nosetests --with-coverage --cover-erase --cover-package=sebastian --cover-html
     open cover/index.html
+
+## IPython Notebook Integration
+
+    pip install ipython
+    pip install tornado
+    pip install pyzmq
+    
+and install Lilypond, making sure commandline `lilypond` is on your path then:
+
+    ipython notebook
+
+![http://d.pr/i/CWh8](screenshot of initial IPython Notebook integration)
