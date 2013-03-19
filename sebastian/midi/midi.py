@@ -20,8 +20,9 @@ class Base(object):
     array and incrementing the index appropriately.
     """
     
-    def __init__(self, data):
+    def __init__(self, data, handler):
         self.data = data
+        self.handler = handler
         self.index = 0
         self.init()
         self.parse()
@@ -82,9 +83,9 @@ class SMF(Base):
         while self.index < len(self.data):
             chunk_id, data = self.parse_chunk()
             if chunk_id == "MThd":
-                Thd(data)
+                Thd(data, self.handler)
             elif chunk_id == "MTrk":
-                Trk(data)
+                Trk(data, self.handler)
             else:
                 print(chunk_id)
                 pass  # ignore unknown chunk type
@@ -226,8 +227,13 @@ class Trk(Base):
             raise Exception("no track end")
 
 
+class Handler:
+    pass
+
+
 if __name__ == "__main__":
     track = -1
     import sys
     filename = sys.argv[1]
-    f = SMF(open(filename).read())
+    handler = Handler()
+    f = SMF(open(filename).read(), handler)
