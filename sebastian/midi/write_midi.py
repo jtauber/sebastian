@@ -93,7 +93,6 @@ class SMF(object):
             for point in track:
                 offset, note_value, duration = point.tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
                 velocity = 64 if 'velocity' not in point else point['velocity']
-                velocity = max(min(velocity, 255), 0)  # ensure velocity is valid
                 if note_value is not None:
                     events_with_noteoff.append((True, offset, note_value, velocity))
                     events_with_noteoff.append((False, offset + duration, note_value, velocity))
