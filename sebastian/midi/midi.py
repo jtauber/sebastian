@@ -82,7 +82,7 @@ class SMF(Base):
             elif chunk_id == "MTrk":
                 Trk(data)
             else:
-                print chunk_id
+                print(chunk_id)
                 pass  # ignore unknown chunk type
 
 
@@ -95,7 +95,7 @@ class Thd(Base):
         format = self.get_ushort()
         num_tracks = self.get_ushort()
         division = self.get_ushort()
-        print "Thd", format, num_tracks, division
+        print("Thd", format, num_tracks, division)
 
 
 class Trk(Base):
@@ -109,25 +109,25 @@ class Trk(Base):
             varlen2 = self.get_varlen()
             data = self.get_char(varlen2)
             if status2 == 0x03:
-                print "sequence/track name '%s'" % data
+                print("sequence/track name '%s'" % data)
             elif status2 == 0x04:
-                print "instrument '%s'" % data
+                print("instrument '%s'" % data)
             elif status2 == 0x2F:
                 assert varlen2 == 0, varlen2
                 self.track_end = True
-                print "track end"
+                print("track end")
             elif status2 == 0x51:
                 assert varlen2 == 3, varlen2
-                print "tempo %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2]))
+                print("tempo %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2])))
             elif status2 == 0x54:
                 assert varlen2 == 5, varlen2
-                print "smpte %d %d %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3]), ord(data[4]))
+                print("smpte %d %d %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3]), ord(data[4])))
             elif status2 == 0x58:
                 assert varlen2 == 4, varlen2
-                print "time signature %d %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3]))
+                print("time signature %d %d %d %d" % (ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3])))
             elif status2 == 0x59:
                 assert varlen2 == 2, varlen2
-                print "key signature %d %d" % (ord(data[0]), ord(data[1]))  # @@@ first arg signed?
+                print("key signature %d %d" % (ord(data[0]), ord(data[1])))  # @@@ first arg signed?
             else:
                 raise Exception("unknown metaevent status " + hex(status2))
         elif 0x80 <= status <= 0xEF:
@@ -154,25 +154,25 @@ class Trk(Base):
                     rest = divmod(start_ticks - self.next_note, 60)
                     assert rest[1] == 0
                     rest = rest[0]
-                    print "0:0:%d" % rest,
+                    print("0:0:%d" % rest)
                 if bar + 1 > self.prev_bar:
-                    print "\n# bar %s" % (bar + 1)
+                    print("\n# bar %s" % (bar + 1))
                     self.prev_bar = bar + 1
-                print "%d:%d:%d" % (note_name[0], note_name[1], est_dur),
+                print("%d:%d:%d" % (note_name[0], note_name[1], est_dur))
                 self.next_note = start_ticks + (est_dur * 60)
             elif event_type == 0x9:  # note on
                 note_number = self.get_byte()
                 velocity = self.get_byte()
                 self.ticks += time_delta
                 self.current_note = (channel + 1, note_number, self.ticks)
-                # print "event", "%s:%s:%s" % (bar + 1, beat, tick), time_delta, "note_on", channel + 1, note_number, velocity
+                # print("event", "%s:%s:%s" % (bar + 1, beat, tick), time_delta, "note_on", channel + 1, note_number, velocity)
             elif event_type == 0xB:  # controller
                 controller = self.get_byte()
                 value = self.get_byte()
-                print "event", time_delta, "controller", channel + 1, controller, value
+                print("event", time_delta, "controller", channel + 1, controller, value)
             elif event_type == 0xC:  # program change
                 program = self.get_byte()
-                print "event", time_delta, "program", channel + 1, program
+                print("event", time_delta, "program", channel + 1, program)
             else:
                 raise Exception("unknown event type " + hex(event_type))
         else:
@@ -184,7 +184,7 @@ class Trk(Base):
         self.prev_bar = 0
         global track
         track += 1
-        print "\n## Track %s" % track
+        print("\n## Track %s" % track)
         self.track_end = False
         while self.index < len(self.data):
             if self.track_end:
