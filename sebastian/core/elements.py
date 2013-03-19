@@ -15,7 +15,7 @@ class UnificationError(Exception):
 
 
 class Point(dict):
-    
+
     def unify(self, other):
         new = self.copy()
         for key, value in other.items():
@@ -113,6 +113,9 @@ class SeqBase(object):
             return Image(data=f.read(), filename=f.name, format="png")
         else:
             return SVG(data=f.read(), filename=f.name)
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__.__name__, self._elements)
 
     def _repr_png_(self):
         f = self.display("png")
