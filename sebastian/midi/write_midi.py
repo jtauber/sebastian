@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from cStringIO import StringIO
+from io import StringIO
 
 from sebastian.core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
 
