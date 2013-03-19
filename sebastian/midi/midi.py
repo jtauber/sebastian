@@ -223,7 +223,7 @@ class Trk(Base):
 
 class BaseHandler(object):
     
-    def header(self, formt, num_tracks, division):
+    def header(self, format, num_tracks, division):
         pass
 
     def text_event(self, text):
@@ -256,20 +256,23 @@ class BaseHandler(object):
     def controller(self, time_delta, channel, controller, value):
         pass
 
+    def program_change(self, time_delta, channel, program):
+        pass
+
     def note(self, offset, channel, midi_pitch, duration):
         pass
 
 
 class PrintHandler(BaseHandler):
     
-    def header(self, formt, num_tracks, division):
-        print("Thd", format, num_tracks, division)
+    def header(self, format, num_tracks, division):
+        print("Thd %d %d %d" % (format, num_tracks, division))
 
     def text_event(self, text):
-        print "text event '%s'" % text
+        print("text event '%s'" % text)
 
     def track_name(self, name):
-        print "sequence/track name '%s'" % name
+        print("sequence/track name '%s'" % name)
 
     def instrument(self, name):
         print("instrument '%s'" % name)
@@ -294,6 +297,9 @@ class PrintHandler(BaseHandler):
 
     def controller(self, time_delta, channel, controller, value):
         print("controller %d %d %d %d" % (time_delta, channel, controller, value))
+
+    def program_change(self, time_delta, channel, program):
+        print("program change %d %d %d" % (time_delta, channel, program))
 
     def note(self, offset, channel, midi_pitch, duration):
         print("note %d %d %d %d" % (offset, channel, midi_pitch, duration))
