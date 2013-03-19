@@ -7,13 +7,16 @@ from sebastian.core.transforms import midi_pitch, degree_in_key_with_octave, add
 from sebastian.core.notes import Key, major_scale
 from sebastian.midi import write_midi
 
+
 def sequence_map(key, elements):
     return HSeq({key: x} for x in elements)
+
 
 def transpose_degree(point, degree_delta):
     result = Point(point)
     result['degree'] = result['degree'] + degree_delta
     return result
+
 
 def chord(inversion=(0, 2, 4)):
     def _(point):
@@ -23,6 +26,7 @@ def chord(inversion=(0, 2, 4)):
         result.update({'sequence': VSeq(children)})
         return result
     return _
+
 
 def expand_sequences(points):
     result = []
@@ -43,6 +47,7 @@ def index(points):
     for i, p in enumerate(points):
         p['index'] = i
     return points
+
 
 def build_movement():
     C_major = Key("C", major_scale)
@@ -70,5 +75,3 @@ if __name__ == '__main__':
     for point in movement:
         pprint(point)
     write_midi.write("first_movement.mid", [movement])
-
-
