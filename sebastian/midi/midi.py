@@ -314,7 +314,7 @@ def load_midi(filename):
     global track
     track = -1
     handler = SebastianHandler()
-    SMF(bytearray(open(filename).read()), handler)
+    SMF(bytearray(open(filename, "rb").read()), handler)
     return handler.tracks
 
 
@@ -323,4 +323,4 @@ if __name__ == "__main__":
     import sys
     filename = sys.argv[1]
     handler = SebastianHandler()
-    SMF(bytearray(open(filename).read()), handler)
+    SMF(bytearray(open(filename, "rb").read()), handler)
