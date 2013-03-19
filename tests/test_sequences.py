@@ -169,7 +169,7 @@ class TestSequences(TestCase):
         from sebastian.core import OSeq, Point
         OffsetSequence = OSeq("offset", "duration")
 
-        s1 = OffsetSequence(Point(a=3, c=5), OffsetSequence([Point(d=x) for x in range(10)]), Point(a=5))
+        s1 = OffsetSequence(Point(a=3, c=5), Point(a=5))
 
         def double_a(point):
             if 'a' in point:

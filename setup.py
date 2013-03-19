@@ -9,4 +9,5 @@ setup(
     author = "James Tauber",
     author_email = "jtauber@jtauber.com",
     packages = find_packages(),
+    install_requires = ['six'],
 )
