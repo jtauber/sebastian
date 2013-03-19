@@ -165,6 +165,8 @@ class TestLilyPond(TestCase):
         )
 
     def test_octave_check(self):
+        import logging
+        logging.disable(logging.WARN)
         self.eq(
             r"\relative c'' { c2 d='4 d e2 f }",
             [
@@ -173,6 +175,7 @@ class TestLilyPond(TestCase):
                 (128, None, None),
             ]
         )
+        logging.disable(logging.NOTSET)
 
     def test_acciaccatura(self):
         self.eq(
