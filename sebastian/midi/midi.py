@@ -221,7 +221,46 @@ class Trk(Base):
             raise Exception("no track end")
 
 
-class Handler:
+class BaseHandler(object):
+    
+    def header(self, formt, num_tracks, division):
+        pass
+
+    def text_event(self, text):
+        pass
+
+    def track_name(self, name):
+        pass
+
+    def instrument(self, name):
+        pass
+
+    def track_start(self, track_num):
+        pass
+
+    def track_end(self):
+        pass
+
+    def tempo(self, t1, t2, t3):
+        pass
+
+    def smpte(self, s1, s2, s3, s4, s5):
+        pass
+
+    def time_signature(self, t1, t2, t3, t4):
+        pass
+
+    def key_signature(self, k1, k2):
+        pass
+
+    def controller(self, time_delta, channel, controller, value):
+        pass
+
+    def note(self, offset, channel, midi_pitch, duration):
+        pass
+
+
+class PrintHandler(BaseHandler):
     
     def header(self, formt, num_tracks, division):
         print("Thd", format, num_tracks, division)
@@ -264,5 +303,5 @@ if __name__ == "__main__":
     track = -1
     import sys
     filename = sys.argv[1]
-    handler = Handler()
+    handler = PrintHandler()
     f = SMF(open(filename).read(), handler)
