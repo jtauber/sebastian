@@ -33,13 +33,12 @@ class Base(object):
         pass
 
     def peek_byte(self):
-        data = self.data[self.index]
-        return ord(data)
+        return self.data[self.index]
     
     def get_byte(self):
         data = self.data[self.index]
         self.index += 1
-        return ord(data)
+        return data
     
     def get_char(self, length=1):
         data = self.data[self.index:self.index + length]
@@ -129,16 +128,16 @@ class Trk(Base):
                 self.handler.track_end()
             elif status2 == 0x51:
                 assert varlen2 == 3, varlen2
-                self.handler.tempo(ord(data[0]), ord(data[1]), ord(data[2]))
+                self.handler.tempo(data[0], data[1], data[2])
             elif status2 == 0x54:
                 assert varlen2 == 5, varlen2
-                self.handler.smpte(ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3]), ord(data[4]))
+                self.handler.smpte(data[0], data[1], data[2], data[3], data[4])
             elif status2 == 0x58:
                 assert varlen2 == 4, varlen2
-                self.handler.time_signature(ord(data[0]), ord(data[1]), ord(data[2]), ord(data[3]))
+                self.handler.time_signature(data[0], data[1], data[2], data[3])
             elif status2 == 0x59:
                 assert varlen2 == 2, varlen2
-                self.handler.key_signature(ord(data[0]), ord(data[1]))  # @@@ first arg signed?
+                self.handler.key_signature(data[0], data[1])  # @@@ first arg signed?
             else:
                 raise Exception("unknown metaevent status " + hex(status2))
         elif 0x80 <= status <= 0xEF:
@@ -315,7 +314,7 @@ def load_midi(filename):
     global track
     track = -1
     handler = SebastianHandler()
-    SMF(open(filename, "rb").read(), handler)
+    SMF(bytearray(open(filename).read()), handler)
     return handler.tracks
 
 
@@ -324,4 +323,4 @@ if __name__ == "__main__":
     import sys
     filename = sys.argv[1]
     handler = SebastianHandler()
-    SMF(open(filename).read(), handler)
+    SMF(bytearray(open(filename).read()), handler)
