@@ -21,12 +21,7 @@ class TestLilyPond(TestCase):
         i = -1  # so available in else clause of for
         for i, event in enumerate(answer):
             r = result[i].tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
-            if event != r:
-                print "%s != %s" % (event, r)
-                assert False, "\x1B[31mFAIL\x1B[0m"
-                break
-            else:
-                print "%s == %s" % (event, r)
+            self.assertEqual(event, r)
         else:
             if len(answer) != len(result):
                 assert False, "\x1B[31mFAIL (different length)\x1B[0m"
