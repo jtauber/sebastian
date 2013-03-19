@@ -18,22 +18,12 @@ class TestLilyPond(TestCase):
 
         print "\nTEST: %s" % lilypond
         result = parse(lilypond)
+        print list(result)
         i = -1  # so available in else clause of for
+        self.assertEqual(len(answer), len(result))
         for i, event in enumerate(answer):
             r = result[i].tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
-            if event != r:
-                print "%s != %s" % (event, r)
-                print "\x1B[31mFAIL\x1B[0m"
-                break
-            else:
-                print "%s == %s" % (event, r)
-        else:
-            if len(answer) != len(result):
-                print "\x1B[31mFAIL (different length)\x1B[0m"
-                for j in range(i + 1, len(result)):
-                    print "!= %s" % (result[j].tuple(OFFSET_64, MIDI_PITCH, DURATION_64), )
-            else:
-                print "\x1B[32mSUCCESS\x1B[0m"
+            self.assertEqual(event, r)
 
     def test_absolute_octave_entry(self):
         self.eq(
@@ -42,7 +32,7 @@ class TestLilyPond(TestCase):
                 (0, 48, 16), (16, 50, 16), (32, 52, 16), (48, 53, 16),
                 (64, 55, 16), (80, 57, 16), (96, 59, 16), (112, 48, 16),
                 (128, 50, 16), (144, 52, 16), (160, 53, 16), (176, 55, 16),
-                (192, None, None),
+                (192, None, None)
             ]
         )
 
