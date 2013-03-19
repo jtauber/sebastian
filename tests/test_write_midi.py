@@ -92,7 +92,6 @@ class TestWriteMidi(TestCase):
         s = SMF([test])
         s.write(out_fd, title="test song")
         actual_bytes = out_fd.getvalue()
-        print actual_bytes
 
         self.assertEqual(expected_bytes, actual_bytes)
 
@@ -118,6 +117,5 @@ class TestWriteMidi(TestCase):
         s = SMF([test])
         s.write(out_fd, title="test song")
         actual_bytes = out_fd.getvalue()
-        print actual_bytes
 
         self.assertEqual(expected_bytes, actual_bytes)
