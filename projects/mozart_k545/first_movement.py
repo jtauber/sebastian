@@ -14,16 +14,16 @@ def sequence_map(key, elements):
 
 def transpose_degree(point, degree_delta):
     result = Point(point)
-    result['degree'] = result['degree'] + degree_delta
+    result["degree"] = result["degree"] + degree_delta
     return result
 
 
 def chord(inversion=(0, 2, 4)):
     def _(point):
         result = point.copy()
-        final_inversion = point.get('inversion', inversion)
+        final_inversion = point.get("inversion", inversion)
         children = [transpose_degree(point, i) for i in final_inversion]
-        result.update({'sequence': VSeq(children)})
+        result.update({"sequence": VSeq(children)})
         return result
     return _
 
@@ -31,7 +31,7 @@ def chord(inversion=(0, 2, 4)):
 def expand_sequences(points):
     result = []
     for point in points:
-        result.extend(point['sequence']._elements)
+        result.extend(point["sequence"]._elements)
     return HSeq(result)
 
 
@@ -45,21 +45,21 @@ def alberti(vseq, duration):
 
 def index(points):
     for i, p in enumerate(points):
-        p['index'] = i
+        p["index"] = i
     return points
 
 
 def build_movement():
     C_major = Key("C", major_scale)
-    intervals = sequence_map('degree', [1, 5, 1, 4, 1, 5, 1])
-    intervals[1]['inversion'] = (-3, -1, 0, 2)
-    intervals[3]['inversion'] = (-3, 0, 2)
-    intervals[5]['inversion'] = (-5, -3, 0)
+    intervals = sequence_map("degree", [1, 5, 1, 4, 1, 5, 1])
+    intervals[1]["inversion"] = (-3, -1, 0, 2)
+    intervals[3]["inversion"] = (-3, 0, 2)
+    intervals[5]["inversion"] = (-5, -3, 0)
     rhythm = sequence_map(DURATION_64, [128, 64, 64, 64, 64, 64, 64])
     melody = intervals & rhythm
     melody = melody.map_points(chord())
     for point in melody:
-        point['sequence'] = alberti(point['sequence'], 8) * (point[DURATION_64] / 64)
+        point["sequence"] = alberti(point["sequence"], 8) * (point[DURATION_64] / 64)
     melody = expand_sequences(melody)
 
     # note values filled-out for C major in octave 5 then MIDI pitches calculated
@@ -70,7 +70,7 @@ def build_movement():
 
     return melody
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     movement = build_movement()
     for point in movement:
         pprint(point)
