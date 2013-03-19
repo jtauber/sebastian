@@ -237,6 +237,33 @@ class HSeq(SeqBase):
         for i in range(count):
             x = x.concatenate(self)
         return x
+
+    def subseq(self, start_offset=0, end_offset=None):
+        """
+        Return a subset of the sequence
+        starting at start_offset (defaulting to the beginning)
+        ending at end_offset (None representing the end, whih is the default)
+        Raises ValueError if duration_64 is missing on any element
+        """
+        from sebastian.core import DURATION_64
+
+        def subseq_iter(start_offset, end_offset):
+            cur_offset = 0
+            for point in self._elements:
+                try:
+                    cur_offset += point[DURATION_64]
+                except KeyError:
+                    raise ValueError("HSeq.subseq requires all points to have a %s attribute" % DURATION_64)
+                #Skip until start
+                if cur_offset < start_offset:
+                    continue
+
+                #Yield points start_offset <=  point < end_offset
+                if end_offset is None or cur_offset < end_offset:
+                    yield point
+                else:
+                    raise StopIteration
+        return HSeq(subseq_iter(start_offset, end_offset))
     
     __add__ = concatenate
     __mul__ = repeat

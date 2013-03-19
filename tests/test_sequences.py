@@ -387,3 +387,22 @@ class TestSequences(TestCase):
                 Point(a=2, offset=20),
             )
         )
+
+    def test_hseq_subseq(self):
+        """
+        Ensure that two sequences can be zipped together, unifying its points.
+        """
+        from sebastian.core import HSeq
+        from sebastian.core import MIDI_PITCH, DURATION_64
+        s1 = HSeq([
+            {MIDI_PITCH: 50, DURATION_64: 10},
+            {MIDI_PITCH: 51, DURATION_64: 10},
+            {MIDI_PITCH: 52, DURATION_64: 10},
+            {MIDI_PITCH: 53, DURATION_64: 10}
+        ])
+
+        s2 = s1.subseq(20,40)
+        self.assertEqual(s2, HSeq([
+            {MIDI_PITCH: 51, DURATION_64: 10},
+            {MIDI_PITCH: 52, DURATION_64: 10},
+        ]))
