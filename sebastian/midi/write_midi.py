@@ -92,18 +92,19 @@ class SMF(object):
             events_with_noteoff = []
             for point in track:
                 offset, note_value, duration = point.tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
+                velocity = 64 if 'velocity' not in point else point['velocity']
                 if note_value is not None:
-                    events_with_noteoff.append((True, offset, note_value))
-                    events_with_noteoff.append((False, offset + duration, note_value))
+                    events_with_noteoff.append((True, offset, note_value, velocity))
+                    events_with_noteoff.append((False, offset + duration, note_value, velocity))
             
             prev_offset = None
-            for on, offset, note_value in sorted(events_with_noteoff, key=lambda x: x[1]):
+            for on, offset, note_value, velocity in sorted(events_with_noteoff, key=lambda x: x[1]):
                 if prev_offset is None:
                     time_delta = 0
                 else:
                     time_delta = (offset - prev_offset) * T
                 if on:
-                    t.start_note(time_delta, channel, note_value)
+                    t.start_note(time_delta, channel, note_value, velocity)
                 else:
                     t.end_note(time_delta, channel, note_value)
                 prev_offset = offset
@@ -182,11 +183,11 @@ class Trk(object):
         write_byte(self.data, 0xC0 + channel) 
         write_byte(self.data, program)
         
-    def start_note(self, time_delta, channel, note_number):
+    def start_note(self, time_delta, channel, note_number, velocity=64):
         write_varlen(self.data, time_delta)
         write_byte(self.data, 0x90 + channel)
         write_byte(self.data, note_number)
-        write_byte(self.data, 64)  # velocity
+        write_byte(self.data, max(min(velocity, 255), 0))  # velocity
     
     def end_note(self, time_delta, channel, note_number):
         write_varlen(self.data, time_delta)
