@@ -6,6 +6,8 @@ A library for parsing Standard MIDI Files (SMFs).
 Currently it just outputs the data it finds.
 """
 
+from sebastian.core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
+
 
 class Base(object):
     """
@@ -292,9 +294,34 @@ class PrintHandler(BaseHandler):
         print("note %d %d %d %d" % (offset, channel, midi_pitch, duration))
 
 
+class SebastianHandler(BaseHandler):
+
+    def header(self, format, num_tracks, division):
+        self.division = division
+        self.tracks = [None] * num_tracks
+
+    def track_start(self, track_num):
+        self.current_sequence = OSequence()
+        self.tracks[track_num] = self.current_sequence
+
+    def note(self, offset, channel, midi_pitch, duration):
+        offset_64 = 16 * offset / self.division
+        duration_64 = 16 * duration / self.division
+        point = Point({OFFSET_64: offset_64, MIDI_PITCH: midi_pitch, DURATION_64: duration_64})
+        self.current_sequence.append(point)
+
+
+def load_midi(filename):
+    global track
+    track = -1
+    handler = SebastianHandler()
+    SMF(open(filename).read(), handler)
+    return handler.tracks
+
+
 if __name__ == "__main__":
     track = -1
     import sys
     filename = sys.argv[1]
-    handler = PrintHandler()
-    f = SMF(open(filename).read(), handler)
+    handler = SebastianHandler()
+    SMF(open(filename).read(), handler)
