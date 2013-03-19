@@ -32,7 +32,7 @@ class Point(dict):
     __mod__ = unify
 
 
-class SeqBase:
+class SeqBase(object):
     
     def __init__(self, *elements):
         if len(elements) == 1:

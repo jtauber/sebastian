@@ -96,7 +96,7 @@ def minor_scale(tonic):
     return [tonic + i for i in [0, 2, -3, -1, 1, -4, -2]]
 
 
-class Key:
+class Key(object):
     def __init__(self, tonic, scale):
         self.notes = scale(value(tonic))
     
