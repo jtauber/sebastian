@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open("requirements.txt") as f:
+    requires = f.readlines()
+
 setup(
     name = "sebastian",
     version = "0.0.3",
@@ -9,5 +12,5 @@ setup(
     author = "James Tauber",
     author_email = "jtauber@jtauber.com",
     packages = find_packages(),
-    install_requires = ['six'],
+    install_requires = requires,
 )
