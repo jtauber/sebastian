@@ -15,11 +15,7 @@ class TestLilyPond(TestCase):
         where offset and duration are in multiples of a 64th note and pitch is MIDI
         note number.
         """
-
-        print "\nTEST: %s" % lilypond
         result = parse(lilypond)
-        print list(result)
-        i = -1  # so available in else clause of for
         self.assertEqual(len(answer), len(result))
         for i, event in enumerate(answer):
             r = result[i].tuple(OFFSET_64, MIDI_PITCH, DURATION_64)
