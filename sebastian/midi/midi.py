@@ -7,7 +7,7 @@ Currently it just outputs the data it finds.
 """
 
 
-class Base:
+class Base(object):
     """
     Base is a generic base class for parsing binary files. It cannot be
     instantiated directly, you need to sub-class it and implement a parse()

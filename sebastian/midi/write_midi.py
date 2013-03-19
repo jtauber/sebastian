@@ -36,7 +36,7 @@ def write_varlen(out, n):
     out.write(data)
 
 
-class SMF:
+class SMF(object):
     
     def __init__(self, tracks, instruments = None):
         self.tracks = tracks
@@ -111,7 +111,7 @@ class SMF:
             t.write(out)
 
 
-class Thd:
+class Thd(object):
     
     def __init__(self, format, num_tracks, division):
         self.format = format
@@ -126,7 +126,7 @@ class Thd:
         write_ushort(out, self.division)
 
 
-class Trk:
+class Trk(object):
     
     def __init__(self):
         self.data = StringIO()
