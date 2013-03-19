@@ -122,6 +122,30 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 53, OFFSET_64: 58, DURATION_64: 20}
         ])
 
+    def test_hseq_concat(self):
+        """
+        Ensure hseq can concatenate
+        """
+        from sebastian.core import HSeq
+        from sebastian.core import MIDI_PITCH
+        s1 = HSeq([
+            {MIDI_PITCH: 50},
+            {MIDI_PITCH: 51},
+        ])
+        s2 = HSeq([
+            {MIDI_PITCH: 60},
+            {MIDI_PITCH: 59},
+        ])
+
+        expected = HSeq([
+            {MIDI_PITCH: 50},
+            {MIDI_PITCH: 51},
+            {MIDI_PITCH: 60},
+            {MIDI_PITCH: 59},
+        ])
+
+        self.assertEqual(expected, s1 + s2)
+
     def test_sequence_concat(self):
         """
         Ensure sequences can concatenate
@@ -151,6 +175,23 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 53, OFFSET_64: 58, DURATION_64: 20}
         ])
 
+    def test_hseq_repeats(self):
+        from sebastian.core import HSeq
+        from sebastian.core import MIDI_PITCH
+        s1 = HSeq([
+            {MIDI_PITCH: 50},
+            {MIDI_PITCH: 51},
+        ])
+
+        expected = HSeq([
+            {MIDI_PITCH: 50},
+            {MIDI_PITCH: 51},
+            {MIDI_PITCH: 50},
+            {MIDI_PITCH: 51},
+        ])
+
+        self.assertEqual(expected, s1 * 2)
+
     def test_sequence_ctor_with_merge(self):
         """
         Ensure sequences can be made from merged sequences.
@@ -166,10 +207,11 @@ class TestSequences(TestCase):
         """
         Ensure map_points applys the function
         """
-        from sebastian.core import OSeq, Point
-        OffsetSequence = OSeq("offset", "duration")
+        from sebastian.core import HSeq, Point
 
-        s1 = OffsetSequence(Point(a=3, c=5), Point(a=5))
+        s1 = (HSeq(Point(a=3, c=5)) +
+              HSeq([Point(d=x) for x in range(10)]) +
+              HSeq(Point(a=5)))
 
         def double_a(point):
             if 'a' in point:
@@ -214,6 +256,27 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 54, OFFSET_64: 20, DURATION_64: 21}
         ])
 
+    def test_vseq_merge(self):
+        from sebastian.core import VSeq
+        from sebastian.core import MIDI_PITCH, OFFSET_64
+        s1 = VSeq([
+            {MIDI_PITCH: 50, OFFSET_64: 3},
+            {MIDI_PITCH: 51, OFFSET_64: 3},
+        ])
+        s2 = VSeq([
+            {MIDI_PITCH: 60, OFFSET_64: 3},
+            {MIDI_PITCH: 59, OFFSET_64: 3},
+        ])
+
+        expected = VSeq([
+            {MIDI_PITCH: 50, OFFSET_64: 3},
+            {MIDI_PITCH: 51, OFFSET_64: 3},
+            {MIDI_PITCH: 60, OFFSET_64: 3},
+            {MIDI_PITCH: 59, OFFSET_64: 3},
+        ])
+
+        self.assertEqual(expected, s1 // s2)
+
     def test_empty_sequence_merge(self):
         """
         Ensure that an empty sequence merge is an identity operation
@@ -232,8 +295,8 @@ class TestSequences(TestCase):
         """
         Ensure that two sequences can be zipped together, unifying its points.
         """
-        from sebastian.core import Point, HSeq
-        from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+        from sebastian.core import HSeq
+        from sebastian.core import MIDI_PITCH, DURATION_64
         s1 = HSeq([
             {MIDI_PITCH: 50},
             {MIDI_PITCH: 51},
@@ -254,4 +317,3 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 53, DURATION_64: 20},
             {MIDI_PITCH: 54, DURATION_64: 21}
         ]))
-

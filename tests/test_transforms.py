@@ -167,6 +167,23 @@ class TestTransforms(TestCase):
             {'degree': 1, 'pitch': -1},
         ])
 
+    def test_degree_in_key_with_octave(self):
+        """
+        Ensure that degree in key with octave is sane
+        """
+        from sebastian.core.transforms import degree_in_key_with_octave
+        from sebastian.core.notes import Key, major_scale
+
+        h1 = self.make_horizontal_sequence()
+        keyed = h1 | degree_in_key_with_octave(Key("C", major_scale), 4)
+
+        self.assertEqual(keyed._elements, [
+            {'degree': 1, 'octave': 4, 'pitch': -2},
+            {'degree': 2, 'octave': 4, 'pitch': 0},
+            {'degree': 3, 'octave': 4, 'pitch': 2},
+            {'degree': 1, 'octave': 4, 'pitch': -2}
+        ])
+
     def test_play_notes_in_midi_pitches(self):
         """
         Ensure that it plays in G major.
@@ -184,4 +201,64 @@ class TestTransforms(TestCase):
             {'degree': 2, 'pitch': 1, DURATION_64: 8, MIDI_PITCH: 57, 'octave': 4},
             {'degree': 3, 'pitch': 3, DURATION_64: 8, MIDI_PITCH: 59, 'octave': 4},
             {'degree': 1, 'pitch': -1, DURATION_64: 8, MIDI_PITCH: 55, 'octave': 4},
+        ])
+
+    def test_lilypond_transform(self):
+        """
+        Ensure that it plays in G major.
+        """
+        from sebastian.core.transforms import midi_pitch, add, lilypond
+        from sebastian.core import DURATION_64
+        from sebastian.core import HSeq, Point
+        h1 = HSeq([Point(pitch=pitch) for pitch in [0, 1, 2, 3, 4, 11, -4, -11]])
+        positioned = h1 | add({'octave': 4, DURATION_64: 8})
+        pitched = positioned | midi_pitch()
+        pitched[3]['octave'] = 5
+        pitched[4]['octave'] = 3
+        lilyed = pitched | lilypond()
+
+        import pprint
+        pprint.pprint(list(lilyed))
+
+        self.assertEqual(lilyed._elements, [
+            {'duration_64': 8,
+              'lilypond': 'd8',
+              'midi_pitch': 50,
+              'octave': 4,
+              'pitch': 0},
+             {'duration_64': 8,
+              'lilypond': 'a8',
+              'midi_pitch': 57,
+              'octave': 4,
+              'pitch': 1},
+             {'duration_64': 8,
+              'lilypond': 'e8',
+              'midi_pitch': 52,
+              'octave': 4,
+              'pitch': 2},
+             {'duration_64': 8,
+              'lilypond': "b'8",
+              'midi_pitch': 59,
+              'octave': 5,
+              'pitch': 3},
+             {'duration_64': 8,
+              'lilypond': 'fis,8',
+              'midi_pitch': 54,
+              'octave': 3,
+              'pitch': 4},
+             {'duration_64': 8,
+              'lilypond': 'fisis8',
+              'midi_pitch': 55,
+              'octave': 4,
+              'pitch': 11},
+             {'duration_64': 8,
+              'lilypond': 'b8',
+              'midi_pitch': 58,
+              'octave': 4,
+              'pitch': -4},
+             {'duration_64': 8,
+              'lilypond': 'b8',
+              'midi_pitch': 57,
+              'octave': 4,
+              'pitch': -11}
         ])
