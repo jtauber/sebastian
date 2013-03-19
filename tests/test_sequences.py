@@ -227,3 +227,31 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 50, OFFSET_64: 16, DURATION_64: 17},
             {MIDI_PITCH: 53, OFFSET_64: 19, DURATION_64: 20}
         ])
+
+    def test_basic_sequence_zip(self):
+        """
+        Ensure that two sequences can be zipped together, unifying its points.
+        """
+        from sebastian.core import Point, HSeq
+        from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+        s1 = HSeq([
+            {MIDI_PITCH: 50},
+            {MIDI_PITCH: 51},
+            {MIDI_PITCH: 53},
+            {MIDI_PITCH: 54}
+        ])
+        s2 = HSeq([
+            {DURATION_64: 17},
+            {DURATION_64: 18},
+            {DURATION_64: 20},
+            {DURATION_64: 21}
+        ])
+
+        s_zipped = s1 & s2
+        self.assertEqual(s_zipped, HSeq([
+            {MIDI_PITCH: 50, DURATION_64: 17},
+            {MIDI_PITCH: 51, DURATION_64: 18},
+            {MIDI_PITCH: 53, DURATION_64: 20},
+            {MIDI_PITCH: 54, DURATION_64: 21}
+        ]))
+

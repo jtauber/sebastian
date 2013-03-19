@@ -15,9 +15,13 @@ class UnificationError(Exception):
 
 
 class Point(dict):
-    
+    """
+    Represents a singular *point* in time 
+    """
+
     def unify(self, other):
         new = self.copy()
+
         for key, value in other.items():
             if key in new:
                 if new[key] != value:
@@ -71,8 +75,15 @@ class SeqBase:
         """
         return func(self)
     
+    def zip(self, other):
+        """
+        zips two sequences unifying the corresponding points. 
+        """
+        return self.__class__(p1 % p2 for p1, p2 in zip(self, other))
+    
     __or__ = transform
-
+    __and__ = zip
+    
     def display(self, format="png"):
         """
         Return an object that can be used to display this sequence.
@@ -118,7 +129,6 @@ class SeqBase:
         if not isinstance(f, basestring):
             return f.data
         return f
-
 
 def OSeq(offset_attr, duration_attr):
     
