@@ -145,26 +145,13 @@ class Trk(Base):
                 note_number = self.get_byte()
                 velocity = self.get_byte()
                 self.ticks += time_delta
-                if self.current_note[0] == channel + 1 and self.current_note[1] == note_number:
+                if note_number not in self.note_started:
+                    # note was never started so ignore
                     pass
                 else:
-                    raise Exception("overlapping notes")
-                start_ticks = self.current_note[2]
-                beat, tick = divmod(start_ticks, 480)
-                est_dur = divmod(time_delta + 21, 60)
-                assert est_dur[1] == 0
-                est_dur = est_dur[0]
-                tick = divmod(tick, 60)
-                assert tick[1] == 0
-                tick = tick[0]
-                note_name = divmod(note_number, 12)
-                if self.next_note != start_ticks:
-                    rest = divmod(start_ticks - self.next_note, 60)
-                    assert rest[1] == 0
-                    rest = rest[0]
-                    self.handler.note_off(0, 0, rest)
-                self.handler.note_off(note_name[0], note_name[1], est_dur)
-                self.next_note = start_ticks + (est_dur * 60)
+                    start_ticks, start_velocity = self.note_started.pop(note_number)
+                    duration = self.ticks - start_ticks
+                self.handler.note(start_ticks, channel + 1, note_number, duration)
             elif event_type == 0x9:  # note on
                 note_number = self.get_byte()
                 velocity = self.get_byte()
