@@ -3,11 +3,13 @@ from unittest import TestCase
 ## graded tests derived from lilypond documentation that are likely to be
 ## relevant to In C implementation
 
-from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
+from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64, HSeq
+from sebastian.core.transforms import add, lilypond
 from sebastian.lilypond.interp import parse
+from sebastian.lilypond.write_lilypond import output
 
 
-class TestLilyPond(TestCase):
+class TestLilyPondParsing(TestCase):
 
     def eq(self, lilypond, answer):
         """ The first is a lilypond fragment. The second is
@@ -180,3 +182,11 @@ class TestLilyPond(TestCase):
                 (16, None, None),
             ]
         )
+
+
+class TestLilyPondWriting(TestCase):
+
+    def test_basic_writing(self):
+        pitches = HSeq({"pitch": n} for n in [-2, 0, 2, -3])
+        seq = pitches | add({"octave": 5, DURATION_64: 16}) | lilypond()
+        self.assertEqual(output(seq), "{ c'4 d'4 e'4 f'4 }")
