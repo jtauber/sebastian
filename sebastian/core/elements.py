@@ -15,13 +15,9 @@ class UnificationError(Exception):
 
 
 class Point(dict):
-    """
-    Represents a singular *point* in time 
-    """
-
+    
     def unify(self, other):
         new = self.copy()
-
         for key, value in other.items():
             if key in new:
                 if new[key] != value:
