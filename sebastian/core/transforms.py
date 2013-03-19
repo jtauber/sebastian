@@ -105,7 +105,7 @@ def lilypond():
             else:
                 modifier_string = ""
             pitch_string = letter(pitch).lower() + modifier_string
-            duration_string = str(64 / duration)  # @@@ doesn't handle dotted notes yet
+            duration_string = str(int(64 / duration))  # @@@ doesn't handle dotted notes yet
             point["lilypond"] = "%s%s%s" % (pitch_string, octave_string, duration_string)
         return point
     return lambda seq: seq.map_points(_)

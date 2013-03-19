@@ -3,3 +3,5 @@ seq5.mid
 sebastian.egg-info
 .coverage
 htmlcov
+*.ipynb
+cover

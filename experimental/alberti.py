@@ -21,7 +21,6 @@ def alberti(triad):
 # an abstract VSeq of 3 notes in root position (degree 1, 3 and 5)
 root_triad = VSeq(Point(degree=n) for n in [1, 3, 5])
 
-
 quaver_point = Point({DURATION_64: 8})
 
 # an OSequence with alberti figuration repeated 16 times using quavers

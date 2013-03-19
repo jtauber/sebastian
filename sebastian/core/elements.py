@@ -1,6 +1,12 @@
 from collections import Iterable
 import tempfile
 import subprocess as sp
+try:
+    from IPython.core.display import Image, SVG
+    ipython = True
+except ImportError:
+    ipython = False
+
 from sebastian.lilypond import write_lilypond
 
 
@@ -9,7 +15,7 @@ class UnificationError(Exception):
 
 
 class Point(dict):
-    
+
     def unify(self, other):
         new = self.copy()
         for key, value in other.items():
@@ -26,7 +32,7 @@ class Point(dict):
     __mod__ = unify
 
 
-class SeqBase:
+class SeqBase(object):
     
     def __init__(self, *elements):
         if len(elements) == 1:
@@ -65,44 +71,67 @@ class SeqBase:
         """
         return func(self)
     
+    def zip(self, other):
+        """
+        zips two sequences unifying the corresponding points. 
+        """
+        return self.__class__(p1 % p2 for p1, p2 in zip(self, other))
+    
     __or__ = transform
+    __and__ = zip
+    
+    def display(self, format="png"):
+        """
+        Return an object that can be used to display this sequence.
+        This is used for IPython Notebook.
+
+        :param format: "png" or "svg"
+        """
+        from sebastian.core.transforms import lilypond
+        seq = HSeq(self) | lilypond()
+
+        if format == "png":
+            suffix = ".preview.png"
+            args = ["lilypond", "--png", "-dno-print-pages", "-dpreview"]
+        elif format == "svg":
+            suffix = ".preview.svg"
+            args = ["lilypond", "-dbackend=svg", "-dno-print-pages", "-dpreview"]
+
+        f = tempfile.NamedTemporaryFile(suffix=suffix)
+        basename = f.name[:-len(suffix)]
+        args.extend(["-o"+basename, "-"])
+
+        #Pass shell=True so that if your $PATH contains ~ it will
+        #get expanded. This also changes the way the arguments get
+        #passed in. To work correctly, pass them as a string
+        p = sp.Popen(" ".join(args), stdin=sp.PIPE, shell=True)
+        stdout, stderr = p.communicate(write_lilypond.output(seq))
+        if p.returncode != 0:
+            # there was an error
+            #raise IOError("Lilypond execution failed: %s%s" % (stdout, stderr))
+            return None
+
+        if not ipython:
+            return f.read()
+        if format == "png":
+            return Image(data=f.read(), filename=f.name, format="png")
+        else:
+            return SVG(data=f.read(), filename=f.name)
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__.__name__, self._elements)
 
     def _repr_png_(self):
-        """
-        Return a PNG representation of this sequence for IPython Notebook.
-        """
-        from sebastian.core.transforms import lilypond
-        seq = HSeq(self) | lilypond()
-        f = tempfile.NamedTemporaryFile(suffix=".preview.png")
-        basename = f.name[:-12] # everything except ".preview.png"
-
-        p = sp.Popen(["lilypond", "--png", "-dno-print-pages", 
-            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
-        p.communicate(write_lilypond.output(seq))
-        if p.returncode != 0:
-            # there was an error
-            return None
-
-        return f.read()
+        f = self.display("png")
+        if not isinstance(f, basestring):
+            return f.data
+        return f
 
     def _repr_svg_(self):
-        """
-        Return a SVG representation of this sequence for IPython Notebook.
-        """
-        from sebastian.core.transforms import lilypond
-        seq = HSeq(self) | lilypond()
-        f = tempfile.NamedTemporaryFile(suffix=".preview.svg")
-        basename = f.name[:-12] # everything except ".preview.svg"
-
-        p = sp.Popen(["lilypond", "-dbackend=svg", "-dno-print-pages", 
-            "-dpreview", "-o"+basename, "-"], stdin=sp.PIPE)
-        p.communicate(write_lilypond.output(seq))
-        if p.returncode != 0:
-            # there was an error
-            return None
-
-        return f.read()
-
+        f = self.display("svg")
+        if not isinstance(f, basestring):
+            return f.data
+        return f
 
 def OSeq(offset_attr, duration_attr):
     

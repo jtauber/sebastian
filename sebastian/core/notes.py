@@ -22,7 +22,7 @@ def double_flat(val):
     return -10 > val > -18
 
 def modifiers(val):
-    return ((val + 3) - ((val + 3) % 7)) / 7
+    return int(((val + 3) - ((val + 3) % 7)) / 7)
 
 def mod_interval(mod):
     return 7 * mod
@@ -96,7 +96,7 @@ def minor_scale(tonic):
     return [tonic + i for i in [0, 2, -3, -1, 1, -4, -2]]
 
 
-class Key:
+class Key(object):
     def __init__(self, tonic, scale):
         self.notes = scale(value(tonic))
     
@@ -106,32 +106,3 @@ class Key:
     def degree_to_pitch_and_octave(self, degree):
         o, d = divmod(degree - 1, 7)
         return self.notes[d], o
-
-
-## TESTS
-
-if __name__ == "__main__":
-    assert natural(-3)
-    assert natural(2)
-    assert natural(0)
-    assert not natural(-4)
-    assert not natural(5)
-    
-    assert not single_sharp(0)
-    assert not single_sharp(-5)
-    assert single_sharp(4)
-    assert not single_sharp(12)
-    
-    assert modifiers(0) == 0
-    assert modifiers(2) == 0
-    assert modifiers(-1) == 0
-    assert modifiers(-5) == -1
-    assert modifiers(-11) == -2
-    assert modifiers(-17) == -2
-    assert modifiers(4) == 1
-    assert modifiers(13) == 2
-    assert modifiers(17) == 2
-    
-    assert value("G#") == 6
-    
-    print [name(x) for x in major_scale(value("G#"))]

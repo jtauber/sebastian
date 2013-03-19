@@ -24,4 +24,4 @@ def play(tracks, program=""):
     if program:
         subprocess.call([program, f.name])
     else:
-        print "A suitable program for your platform is unknown"
+        print("A suitable program for your platform is unknown")
