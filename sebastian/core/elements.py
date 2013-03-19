@@ -15,7 +15,7 @@ class UnificationError(Exception):
 
 
 class Point(dict):
-    
+
     def unify(self, other):
         new = self.copy()
         for key, value in other.items():
@@ -32,7 +32,7 @@ class Point(dict):
     __mod__ = unify
 
 
-class SeqBase:
+class SeqBase(object):
     
     def __init__(self, *elements):
         if len(elements) == 1:
@@ -101,10 +101,14 @@ class SeqBase:
         basename = f.name[:-len(suffix)]
         args.extend(["-o"+basename, "-"])
 
-        p = sp.Popen(args, stdin=sp.PIPE)
-        p.communicate(write_lilypond.output(seq))
+        #Pass shell=True so that if your $PATH contains ~ it will
+        #get expanded. This also changes the way the arguments get
+        #passed in. To work correctly, pass them as a string
+        p = sp.Popen(" ".join(args), stdin=sp.PIPE, shell=True)
+        stdout, stderr = p.communicate(write_lilypond.output(seq))
         if p.returncode != 0:
             # there was an error
+            #raise IOError("Lilypond execution failed: %s%s" % (stdout, stderr))
             return None
 
         if not ipython:
@@ -113,6 +117,9 @@ class SeqBase:
             return Image(data=f.read(), filename=f.name, format="png")
         else:
             return SVG(data=f.read(), filename=f.name)
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__.__name__, self._elements)
 
     def _repr_png_(self):
         f = self.display("png")

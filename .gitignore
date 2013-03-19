@@ -4,3 +4,4 @@ sebastian.egg-info
 .coverage
 htmlcov
 *.ipynb
+cover

@@ -143,7 +143,7 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
     
     try:
         while True:
-            token_dict = token_generator.next()
+            token_dict = next(token_generator)
             
             command = token_dict["command"]
             open_brace = token_dict["open_brace"]
@@ -152,11 +152,11 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
             if command:
                 if command == "relative":
                     
-                    token_dict = token_generator.next()
+                    token_dict = next(token_generator)
                     
                     base_note_tuple = note_tuple(token_dict)
                     
-                    token_dict = token_generator.next()
+                    token_dict = next(token_generator)
                     if not token_dict["open_brace"]:
                         raise Exception("\\relative must be followed by note then {...} block")
                     
@@ -168,11 +168,11 @@ def parse_block(token_generator, prev_note_tuple=None, relative_mode=False, offs
                     # @@@ there is much code duplication between here and the
                     # main parsing further on
                     
-                    token_dict = token_generator.next()
+                    token_dict = next(token_generator)
                     note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
                     yield Point({OFFSET_64: offset - duration / 2, MIDI_PITCH: note_value, DURATION_64: duration / 2})
                     
-                    token_dict = token_generator.next()
+                    token_dict = next(token_generator)
                     note_value, duration = process_note(token_dict, relative_mode, prev_note_tuple)
                     yield Point({OFFSET_64: offset, MIDI_PITCH: note_value, DURATION_64: duration})
                     

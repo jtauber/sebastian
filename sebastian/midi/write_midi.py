@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-from cStringIO import StringIO
+from io import BytesIO
+import six
 
 from sebastian.core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
 
 
 def write_chars(out, chars):
-    out.write(chars)
+    out.write(chars.encode('ascii'))
 
 
 def write_byte(out, b):
-    out.write(chr(b))
+    out.write(six.int2byte(b))
 
 
 def write_ushort(out, s):
@@ -26,17 +27,17 @@ def write_ulong(out, l):
 
 
 def write_varlen(out, n):
-    data = chr(n & 0x7F)
+    data = six.int2byte(n & 0x7F)
     while True:
         n = n >> 7
         if n:
-            data = chr((n & 0x7F) | 0x80) + data
+            data = six.int2byte((n & 0x7F) | 0x80) + data
         else:
             break
     out.write(data)
 
 
-class SMF:
+class SMF(object):
     
     def __init__(self, tracks, instruments = None):
         self.tracks = tracks
@@ -111,7 +112,7 @@ class SMF:
             t.write(out)
 
 
-class Thd:
+class Thd(object):
     
     def __init__(self, format, num_tracks, division):
         self.format = format
@@ -126,10 +127,10 @@ class Thd:
         write_ushort(out, self.division)
 
 
-class Trk:
+class Trk(object):
     
     def __init__(self):
-        self.data = StringIO()
+        self.data = BytesIO()
    
     def write_meta_info(self, byte1, byte2, data): 
         "Worker method for writing meta info"

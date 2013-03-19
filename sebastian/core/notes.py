@@ -22,7 +22,7 @@ def double_flat(val):
     return -10 > val > -18
 
 def modifiers(val):
-    return ((val + 3) - ((val + 3) % 7)) / 7
+    return int(((val + 3) - ((val + 3) % 7)) / 7)
 
 def mod_interval(mod):
     return 7 * mod
@@ -96,7 +96,7 @@ def minor_scale(tonic):
     return [tonic + i for i in [0, 2, -3, -1, 1, -4, -2]]
 
 
-class Key:
+class Key(object):
     def __init__(self, tonic, scale):
         self.notes = scale(value(tonic))
     
