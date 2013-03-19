@@ -315,7 +315,7 @@ def load_midi(filename):
     global track
     track = -1
     handler = SebastianHandler()
-    SMF(open(filename).read(), handler)
+    SMF(open(filename, "rb").read(), handler)
     return handler.tracks
 
 
