@@ -199,3 +199,16 @@ class TestLilyPondWriting(TestCase):
         write(f.name, seq)
         with open(f.name) as g:
             self.assertEqual(g.read(), "{ c'4 d'4 e'4 f'4 }")
+
+
+class TestLilyPondDisplay(TestCase):
+
+    def test_display_skipped_on_empty(self):
+        """
+        If all lilypond output is empty,
+        ensure we don't call lilypond
+        """
+        empty = HSeq({"fake":n} for n in xrange(2))
+        seq = empty | lilypond()
+        displayed = seq.display()
+        self.assertIsInstance(displayed, HSeq)
