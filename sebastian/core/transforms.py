@@ -155,8 +155,10 @@ def lilypond(point):
 
     if DURATION_64 in point:
         duration = point[DURATION_64]
-        if duration > 0:
-            duration_string = str(int(64 / point[DURATION_64]))  # @@@ doesn't handle dotted notes yet
+        if duration % 3 == 0:  # dotted note
+            duration_string = str(192 // (2 * duration)) + "."
+        else:
+            duration_string = str(64 // duration)
         #TODO: for now, if we have a duration but no pitch, show a 'c' with an x note
         if duration_string:
             if not pitch_string:
@@ -164,4 +166,5 @@ def lilypond(point):
                 octave_string = "'"
                 preamble = r'\xNote '
     point["lilypond"] = "%s%s%s%s" % (preamble, pitch_string, octave_string, duration_string)
+
     return point
