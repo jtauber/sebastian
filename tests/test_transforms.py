@@ -101,7 +101,7 @@ class TestTransforms(TestCase):
         from sebastian.core.transforms import dynamics
         s1 = self.make_sequence()
         dynamiced = s1 | dynamics('ff')
-        self.assertEqual([p.tuple('velocity') for p in dynamiced], [(120,), (120,)])
+        self.assertEqual([p.tuple('velocity') for p in dynamiced], [(94,), (94,)])
 
     def test_all_dynamic_markers(self):
         from sebastian.core.transforms import dynamics
@@ -116,7 +116,7 @@ class TestTransforms(TestCase):
         s1 = self.make_sequence()
         s1 = s1 * 5
         velocitied = s1 | dynamics('ppp', 'fff')
-        self.assertEqual([p['velocity'] for p in velocitied], [20, 36, 53, 70, 86, 103, 120, 136, 153, 170])
+        self.assertEqual([p['velocity'] for p in velocitied], [24, 34, 44, 54, 64, 74, 84, 94, 104, 114])
 
     ## TODO: inversion tests don't make sense yet, since inversion
     ## will be rewritten

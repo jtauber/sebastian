@@ -114,6 +114,8 @@ def midi_pitch(point):
 
 @transform_sequence
 def midi_to_pitch(point):  # @@@ add key hint later
+    if MIDI_PITCH not in point:
+        return point
     midi_pitch = point[MIDI_PITCH]
 
     octave, pitch = divmod(midi_pitch, 12)
@@ -139,7 +141,7 @@ def lilypond(point):
     octave_string = ""
     duration_string = ""
     preamble = ""
-
+    dynamic_string = ""
     if "pitch" in point:
         octave = point["octave"]
         pitch = point["pitch"]
@@ -171,7 +173,17 @@ def lilypond(point):
                 pitch_string = "c"
                 octave_string = "'"
                 preamble = r'\xNote '
-    point["lilypond"] = "%s%s%s%s" % (preamble, pitch_string, octave_string, duration_string)
+
+    if "dynamic" in point:
+        dynamic = point["dynamic"]
+        if dynamic == 'crescendo':
+            dynamic_string = '\<'
+        elif dynamic == 'diminuendo':
+            dynamic_string = '\>'
+        else:
+            dynamic_string = '\%s' % (dynamic,)
+
+    point["lilypond"] = "%s%s%s%s%s" % (preamble, pitch_string, octave_string, duration_string, dynamic_string)
 
     return point
 
@@ -195,40 +207,48 @@ def dynamics(start, end=None):
     """
     Apply dynamics to a sequence. If end is specified, it will crescendo or diminuendo linearly from start to end dynamics.
 
-    You can pass dynamic markers as a strings or as midi velocity integers to this function.
+    You can pass any of these strings as dynamic markers: ['pppppp', 'ppppp', 'pppp', 'ppp', 'pp', 'p', 'mp', 'mf', 'f', 'ff', 'fff', ''ffff]
+
+    Args:
+        start: beginning dynamic marker, if no end is specified all notes will get this marker
+        end: ending dynamic marker, if unspecified the entire sequence will get the start dynamic marker
 
     Example usage:
 
         s1 | dynamics('p')  # play a sequence in piano
         s2 | dynamics('p', 'ff')  # crescendo from p to ff
         s3 | dynamics('ff', 'p')  # diminuendo from ff to p
-
-    Valid dynamic markers are %s
-    """ % (_dynamic_markers_to_velocity.keys())
+    """
     def _(sequence):
-        if isinstance(start, int):
-            start_velocity = start
-        elif start in _dynamic_markers_to_velocity:
+        if start in _dynamic_markers_to_velocity:
             start_velocity = _dynamic_markers_to_velocity[start]
+            start_marker = start
         else:
             raise ValueError("Unknown start dynamic: %s, must be in %s" % (start, _dynamic_markers_to_velocity.keys()))
 
         if end is None:
             end_velocity = start_velocity
-        elif isinstance(end, int):
-            end_velocity = end
+            end_marker = start_marker
         elif end in _dynamic_markers_to_velocity:
             end_velocity = _dynamic_markers_to_velocity[end]
+            end_marker = end
         else:
             raise ValueError("Unknown end dynamic: %s, must be in %s" % (start, _dynamic_markers_to_velocity.keys()))
 
         retval = sequence.__class__([Point(point) for point in sequence._elements])
 
-        if not len(retval):
-            return retval  # causes div by zero if we don't exit early
+        velocity_interval = (float(end_velocity) - float(start_velocity)) / (len(retval) - 1) if len(retval) > 1 else 0
+        velocities = [int(start_velocity + velocity_interval * pos) for pos in range(len(retval))]
 
-        velocity_interval = (float(end_velocity) - float(start_velocity)) / (len(sequence) - 1)
-        velocities = [int(start_velocity + velocity_interval * pos) for pos in range(len(sequence))]
+        # insert dynamics markers for lilypond
+        if start_velocity > end_velocity:
+            retval[0]['dynamic'] = 'diminuendo'
+            retval[-1]['dynamic'] = end_marker
+        elif start_velocity < end_velocity:
+            retval[0]['dynamic'] = 'crescendo'
+            retval[-1]['dynamic'] = end_marker
+        else:
+            retval[0]['dynamic'] = start_marker
 
         for point, velocity in zip(retval, velocities):
             point['velocity'] = velocity
