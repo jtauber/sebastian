@@ -111,6 +111,27 @@ class TestTransforms(TestCase):
             {MIDI_PITCH: 47, OFFSET_64: 19, DURATION_64: 20}
         ])
 
+    def test_dynamics(self):
+        from sebastian.core.transforms import dynamics
+        s1 = self.make_sequence()
+        dynamiced = s1 | dynamics('ff')
+        self.assertEqual([p.tuple('velocity') for p in dynamiced], [(120,), (120,)])
+
+    def test_all_dynamic_markers(self):
+        from sebastian.core.transforms import dynamics
+        s1 = self.make_sequence()
+        velocities = ['pppppp', 'ppppp', 'pppp', 'ppp', 'pp', 'p', 'mp', 'mf', 'f', 'ff', 'fff', 'ffff']
+        for velocity in velocities:
+            dynamiced = s1 | dynamics(velocity)
+            self.assertTrue('velocity' in dynamiced[0])
+
+    def test_dynamics_linear_crecendo(self):
+        from sebastian.core.transforms import dynamics
+        s1 = self.make_sequence()
+        s1 = s1 * 5
+        velocitied = s1 | dynamics('ppp', 'fff')
+        self.assertEqual([p['velocity'] for p in velocitied], [20, 36, 53, 70, 86, 103, 120, 136, 153, 170])
+
     def test_invert_is_reversable(self):
         """
         Ensure reversing twice generates the same sequence

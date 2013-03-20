@@ -121,3 +121,58 @@ def lilypond(point):
         duration_string = str(int(64 / duration))  # @@@ doesn't handle dotted notes yet
         point["lilypond"] = "%s%s%s" % (pitch_string, octave_string, duration_string)
     return point
+
+_dynamic_markers_to_velocity = {
+    'pppppp': 10,
+    'ppppp': 16,
+    'pppp': 20,
+    'ppp': 24,
+    'pp': 36,
+    'p': 48,
+    'mp': 64,
+    'mf': 74,
+    'f': 84,
+    'ff': 94,
+    'fff': 114,
+    'ffff': 127,
+}
+
+
+def dynamics(start, end=None):
+    """
+    Apply dynamics to a sequence. If end is specified, it will progress linearly from start to end dynamics.
+
+    You can pass  dynamic markers as a strings or as midi velocity integers to this function
+
+    Valid dynamic markers are %s
+    """ % (_dynamic_markers_to_velocity.keys())
+    def _(sequence):
+        if isinstance(start, int):
+            start_velocity = start
+        elif start in _dynamic_markers_to_velocity:
+            start_velocity = _dynamic_markers_to_velocity[start]
+        else:
+            raise ValueError("Unknown start dynamic: %s, must be in %s" % (start, _dynamic_markers_to_velocity.keys()))
+
+        if end is None:
+            end_velocity = start_velocity
+        elif isinstance(end, int):
+            end_velocity = end
+        elif end in _dynamic_markers_to_velocity:
+            end_velocity = _dynamic_markers_to_velocity[end]
+        else:
+            raise ValueError("Unknown end dynamic: %s, must be in %s" % (start, _dynamic_markers_to_velocity.keys()))
+
+        retval = sequence.__class__([Point(point) for point in sequence._elements])
+
+        if not len(retval):
+            return retval  # causes div by zero if we don't exit early
+
+        velocity_interval = (float(end_velocity) - float(start_velocity)) / (len(sequence) - 1)
+        velocities = [int(start_velocity + velocity_interval * pos) for pos in range(len(sequence))]
+
+        for point, velocity in zip(retval, velocities):
+            point['velocity'] = velocity
+
+        return retval
+    return _
