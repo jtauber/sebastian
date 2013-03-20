@@ -108,6 +108,19 @@ def midi_pitch(point):
 
 
 @transform_sequence
+def midi_to_pitch(point):  # @@@ add key hint later
+    midi_pitch = point[MIDI_PITCH]
+
+    octave, pitch = divmod(midi_pitch, 12)
+    pitch = [-2, 5, 0, -5, 2, -3, 4, -1, 6, 1, -4, 3][pitch]
+
+    point["octave"] = octave
+    point["pitch"] = pitch
+
+    return point
+
+
+@transform_sequence
 def lilypond(point):
     if "lilypond" not in point:
         octave = point["octave"]
