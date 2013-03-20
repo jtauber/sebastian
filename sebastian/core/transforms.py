@@ -176,30 +176,30 @@ def lilypond(point):
 
     if "dynamic" in point:
         dynamic = point["dynamic"]
-        if dynamic == 'crescendo':
-            dynamic_string = '\<'
-        elif dynamic == 'diminuendo':
-            dynamic_string = '\>'
+        if dynamic == "crescendo":
+            dynamic_string = "\<"
+        elif dynamic == "diminuendo":
+            dynamic_string = "\>"
         else:
-            dynamic_string = '\%s' % (dynamic,)
+            dynamic_string = "\%s" % (dynamic,)
 
     point["lilypond"] = "%s%s%s%s%s" % (preamble, pitch_string, octave_string, duration_string, dynamic_string)
 
     return point
 
 _dynamic_markers_to_velocity = {
-    'pppppp': 10,
-    'ppppp': 16,
-    'pppp': 20,
-    'ppp': 24,
-    'pp': 36,
-    'p': 48,
-    'mp': 64,
-    'mf': 74,
-    'f': 84,
-    'ff': 94,
-    'fff': 114,
-    'ffff': 127,
+    "pppppp": 10,
+    "ppppp": 16,
+    "pppp": 20,
+    "ppp": 24,
+    "pp": 36,
+    "p": 48,
+    "mp": 64,
+    "mf": 74,
+    "f": 84,
+    "ff": 94,
+    "fff": 114,
+    "ffff": 127,
 }
 
 
@@ -242,16 +242,16 @@ def dynamics(start, end=None):
 
         # insert dynamics markers for lilypond
         if start_velocity > end_velocity:
-            retval[0]['dynamic'] = 'diminuendo'
-            retval[-1]['dynamic'] = end_marker
+            retval[0]["dynamic"] = "diminuendo"
+            retval[-1]["dynamic"] = end_marker
         elif start_velocity < end_velocity:
-            retval[0]['dynamic'] = 'crescendo'
-            retval[-1]['dynamic'] = end_marker
+            retval[0]["dynamic"] = "crescendo"
+            retval[-1]["dynamic"] = end_marker
         else:
-            retval[0]['dynamic'] = start_marker
+            retval[0]["dynamic"] = start_marker
 
         for point, velocity in zip(retval, velocities):
-            point['velocity'] = velocity
+            point["velocity"] = velocity
 
         return retval
     return _
