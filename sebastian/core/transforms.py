@@ -140,9 +140,15 @@ _dynamic_markers_to_velocity = {
 
 def dynamics(start, end=None):
     """
-    Apply dynamics to a sequence. If end is specified, it will progress linearly from start to end dynamics.
+    Apply dynamics to a sequence. If end is specified, it will crescendo or diminuendo linearly from start to end dynamics.
 
-    You can pass  dynamic markers as a strings or as midi velocity integers to this function
+    You can pass dynamic markers as a strings or as midi velocity integers to this function.
+
+    Example usage:
+
+        s1 | dynamics('p')  # play a sequence in piano
+        s2 | dynamics('p', 'ff')  # crescendo from p to ff
+        s3 | dynamics('ff', 'p')  # diminuendo from ff to p
 
     Valid dynamic markers are %s
     """ % (_dynamic_markers_to_velocity.keys())
