@@ -161,6 +161,7 @@ def lilypond(point):
         if duration_string:
             if not pitch_string:
                 pitch_string = "c"
-                preamble = '\\xNote '
+                octave_string = "'"
+                preamble = r'\xNote '
     point["lilypond"] = "%s%s%s%s" % (preamble, pitch_string, octave_string, duration_string)
     return point
