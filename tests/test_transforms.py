@@ -277,7 +277,7 @@ class TestTransforms(TestCase):
             Point()
         ])
         h2 = h1 | lilypond()
-        self.assertEqual(h2._elements[0]['lilypond'], r'\xNote c1')
+        self.assertEqual(h2._elements[0]['lilypond'], r"\xNote c'1")
         self.assertEqual(h2._elements[1]['lilypond'], '')
         self.assertEqual(h2._elements[2]['lilypond'], '')
 
