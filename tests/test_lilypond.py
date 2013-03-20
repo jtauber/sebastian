@@ -208,7 +208,7 @@ class TestLilyPondDisplay(TestCase):
         If all lilypond output is empty,
         ensure we don't call lilypond
         """
-        empty = HSeq({"fake":n} for n in xrange(2))
+        empty = HSeq({"fake": n} for n in range(2))
         seq = empty | lilypond()
         displayed = seq.display()
-        self.assertIsInstance(displayed, HSeq)
+        self.assertTrue(isinstance(displayed, HSeq))
