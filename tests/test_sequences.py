@@ -317,3 +317,92 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 53, DURATION_64: 20},
             {MIDI_PITCH: 54, DURATION_64: 21}
         ]))
+
+    def test_oseq_subseq_both_args(self):
+        """
+        Verify _oseq subseq works correctly
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence(
+            Point(a=2, offset=0),
+            Point(a=2, offset=20),
+            Point(a=2, offset=25),
+            Point(a=2, offset=30),
+            Point(a=2, offset=50),
+        )
+        s2 = s1.subseq(20,50)
+        self.assertEqual(
+            s2,
+            OffsetSequence(
+                Point(a=2, offset=20),
+                Point(a=2, offset=25),
+                Point(a=2, offset=30),
+            )
+        )
+
+    def test_oseq_subseq_start_args(self):
+        """
+        Verify _oseq subseq works correctly with just the start arg
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence(
+            Point(a=2, offset=0),
+            Point(a=2, offset=20),
+            Point(a=2, offset=25),
+            Point(a=2, offset=30),
+            Point(a=2, offset=50),
+        )
+        s2 = s1.subseq(30)
+        self.assertEqual(
+            s2,
+            OffsetSequence(
+                Point(a=2, offset=30),
+                Point(a=2, offset=50),
+            )
+        )
+
+    def test_oseq_subseq_stop_args(self):
+        """
+        Verify _oseq subseq works correctly with just the stop arg
+        """
+        from sebastian.core import OSeq, Point
+        OffsetSequence = OSeq("offset", "duration")
+
+        s1 = OffsetSequence(
+            Point(a=2, offset=0),
+            Point(a=2, offset=20),
+            Point(a=2, offset=25),
+            Point(a=2, offset=30),
+            Point(a=2, offset=50),
+        )
+        s2 = s1.subseq(end_offset=25)
+        self.assertEqual(
+            s2,
+            OffsetSequence(
+                Point(a=2, offset=0),
+                Point(a=2, offset=20),
+            )
+        )
+
+    def test_hseq_subseq(self):
+        """
+        Ensure that two sequences can be zipped together, unifying its points.
+        """
+        from sebastian.core import HSeq
+        from sebastian.core import MIDI_PITCH, DURATION_64
+        s1 = HSeq([
+            {MIDI_PITCH: 50, DURATION_64: 10},
+            {MIDI_PITCH: 51, DURATION_64: 10},
+            {MIDI_PITCH: 52, DURATION_64: 10},
+            {MIDI_PITCH: 53, DURATION_64: 10}
+        ])
+
+        s2 = s1.subseq(20,40)
+        self.assertEqual(s2, HSeq([
+            {MIDI_PITCH: 51, DURATION_64: 10},
+            {MIDI_PITCH: 52, DURATION_64: 10},
+        ]))

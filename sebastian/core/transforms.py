@@ -87,6 +87,15 @@ def reverse():
     return _
 
 
+def subseq(start_offset=0, end_offset=None):
+    """
+    Return a portion of the input sequence
+    """
+    def _(sequence):
+        return sequence.subseq(start_offset, end_offset)
+    return _
+
+
 @transform_sequence
 def midi_pitch(point):
     octave = point["octave"]
