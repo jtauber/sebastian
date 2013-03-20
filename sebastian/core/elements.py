@@ -1,6 +1,7 @@
 from collections import Iterable
 import tempfile
 import subprocess as sp
+
 try:
     from IPython.core.display import Image, SVG
     ipython = True
@@ -90,6 +91,11 @@ class SeqBase(object):
         from sebastian.core.transforms import lilypond
         seq = HSeq(self) | lilypond()
 
+        lily_output = write_lilypond.lily_format(seq)
+        if not lily_output.strip():
+            #In the case of empty lily outputs, return self to get a textual display
+            return self
+
         if format == "png":
             suffix = ".preview.png"
             args = ["lilypond", "--png", "-dno-print-pages", "-dpreview"]
@@ -105,7 +111,7 @@ class SeqBase(object):
         #get expanded. This also changes the way the arguments get
         #passed in. To work correctly, pass them as a string
         p = sp.Popen(" ".join(args), stdin=sp.PIPE, shell=True)
-        stdout, stderr = p.communicate(write_lilypond.output(seq))
+        stdout, stderr = p.communicate("{ %s }" % lily_output)
         if p.returncode != 0:
             # there was an error
             #raise IOError("Lilypond execution failed: %s%s" % (stdout, stderr))
