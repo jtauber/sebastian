@@ -1,5 +1,9 @@
+def lily_format(seq):
+    return " ".join(point["lilypond"] for point in seq)
+
+
 def output(seq):
-    return "{ %s }" % " ".join(point["lilypond"] for point in seq)
+    return "{ %s }" % lily_format(seq)
 
 
 def write(filename, seq):
