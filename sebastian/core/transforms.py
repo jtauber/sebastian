@@ -155,10 +155,11 @@ def lilypond(point):
 
     if DURATION_64 in point:
         duration = point[DURATION_64]
-        if duration % 3 == 0:  # dotted note
-            duration_string = str(192 // (2 * duration)) + "."
-        else:
-            duration_string = str(64 // duration)
+        if duration > 0:
+            if duration % 3 == 0:  # dotted note
+                duration_string = str(192 // (2 * duration)) + "."
+            else:
+                duration_string = str(64 // duration)
         #TODO: for now, if we have a duration but no pitch, show a 'c' with an x note
         if duration_string:
             if not pitch_string:
