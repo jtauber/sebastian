@@ -97,6 +97,27 @@ class TestTransforms(TestCase):
         stretched = s1 | stretch(2) | stretch(0.5)
         self.assertEqual(s1._elements, stretched._elements)
 
+    def test_dynamics(self):
+        from sebastian.core.transforms import dynamics
+        s1 = self.make_sequence()
+        dynamiced = s1 | dynamics("ff")
+        self.assertEqual([p.tuple("velocity") for p in dynamiced], [(94,), (94,)])
+
+    def test_all_dynamic_markers(self):
+        from sebastian.core.transforms import dynamics
+        s1 = self.make_sequence()
+        velocities = ["pppppp", "ppppp", "pppp", "ppp", "pp", "p", "mp", "mf", "f", "ff", "fff", "ffff"]
+        for velocity in velocities:
+            dynamiced = s1 | dynamics(velocity)
+            self.assertTrue("velocity" in dynamiced[0])
+
+    def test_dynamics_linear_crecendo(self):
+        from sebastian.core.transforms import dynamics
+        s1 = self.make_sequence()
+        s1 = s1 * 5
+        velocitied = s1 | dynamics("ppp", "fff")
+        self.assertEqual([p["velocity"] for p in velocitied], [24, 34, 44, 54, 64, 74, 84, 94, 104, 114])
+
     ## TODO: inversion tests don't make sense yet, since inversion
     ## will be rewritten
     # def test_invert_flips_a_sequence(self):
