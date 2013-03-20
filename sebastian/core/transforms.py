@@ -47,10 +47,15 @@ def degree_in_key_with_octave(key, base_octave, point):
     return point
 
 
+#TODO: make a converter from semitones, so that you can easily
+#transpose by a number of semitones
 @transform_sequence
-def transpose(semitones, point):
-    if MIDI_PITCH in point:
-        point[MIDI_PITCH] = point[MIDI_PITCH] + semitones
+def transpose(interval, point):
+    """
+    Transpose a point by an interval, using the Sebastian interval system
+    """
+    if "pitch" in point:
+        point["pitch"] = point["pitch"] + interval
     return point
 
 
