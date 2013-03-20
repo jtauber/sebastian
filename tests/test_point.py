@@ -106,7 +106,8 @@ class TestPoint(TestCase):
         """
         Ensure the constant flags are hashable - by asserting their value
         """
-        from sebastian.core import OFFSET_64, DURATION_64, MIDI_PITCH
+        from sebastian.core import OFFSET_64, DURATION_64, MIDI_PITCH, DEGREE
         self.assertEqual(OFFSET_64, OFFSET_64)
         self.assertEqual(DURATION_64, DURATION_64)
         self.assertEqual(MIDI_PITCH, MIDI_PITCH)
+        self.assertEqual(DEGREE, "degree")

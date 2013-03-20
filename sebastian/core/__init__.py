@@ -17,6 +17,7 @@
 OFFSET_64 = "offset_64"
 MIDI_PITCH = "midi_pitch"
 DURATION_64 = "duration_64"
+DEGREE = 'degree'
 
 from sebastian.core.elements import OSeq, Point, VSeq, HSeq
 
