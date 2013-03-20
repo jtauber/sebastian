@@ -122,10 +122,22 @@ def midi_to_pitch(point):  # @@@ add key hint later
 
 @transform_sequence
 def lilypond(point):
-    if "lilypond" not in point:
+    """
+    Generate lilypond representation for a point
+    """
+    #If lilypond already computed, leave as is
+    if "lilypond" in point:
+        return point
+
+    #Defaults:
+    pitch_string = ""
+    octave_string = ""
+    duration_string = ""
+    preamble = ""
+
+    if "pitch" in point:
         octave = point["octave"]
         pitch = point["pitch"]
-        duration = point[DURATION_64]
         if octave > 4:
             octave_string = "'" * (octave - 4)
         elif octave < 4:
@@ -140,6 +152,15 @@ def lilypond(point):
         else:
             modifier_string = ""
         pitch_string = letter(pitch).lower() + modifier_string
-        duration_string = str(int(64 / duration))  # @@@ doesn't handle dotted notes yet
-        point["lilypond"] = "%s%s%s" % (pitch_string, octave_string, duration_string)
+
+    if DURATION_64 in point:
+        duration = point[DURATION_64]
+        if duration > 0:
+            duration_string = str(int(64 / point[DURATION_64]))  # @@@ doesn't handle dotted notes yet
+        #TODO: for now, if we have a duration but no pitch, show a 'c' with an x note
+        if duration_string:
+            if not pitch_string:
+                pitch_string = "c"
+                preamble = '\\xNote '
+    point["lilypond"] = "%s%s%s%s" % (preamble, pitch_string, octave_string, duration_string)
     return point

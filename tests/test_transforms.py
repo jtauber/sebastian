@@ -263,6 +263,24 @@ class TestTransforms(TestCase):
               'pitch': -11}
         ])
 
+
+    def test_lilypond_transform_rhythms(self):
+        """
+        Ensure points without pitches can render to lilypond
+        """
+        from sebastian.core.transforms import midi_pitch, add, lilypond
+        from sebastian.core import DURATION_64
+        from sebastian.core import HSeq, Point
+        h1 = HSeq([
+            Point({DURATION_64: 64}),
+            Point({DURATION_64: 0}),
+            Point()
+        ])
+        h2 = h1 | lilypond()
+        self.assertEqual(h2._elements[0]['lilypond'], r'\xNote c1')
+        self.assertEqual(h2._elements[1]['lilypond'], '')
+        self.assertEqual(h2._elements[2]['lilypond'], '')
+
     def test_subseq(self):
         from sebastian.core.transforms import subseq
         from sebastian.core import OSeq, Point
