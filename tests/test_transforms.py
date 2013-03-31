@@ -82,7 +82,7 @@ class TestTransforms(TestCase):
         s1 = self.make_sequence()
         streched = s1 | stretch(2)
 
-        from sebastian.core import OFFSET_64, DURATION_64, MIDI_PITCH
+        from sebastian.core import OFFSET_64, DURATION_64
         self.assertEqual(streched._elements, [
             {"pitch": 50, OFFSET_64: 32, DURATION_64: 34},
             {"pitch": 53, OFFSET_64: 38, DURATION_64: 40}
@@ -245,53 +245,52 @@ class TestTransforms(TestCase):
 
         self.assertEqual(lilyed._elements, [
             {'duration_64': 8,
-              'lilypond': 'd8',
-              'midi_pitch': 50,
-              'octave': 4,
-              'pitch': 0},
-             {'duration_64': 8,
-              'lilypond': 'a8',
-              'midi_pitch': 57,
-              'octave': 4,
-              'pitch': 1},
-             {'duration_64': 8,
-              'lilypond': 'e8',
-              'midi_pitch': 52,
-              'octave': 4,
-              'pitch': 2},
-             {'duration_64': 8,
-              'lilypond': "b'8",
-              'midi_pitch': 59,
-              'octave': 5,
-              'pitch': 3},
-             {'duration_64': 8,
-              'lilypond': 'fis,8',
-              'midi_pitch': 54,
-              'octave': 3,
-              'pitch': 4},
-             {'duration_64': 8,
-              'lilypond': 'fisis8',
-              'midi_pitch': 55,
-              'octave': 4,
-              'pitch': 11},
-             {'duration_64': 8,
-              'lilypond': 'bes8',
-              'midi_pitch': 58,
-              'octave': 4,
-              'pitch': -4},
-             {'duration_64': 8,
-              'lilypond': 'beses8',
-              'midi_pitch': 57,
-              'octave': 4,
-              'pitch': -11}
+                'lilypond': 'd8',
+                'midi_pitch': 50,
+                'octave': 4,
+                'pitch': 0},
+            {'duration_64': 8,
+                'lilypond': 'a8',
+                'midi_pitch': 57,
+                'octave': 4,
+                'pitch': 1},
+            {'duration_64': 8,
+                'lilypond': 'e8',
+                'midi_pitch': 52,
+                'octave': 4,
+                'pitch': 2},
+            {'duration_64': 8,
+                'lilypond': "b'8",
+                'midi_pitch': 59,
+                'octave': 5,
+                'pitch': 3},
+            {'duration_64': 8,
+                'lilypond': 'fis,8',
+                'midi_pitch': 54,
+                'octave': 3,
+                'pitch': 4},
+            {'duration_64': 8,
+                'lilypond': 'fisis8',
+                'midi_pitch': 55,
+                'octave': 4,
+                'pitch': 11},
+            {'duration_64': 8,
+                'lilypond': 'bes8',
+                'midi_pitch': 58,
+                'octave': 4,
+                'pitch': -4},
+            {'duration_64': 8,
+                'lilypond': 'beses8',
+                'midi_pitch': 57,
+                'octave': 4,
+                'pitch': -11}
         ])
-
 
     def test_lilypond_transform_rhythms(self):
         """
         Ensure points without pitches can render to lilypond
         """
-        from sebastian.core.transforms import midi_pitch, add, lilypond
+        from sebastian.core.transforms import lilypond
         from sebastian.core import DURATION_64
         from sebastian.core import HSeq, Point
         h1 = HSeq([
