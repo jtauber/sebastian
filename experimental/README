@@ -1,2 +1,4 @@
-This is just a directory for some experimental code that isn't used in
-Sebastian yet.
+This is just a directory for some experimental code that isn't fully baked yet.
+
+It may be generic code yet to be cleaned up and moved into Sebastian's core
+or it may be code exercising experimental features already in the core.
