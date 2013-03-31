@@ -155,7 +155,7 @@ def lilypond(point):
         if m > 0:
             modifier_string = "is" * m
         elif m < 0:
-            modifier_string = "es" * m
+            modifier_string = "es" * -m
         else:
             modifier_string = ""
         pitch_string = letter(pitch).lower() + modifier_string
