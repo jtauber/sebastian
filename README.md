@@ -26,6 +26,10 @@ A video of the talk should be available shortly.
 
 You can join the Sebastian mailing list by emailing `sebastian@librelist.com`
 
+## IRC Channel
+
+We're using `#sebastian-dev` on Freenode.
+
 ## License
 
 Sebastian is open source under an MIT license. See the LICENSE file.
