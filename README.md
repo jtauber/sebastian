@@ -20,7 +20,9 @@ I spoke about Sebastian at PyCon 2013 and my slides are available at:
 
 <https://speakerdeck.com/jtauber/music-theory-and-performance-analysis-with-sebastian-and-czerny>
 
-A video of the talk should be available shortly.
+The video of the talk is available on YouTube at:
+
+<http://www.youtube.com/watch?v=06h21nBqwec>
 
 ## Mailing List
 
