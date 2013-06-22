@@ -55,3 +55,7 @@ or with coverage:
 and install Lilypond, making sure commandline `lilypond` is on your path then:
 
     ipython notebook
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jtauber/sebastian/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
