@@ -52,7 +52,7 @@ class SMF(object):
     def write(self
             , out
             , title = "untitled" # distinct from filename
-            , time_signature = (4, 2, 24, 8) # (2cd arg is power of 2) 
+            , time_signature = (4, 2, 24, 8) # (2nd arg is power of 2) 
             , key_signature = (0, 0) # C
             , tempo = 500000 # in microseconds per quarter note
         ):
