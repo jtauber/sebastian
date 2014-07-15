@@ -105,7 +105,7 @@ class SeqBase(object):
 
         f = tempfile.NamedTemporaryFile(suffix=suffix)
         basename = f.name[:-len(suffix)]
-        args.extend(["-o"+basename, "-"])
+        args.extend(["-o" + basename, "-"])
 
         #Pass shell=True so that if your $PATH contains ~ it will
         #get expanded. This also changes the way the arguments get
@@ -138,6 +138,7 @@ class SeqBase(object):
         if not isinstance(f, basestring):
             return f.data
         return f
+
 
 def OSeq(offset_attr, duration_attr):
 

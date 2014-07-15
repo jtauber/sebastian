@@ -332,7 +332,7 @@ class TestSequences(TestCase):
             Point(a=2, offset=30),
             Point(a=2, offset=50),
         )
-        s2 = s1.subseq(20,50)
+        s2 = s1.subseq(20, 50)
         self.assertEqual(
             s2,
             OffsetSequence(
@@ -401,7 +401,7 @@ class TestSequences(TestCase):
             {MIDI_PITCH: 53, DURATION_64: 10}
         ])
 
-        s2 = s1.subseq(20,40)
+        s2 = s1.subseq(20, 40)
         self.assertEqual(s2, HSeq([
             {MIDI_PITCH: 51, DURATION_64: 10},
             {MIDI_PITCH: 52, DURATION_64: 10},

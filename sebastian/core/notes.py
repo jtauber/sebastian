@@ -6,29 +6,38 @@
 # D   A   E   B   F#  C#  G#  D#  A#  E#  B#  Fx  Cx  Gx  Dx  Ax  Ex  Bx  ...
 # 0   +1  +2  +3  +4  +5  +6  +7  +8  +9  +10 +11 +12 +13 +14 +15 +16 +17
 
+
 def natural(val):
     return abs(val) < 4
+
 
 def single_sharp(val):
     return 3 < val < 11
 
+
 def single_flat(val):
     return -3 > val > -11
+
 
 def double_sharp(val):
     return 10 < val < 18
 
+
 def double_flat(val):
     return -10 > val > -18
+
 
 def modifiers(val):
     return int(((val + 3) - ((val + 3) % 7)) / 7)
 
+
 def mod_interval(mod):
     return 7 * mod
 
+
 def letter(val):
     return "DAEBFCG"[val % 7]
+
 
 def name(val):
     m = modifiers(val)
@@ -38,9 +47,10 @@ def name(val):
         m_name = "#"
     elif m > 1:
         m_name = "x" * (m - 1)
-    else: # m < 0
+    else:  # m < 0
         m_name = "b" * -m
     return letter(val) + m_name
+
 
 def value(name):
     letter = name[0]
@@ -60,37 +70,46 @@ def value(name):
         raise ValueError
     return base + mod_interval(m)
 
+
 # tone above, new letter
 def tone_above(val):
     return val + 2
+
 
 # tone below, new letter
 def tone_below(val):
     return val - 2
 
+
 # semitone above, new letter
 def semitone_above(val):
     return val - 5
+
 
 # semitone above, new letter
 def semitone_below(val):
     return val + 5
 
+
 # semitone above, same letter
 def augment(val):
     return val + 7
+
 
 # semitone below, same latter
 def diminish(val):
     return val - 7
 
+
 def enharmonic(val1, val2):
     return (abs(val1 - val2) % 12) == 0
+
 
 # major scale
 
 def major_scale(tonic):
     return [tonic + i for i in [0, 2, 4, -1, 1, 3, 5]]
+
 
 def minor_scale(tonic):
     return [tonic + i for i in [0, 2, -3, -1, 1, -4, -2]]

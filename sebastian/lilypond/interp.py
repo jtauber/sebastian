@@ -14,7 +14,8 @@ MIDI_NOTE_VALUES = {
 }
 
 
-token_pattern = re.compile(r"""^\s*                 # INITIAL WHITESPACE
+token_pattern = re.compile(
+    r"""^\s*                                        # INITIAL WHITESPACE
     (
         (                                           # NOTE
             (
@@ -112,7 +113,7 @@ def parse_duration(duration_marker):
         core = int(duration_marker)
         dots = 0
 
-    duration = int((2 - (2**-dots)) * 64 / core)
+    duration = int((2 - (2 ** -dots)) * 64 / core)
 
     return duration
 

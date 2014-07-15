@@ -3,7 +3,7 @@
 from io import BytesIO
 import six
 
-from sebastian.core import OSequence, Point, OFFSET_64, MIDI_PITCH, DURATION_64
+from sebastian.core import OFFSET_64, MIDI_PITCH, DURATION_64
 
 
 def write_chars(out, chars):
@@ -39,27 +39,26 @@ def write_varlen(out, n):
 
 class SMF(object):
 
-    def __init__(self, tracks, instruments = None):
+    def __init__(self, tracks, instruments=None):
         self.tracks = tracks
 
         # instruments are specified per track, 0-127.
         if instruments is None:
             # default to every track uses inst. 0 (piano?)
-            instruments = [0]*len(tracks)
+            instruments = [0] * len(tracks)
         assert len(instruments) == len(tracks)
         self.instruments = instruments
 
-    def write(self
-            , out
-            , title = "untitled" # distinct from filename
-            , time_signature = (4, 2, 24, 8) # (2nd arg is power of 2)
-            , key_signature = (0, 0) # C
-            , tempo = 500000 # in microseconds per quarter note
-        ):
+    def write(
+        self, out,
+        title="untitled",  # distinct from filename
+        time_signature=(4, 2, 24, 8),  # (2nd arg is power of 2)
+        key_signature = (0, 0),  # C
+        tempo = 500000  # in microseconds per quarter note
+    ):
         num_tracks = 1 + len(self.tracks)
         Thd(format=1, num_tracks=num_tracks, division=16).write(out)
-        T = 1  # how to translate events times into time_delta using the
-               # division above
+        T = 1  # how to translate events times into time_delta using the division above
 
         # first track will just contain time/key/tempo info
         t = Trk()
@@ -179,7 +178,7 @@ class Trk(object):
         write_byte(self.data, (t >> 0) % 256)
 
     def program_change(self, channel, program):
-        write_varlen(self.data, 0) # tick
+        write_varlen(self.data, 0)  # tick
         write_byte(self.data, 0xC0 + channel)
         write_byte(self.data, program)
 
@@ -208,8 +207,8 @@ class Trk(object):
         out.write(d)
 
 
-def write(filename, tracks, instruments = None, **kws):
+def write(filename, tracks, instruments=None, **kws):
     with open(filename, "w") as f:
-        s = SMF(tracks, instruments = instruments)
+        s = SMF(tracks, instruments=instruments)
         # pass on some attributes, such as tempo, key, etc.
         s.write(f, **kws)

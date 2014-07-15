@@ -1,4 +1,4 @@
-# this is just an initial sketch of the data structures so don't read too 
+# this is just an initial sketch of the data structures so don't read too
 # much into them at this stage.
 
 # basically, a Sequence is just a collection of Points and a Point is just a
@@ -19,7 +19,7 @@ MIDI_PITCH = "midi_pitch"
 DURATION_64 = "duration_64"
 DEGREE = 'degree'
 
-from sebastian.core.elements import OSeq, Point, VSeq, HSeq
+from sebastian.core.elements import OSeq, Point, VSeq, HSeq  # noqa
 
 OSequence = OSeq(OFFSET_64, DURATION_64)
 

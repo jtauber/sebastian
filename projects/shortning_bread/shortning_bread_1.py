@@ -13,20 +13,25 @@ quaver_point = Point({DURATION_64: 8})
 quarter_point = Point({DURATION_64: 16})
 
 # this song uses only these notes
-scale = VSeq(Point(degree=n) for n in [1,2,3,5,6,8])
+scale = VSeq(Point(degree=n) for n in [1, 2, 3, 5, 6, 8])
+
 
 # the following functions all create sequences of eighth notes
 def h1(scale):
     return HSeq(scale[i] for i in [5, 4, 3, 4]) | add(quaver_point)
 
+
 def h1_end1(scale):
     return HSeq(scale[i] for i in [5, 4]) | add(quaver_point)
+
 
 def end(scale):
     return HSeq(scale[i] for i in [2, 1]) | add(quaver_point)
 
+
 def h2(scale):
     return HSeq(scale[i] for i in [0, 4, 3, 4]) | add(quaver_point)
+
 
 def h2_end1(scale):
     return HSeq(scale[i] for i in [0, 4]) | add(quaver_point)
