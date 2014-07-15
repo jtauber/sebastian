@@ -14,43 +14,43 @@ class Base(object):
     Base is a generic base class for parsing binary files. It cannot be
     instantiated directly, you need to sub-class it and implement a parse()
     method.
-    
+
     Your sub-class can then be instantiated with a single argument, a byte
     array.
-    
+
     Base provides a number of basic methods for pulling data out of the byte
     array and incrementing the index appropriately.
     """
-    
+
     def __init__(self, data, handler):
         self.data = data
         self.handler = handler
         self.index = 0
         self.init()
         self.parse()
-    
+
     def init(self):
         pass
 
     def peek_byte(self):
         return self.data[self.index]
-    
+
     def get_byte(self):
         data = self.data[self.index]
         self.index += 1
         return data
-    
+
     def get_char(self, length=1):
         data = self.data[self.index:self.index + length]
         self.index += length
         return data
-    
+
     def get_ushort(self):
         data = 0
         data += self.get_byte() << 8
         data += self.get_byte() << 0
         return data
-    
+
     def get_ulong(self):
         data = 0
         data += self.get_byte() << 24
@@ -58,7 +58,7 @@ class Base(object):
         data += self.get_byte() << 8
         data += self.get_byte() << 0
         return data
-    
+
     def get_varlen(self):
         data = 0
         while True:
@@ -73,13 +73,13 @@ class SMF(Base):
     """
     A parser for Simple MIDI files.
     """
-    
+
     def parse_chunk(self):
         chunk_id = self.get_char(4)
         length = self.get_ulong()
         data = self.get_char(length)
         return chunk_id, data
-    
+
     def parse(self):
         while self.index < len(self.data):
             chunk_id, data = self.parse_chunk()
@@ -95,7 +95,7 @@ class Thd(Base):
     """
     A parser for the Thd chunk in a MIDI file.
     """
-    
+
     def parse(self):
         format = self.get_ushort()
         num_tracks = self.get_ushort()
@@ -107,7 +107,7 @@ class Trk(Base):
     """
     A parser for the Trk chunk in a MIDI file.
     """
-    
+
     def init(self):
         self.note_started = {}
 
@@ -157,7 +157,7 @@ class Trk(Base):
                 note_number = self.get_byte()
                 velocity = self.get_byte()
                 self.ticks += time_delta
-                
+
                 if velocity > 0:
                     if note_number in self.note_started:
                         # new note at that pitch started before previous finished
@@ -187,7 +187,7 @@ class Trk(Base):
                 raise Exception("unknown event type " + hex(event_type))
         else:
             raise Exception("unknown status " + hex(status))
-    
+
     def parse(self):
         self.ticks = 0
         self.next_note = 0
@@ -210,7 +210,7 @@ class Trk(Base):
 
 
 class BaseHandler(object):
-    
+
     def header(self, format, num_tracks, division):
         pass
 
@@ -252,7 +252,7 @@ class BaseHandler(object):
 
 
 class PrintHandler(BaseHandler):
-    
+
     def header(self, format, num_tracks, division):
         print("Thd %d %d %d" % (format, num_tracks, division))
 

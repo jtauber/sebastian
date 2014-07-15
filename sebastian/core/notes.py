@@ -61,25 +61,25 @@ def value(name):
     return base + mod_interval(m)
 
 # tone above, new letter
-def tone_above(val): 
+def tone_above(val):
     return val + 2
 
 # tone below, new letter
-def tone_below(val): 
+def tone_below(val):
     return val - 2
 
 # semitone above, new letter
-def semitone_above(val): 
+def semitone_above(val):
     return val - 5
 
 # semitone above, new letter
-def semitone_below(val): 
+def semitone_below(val):
     return val + 5
 
 # semitone above, same letter
 def augment(val):
     return val + 7
-    
+
 # semitone below, same latter
 def diminish(val):
     return val - 7
@@ -99,10 +99,10 @@ def minor_scale(tonic):
 class Key(object):
     def __init__(self, tonic, scale):
         self.notes = scale(value(tonic))
-    
+
     def degree_to_pitch(self, degree):
         return self.notes[degree - 1]
-    
+
     def degree_to_pitch_and_octave(self, degree):
         o, d = divmod(degree - 1, 7)
         return self.notes[d], o

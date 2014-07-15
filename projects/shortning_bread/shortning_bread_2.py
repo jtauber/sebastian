@@ -21,7 +21,7 @@ def make_hseq(notes):
 
 # produces eighth and quarter notes
 hlf = 16
-qtr = 8 
+qtr = 8
 
 # tuples specify pitch and duration
 p1 = [(8,qtr),(6,qtr),(5,qtr),(6,qtr)]
@@ -44,4 +44,3 @@ C_major = Key("C", major_scale)
 seq = oseq | degree_in_key_with_octave(C_major, 5) | midi_pitch()
 
 write_midi.write("shortning_bread_2.mid", [seq])
-

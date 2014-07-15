@@ -16,16 +16,16 @@
 %6
 \relative c'' { c1~ c1 }
 
-%7 
+%7
 \relative c' { r4 r4 r4 r8 c16 c16 c8 r8 r4 r4 r4 r4 }
 
-%8 
+%8
 \relative c'' { g1. f1~ f1 }
 
-%9 
+%9
 \relative c'' { b16 g16 r8 r4 r4 r4 }
 
-%10 
+%10
 \relative c'' { b16 g16 }
 
 %11

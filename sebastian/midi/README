@@ -8,6 +8,6 @@ write_midi.py is intended to be used as a library for generating MIDI files
 and, while currently limited, can be seen in action in in_c/in_c2midi.py
 
 There is also the player module that enables you to (on OS X) easily fire up a
-MIDI player (e.g. QuickTime Player) to play a given sequence (say from the 
+MIDI player (e.g. QuickTime Player) to play a given sequence (say from the
 interactive prompt) without having to explicitly save and open the file in a
 player yourself.

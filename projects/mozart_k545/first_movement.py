@@ -56,7 +56,7 @@ def expand(sequence):
 
 def debug(sequence):
     """
-    adds information to the sequence for better debugging, currently only 
+    adds information to the sequence for better debugging, currently only
     an index property on each point in the sequence.
     """
     points = []
@@ -82,7 +82,7 @@ def build_movement():
     intervals[3]["chord"] = (-3, 0, 2)      # second inversion
     intervals[5]["chord"] = (-5, -3, 0)     # first inversion
 
-    # Combine the sequences, make them chords, produce alberti on the chords, 
+    # Combine the sequences, make them chords, produce alberti on the chords,
     # fill with each being 8, expand it to a flat sequence.
     melody = intervals & rhythm | chord() | alberti | fill(8) | expand
 

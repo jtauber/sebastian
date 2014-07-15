@@ -23,12 +23,12 @@ from sebastian.core.elements import OSeq, Point, VSeq, HSeq
 
 OSequence = OSeq(OFFSET_64, DURATION_64)
 
-# 
-# 
+#
+#
 # def shift(offset):
 #     def _(point):
 #         point[OFFSET_64] = point[OFFSET_64] + offset
 #         return point
 #     return lambda seq: seq.map_points(_)
-# 
-# 
+#
+#

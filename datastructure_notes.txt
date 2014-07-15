@@ -1,5 +1,5 @@
 [ed: this are some notes I wrote in 2009; I'm keeping them here as they
-explain pretty well the original thinking behind the datastructures we 
+explain pretty well the original thinking behind the datastructures we
 now have in Sebastian.]
 
 
